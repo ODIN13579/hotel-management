@@ -1,23 +1,35 @@
+// đăng nhập có thể dùng sdt hoặc email làm tài khoảng
 Table Users {
-  User_ID varchar [not null, pk, note: 'mã định danh duy nhất của người dùng']
+  User_ID varchar [not null, pk]
   Name nvarchar [not null]
-  Email varchar [unique, note: 'không trùng email']
-  Phone varchar
+  Email varchar [unique]
+  Phone varchar [unique]
+  Password varchar [not null]
+}
+
+Table Employees {
+  Employee_ID varchar [not null, pk]
+  Name nvarchar [not null]
+  Email varchar [unique]
+  Phone varchar [unique]
+  Password varchar [not null]
+  Role varchar
+  Status varchar
 }
 
 Table Services {
-  Service_ID varchar [not null, pk, note: 'mã định danh duy nhất của dịch vụ']
+  Service_ID varchar [not null, pk]
   Name nvarchar [not null]
   Description nvarchar 
   Price decimal(18,2)
 }
 
 Table Rooms {
-  Room_ID varchar [pk, note: 'Mã định danh duy nhất của phòng']
-  Room_Number varchar 
+  Room_ID varchar [not null, pk]
+  Room_Number varchar [unique, not null]
   Capacity integer 
   Price_Per_Night decimal(18,2)
-  Status varchar [note: 'Trống, Đã đặt, Bảo trì']
+  Status varchar 
 }
 
 Table Rooms_Services {
@@ -26,32 +38,24 @@ Table Rooms_Services {
   primary key (Room_ID, Service_ID)
 }
 
-Table Employees {
-  Employee_ID varchar [not null,pk]
-  Name nvarchar 
-  Email varchar [unique]
-  Phone varchar 
-  Role varchar 
-  Status varchar 
-}
-
 Table Bookings {
   Booking_ID varchar [pk]
   User_ID varchar [ref: > Users.User_ID] 
   Room_ID varchar [ref: > Rooms.Room_ID] 
-  Employee_ID varchar [ref: > Employees.Employee_ID]
-  Date datetime 
+  Employee_ID varchar [ref: > Employees.Employee_ID, note: 'có thể null nếu khách tự đặt online']
+  Booking_Date datetime
   Check_In datetime 
   Check_Out datetime 
-  Status varchar [note: 'Chờ xác nhận, Đã nhận phòng, Đã trả phòng, Đã hủy']
+  Status varchar
 }
 
 Table Reviews {
   Review_ID varchar [pk] 
   User_ID varchar [ref: > Users.User_ID]
-  Booking_ID varchar [ref: > Bookings.Booking_ID] // thay vi đánh giá dịch vụ thì đánh giá trải nghiệm phòng
+  Booking_ID varchar [ref: - Bookings.Booking_ID] // 1-1 một lần thôi nhiều spam
   Rating integer [note: '1-5 sao']
   Comment nvarchar 
+  Created_At datetime 
 }
 
 Table Payment {
@@ -59,7 +63,8 @@ Table Payment {
   Booking_ID varchar [ref: > Bookings.Booking_ID]
   Amount decimal(18,2)
   Payment_Date datetime 
-  Payment_Method varchar [note: 'Cash, Credit Card, Transfer']
+  Payment_Method varchar
+  Status varchar 
 }
 
 Table CancellationRefund {
@@ -67,19 +72,21 @@ Table CancellationRefund {
   Booking_ID varchar [ref: - Bookings.Booking_ID] // 1-1
   Cancellation_Date datetime 
   Refund_Amount decimal(18,2)
+  Status varchar 
 }
 
 Table Invoices {
   Invoice_ID  varchar [pk]
   User_ID varchar [ref: > Users.User_ID]
   Booking_ID varchar [ref: - Bookings.Booking_ID] // 1-1
-  Amount decimal(18,2)
-  Date datetime 
+  Total_Amount decimal(18,2)
+  Issued_Date datetime 
 }
 
 Table Notifications {
   Notification_ID  varchar [pk]
   User_ID varchar [ref: > Users.User_ID]
   Message nvarchar 
-  Date datetime 
+  Sent_Date datetime
+  Is_Read boolean 
 }
