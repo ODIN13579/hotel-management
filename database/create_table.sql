@@ -19,7 +19,8 @@ CREATE TABLE Users (
     User_ID VARCHAR(50) NOT NULL,
     Name NVARCHAR(255) NOT NULL,
     Email VARCHAR(255) UNIQUE,
-    Phone VARCHAR(20),
+    Phone VARCHAR(20) UNIQUE,
+    Password VARCHAR(255) NOT NULL,
     PRIMARY KEY (User_ID)
 );
 
@@ -35,7 +36,8 @@ CREATE TABLE Employees (
     Employee_ID VARCHAR(50) NOT NULL,
     Name NVARCHAR(255) NOT NULL,
     Email VARCHAR(255) UNIQUE,
-    Phone VARCHAR(20),
+    Phone VARCHAR(20) UNIQUE,
+    Password VARCHAR(255) NOT NULL,
     Role NVARCHAR(100),
     Status NVARCHAR(50), -- Đang làm việc, Nghỉ phép, Đã nghỉ việc
     PRIMARY KEY (Employee_ID)
