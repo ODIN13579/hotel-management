@@ -1,74 +1,85 @@
 Table Users {
-  User_ID varchar [not null, primary key, note: 'mã định danh duy nhất của người dùng']
-  Name nvarchar
+  User_ID varchar [not null, pk, note: 'mã định danh duy nhất của người dùng']
+  Name nvarchar [not null]
   Email varchar [unique, note: 'không trùng email']
   Phone varchar
 }
+
 Table Services {
-  Service_ID varcher [not null, primary key, note: 'mã định danh duy nhất của dịch vụ']
-  Name nvarchar // tên của dịch vụ
-  Description nvarchar // mô tả của dịch vụ
-  Price float// giá của dịch vụ
+  Service_ID varchar [not null, pk, note: 'mã định danh duy nhất của dịch vụ']
+  Name nvarchar [not null]
+  Description nvarchar 
+  Price decimal(18,2)
 }
+
+Table Rooms {
+  Room_ID varchar [pk, note: 'Mã định danh duy nhất của phòng']
+  Room_Number varchar 
+  Capacity integer 
+  Price_Per_Night decimal(18,2)
+  Status varchar [note: 'Trống, Đã đặt, Bảo trì']
+}
+
+Table Rooms_Services {
+  Room_ID varchar [ref: > Rooms.Room_ID]
+  Service_ID varchar [ref: > Services.Service_ID]
+  primary key (Room_ID, Service_ID)
+}
+
+Table Employees {
+  Employee_ID varchar [not null,pk]
+  Name nvarchar 
+  Email varchar [unique]
+  Phone varchar 
+  Role varchar 
+  Status varchar 
+}
+
 Table Bookings {
   Booking_ID varchar [pk]
   User_ID varchar [ref: > Users.User_ID] 
   Room_ID varchar [ref: > Rooms.Room_ID] 
   Employee_ID varchar [ref: > Employees.Employee_ID]
   Date datetime 
-  Check_In datetime [note: 'Giờ nhận phòng dự kiến'] 
-  Check_Out datetime [note: 'Giờ trả phòng dự kiến'] 
-  Status varchar 
+  Check_In datetime 
+  Check_Out datetime 
+  Status varchar [note: 'Chờ xác nhận, Đã nhận phòng, Đã trả phòng, Đã hủy']
 }
 
-table Reviews {
-  Riview_ID varchar [not null, pk] // mã định danh duy nhất cho mỏi đánh giá
-  User_ID varchar [ref: > Users.User_ID] // fk tham chiếu user
-  Service_ID varchar [ref: > Services.Service_ID] // fk tham chiếu service
-  Rating integer [note: '1-5 sao']// điểm đánh giá của người dùng
-  Comment nvarchar // comment của người dùng
+Table Reviews {
+  Review_ID varchar [pk] 
+  User_ID varchar [ref: > Users.User_ID]
+  Booking_ID varchar [ref: > Bookings.Booking_ID] // thay vi đánh giá dịch vụ thì đánh giá trải nghiệm phòng
+  Rating integer [note: '1-5 sao']
+  Comment nvarchar 
 }
-table Payment {
-  Payment_ID varchar [not null, pk] // mã định danh dn cho thanh toán
-  Booking_ID varchar [ref: > Bookings.Booking_ID] // fk -> booking
-  Amount float // số tiền thanh toán
-  Payment_Date datetime // ngày thanh toán
-  Payment_Method varchar // phuong thuc thanh toan
+
+Table Payment {
+  Payment_ID varchar [pk]
+  Booking_ID varchar [ref: > Bookings.Booking_ID]
+  Amount decimal(18,2)
+  Payment_Date datetime 
+  Payment_Method varchar [note: 'Cash, Credit Card, Transfer']
 }
-table CancellationRefund {
-  CancellationRefund_ID varchar [not null, pk] // mã định danh hủy/hoàn tiền
-  Booking_ID varchar [ref: - Bookings.Booking_ID, note: 'quan hệ 1-1 vì 1 đơn chỉ hủy 1 lần'] // fk->bookings
-  Cancellation_Date datetime // ngày hủy
-  Refund_Amount float // số tiền cần hoàn
+
+Table CancellationRefund {
+  CancellationRefund_ID varchar [pk]
+  Booking_ID varchar [ref: - Bookings.Booking_ID] // 1-1
+  Cancellation_Date datetime 
+  Refund_Amount decimal(18,2)
 }
-table Invoices {
-  Invoice_ID  varchar [not null, pk] // khóa của hóa đơn
-  User_ID varchar [ref: > Users.User_ID] //fk->
-  Booking_ID varchar [ref: - Bookings.Booking_ID, note: '1 đơn tạo ra một hóa đơn'] //fk->
-  Amount float // số tiền hóa đơn
-  Date datetime // ngày lập háo đơn
+
+Table Invoices {
+  Invoice_ID  varchar [pk]
+  User_ID varchar [ref: > Users.User_ID]
+  Booking_ID varchar [ref: - Bookings.Booking_ID] // 1-1
+  Amount decimal(18,2)
+  Date datetime 
 }
-table Notifications {
-  Notification_ID  varchar [not null, pk] // mã định danh cho thông báo
-  User_ID varchar [ref: > Users.User_ID] // fk->
-  Message nvarchar // lời nhắn của thông báo
-  Date datetime [note: 'Ngày giờ gửi thông báo'] 
-}
-Table Rooms {
-  Room_ID varchar [pk, note: 'Mã định danh duy nhất của phòng']
-  //Location_ID varchar [ref: > Locations.Location_ID]
-  Room_Number varchar [note: 'Số phòng cụ thể']
-  Service_ID varchar [ref: > Services.Service_ID] // (Có thể là gói dịch vụ: Thuê nguyên ngày, Thuê nửa ngày...)
-  Capacity integer [note: 'Sức chứa tối đa']
-  Price_Per_Night decimal [note: 'Giá phòng mỗi đêm']
-  Status varchar [note: 'Trạng thái hiện tại']
-}
-Table Employees {
-  Employee_ID varchar [pk, note: 'Mã định danh nhân viên']
-  Name nvarchar [note: 'Tên nhân viên']
-  Email varchar [unique]
-  Phone varchar 
-  Role varchar [note: 'Vai trò']
-  //Location_ID varchar [ref: > Locations.Location_ID] 
-  Status varchar [note: 'Trạng thái làm việc']
+
+Table Notifications {
+  Notification_ID  varchar [pk]
+  User_ID varchar [ref: > Users.User_ID]
+  Message nvarchar 
+  Date datetime 
 }
