@@ -1,5 +1,5 @@
 USE hotell;
-
+-- xóa các bảng nếu đã tồn tại
 DROP TABLE IF EXISTS Payment;
 DROP TABLE IF EXISTS Invoices;
 DROP TABLE IF EXISTS CancellationRefund;
@@ -11,5 +11,5 @@ DROP TABLE IF EXISTS Services;
 DROP TABLE IF EXISTS Employees;
 DROP TABLE IF EXISTS Users;
 
--- tạo data ở đây
+-- tạo value ở đây
 

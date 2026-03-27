@@ -1,5 +1,19 @@
-drop database if exists hotell;
-create database hotell;
+drop database if exists hotel_management;
+create database hotel_management;
+USE hotel_management;
+--- xóa các bảng nếu đã tồn tại
+drop table if exists Users;
+drop table if exists Services;
+drop table if exists Employees;
+drop table if exists Rooms;
+drop table if exists Bookings;         
+drop table if exists Reviews;
+drop table if exists Payment;
+drop table if exists CancellationRefund;
+drop table if exists Invoices;
+drop table if exists Notifications;
+-- tạo bảng ở đây
+
 CREATE TABLE Users (
     User_ID VARCHAR(255) NOT NULL PRIMARY KEY,
     Name NVARCHAR(255),
