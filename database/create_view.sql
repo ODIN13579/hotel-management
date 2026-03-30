@@ -4,6 +4,29 @@ use hotel_management;
 
 -- viet code tạo view ở đây
 
+-- chức năng 4:
+CREATE VIEW vw_services_list AS
+SELECT 
+    Service_ID,
+    Name,
+    Description,
+    Price
+FROM Services;
+
+-- chức năng 5:
+CREATE VIEW vw_invoice_detail AS
+SELECT 
+    i.Invoice_ID,
+    u.Name AS Customer_Name,
+    b.Booking_ID,
+    r.Room_Number,
+    i.Total_Amount,
+    i.Issued_Date
+FROM Invoices i
+JOIN Users u ON i.User_ID = u.User_ID
+JOIN Bookings b ON i.Booking_ID = b.Booking_ID
+JOIN Rooms r ON b.Room_ID = r.Room_ID;
+
 -- chức năng 7
 CREATE VIEW VW_Reviews
 AS
