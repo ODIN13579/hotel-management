@@ -46,6 +46,7 @@ CREATE TABLE Employees (
 CREATE TABLE Rooms (
     Room_ID VARCHAR(50) NOT NULL,
     Room_Number VARCHAR(20) NOT NULL,
+    Room_Type NVARCHAR(100) NOT NULL,
     Capacity INT DEFAULT 1,
     Price_Per_Night DECIMAL(18, 2) NOT NULL,
     Status NVARCHAR(50), -- Trống, Đã đặt, Đang ở, Bảo trì
@@ -83,6 +84,7 @@ CREATE TABLE Reviews (
     Booking_ID VARCHAR(50),
     Rating INT CHECK (Rating BETWEEN 1 AND 5),
     Comment NVARCHAR(1000),
+    Created_At DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (Review_ID),
     FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
     FOREIGN KEY (Booking_ID) REFERENCES Bookings(Booking_ID)
@@ -90,10 +92,11 @@ CREATE TABLE Reviews (
 
 CREATE TABLE Payment (
     Payment_ID VARCHAR(50) NOT NULL,
-    Booking_ID VARCHAR(50),
+    Booking_ID VARCHAR(50) not null,
     Amount DECIMAL(18, 2) NOT NULL,
     Payment_Date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Payment_Method NVARCHAR(100), -- Tiền mặt, Thẻ, Chuyển khoảng
+    Payment_Method NVARCHAR(100), -- Tiền mặt, Chuyển khoảng
+    Status NVARCHAR(50), 
     PRIMARY KEY (Payment_ID),
     FOREIGN KEY (Booking_ID) REFERENCES Bookings(Booking_ID)
 );

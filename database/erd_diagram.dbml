@@ -1,4 +1,5 @@
 // đăng nhập có thể dùng sdt hoặc email làm tài khoảng
+// đọc file create_table.sql và thêm những thay đổi vào đây cho thôi
 Table Users {
   User_ID varchar [not null, pk]
   Name nvarchar [not null]
@@ -27,6 +28,7 @@ Table Services {
 Table Rooms {
   Room_ID varchar [not null, pk]
   Room_Number varchar [unique, not null]
+  Room_type varchar 
   Capacity integer 
   Price_Per_Night decimal(18,2)
   Status varchar 
