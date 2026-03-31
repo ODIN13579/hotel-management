@@ -31,7 +31,7 @@ Table Rooms {
   Room_type varchar 
   Capacity integer 
   Price_Per_Night decimal(18,2)
-  Status varchar 
+  Status varchar // phòng trống, phòng đã đặt(cọc), phòng đã nhận, bảo trì
 }
 
 Table Rooms_Services {
@@ -49,7 +49,7 @@ Table Bookings {
   Room_deposit decimal(18,2)// 30% của giá phòng
   Check_In datetime // ngày nhận phòng, ko đến mất cọc
   Check_Out datetime 
-  Status varchar
+  Status varchar // đã xác nhận, đã trả phòng, đã hủy
 }
 
 Table Reviews {
@@ -77,6 +77,8 @@ Table Invoices {
   Total_Amount decimal(18,2) // tổng tiền tất cả bao gồn 30% + 70% còn lại
   Issued_Date datetime 
 }
+
+// doanh thu = payment.amount + booking.room_deposit(dùng view)
 
 Table Notifications {
   Notification_ID  varchar [pk]
