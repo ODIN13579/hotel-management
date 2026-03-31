@@ -18,10 +18,21 @@ DROP TABLE IF EXISTS Users;
 CREATE TABLE Users (
     User_ID VARCHAR(50) NOT NULL,
     Name NVARCHAR(255) NOT NULL,
+    Email VARCHAR(255) UNIQUE, 
+    Phone VARCHAR(20) UNIQUE,  
+    Password VARCHAR(255) NOT NULL, -- Sẽ lưu hash
+    PRIMARY KEY (User_ID)
+);
+
+CREATE TABLE Employees (
+    Employee_ID VARCHAR(50) NOT NULL,
+    Name NVARCHAR(255) NOT NULL,
     Email VARCHAR(255) UNIQUE,
     Phone VARCHAR(20) UNIQUE,
     Password VARCHAR(255) NOT NULL,
-    PRIMARY KEY (User_ID)
+    Role NVARCHAR(100),
+    Status NVARCHAR(50),
+    PRIMARY KEY (Employee_ID)
 );
 
 CREATE TABLE Services (
@@ -32,29 +43,16 @@ CREATE TABLE Services (
     PRIMARY KEY (Service_ID)
 );
 
-CREATE TABLE Employees (
-    Employee_ID VARCHAR(50) NOT NULL,
-    Name NVARCHAR(255) NOT NULL,
-    Email VARCHAR(255) UNIQUE,
-    Phone VARCHAR(20) UNIQUE,
-    Password VARCHAR(255) NOT NULL,
-    Role NVARCHAR(100),
-    Status NVARCHAR(50), -- Đang làm việc, Nghỉ phép, Đã nghỉ việc
-    PRIMARY KEY (Employee_ID)
-);
-
 CREATE TABLE Rooms (
     Room_ID VARCHAR(50) NOT NULL,
-    Room_Number VARCHAR(20) NOT NULL,
-    Room_Type NVARCHAR(100) NOT NULL,
-    Capacity INT DEFAULT 1,
+    Room_Number VARCHAR(20) NOT NULL UNIQUE,
+    Room_type NVARCHAR(100),
+    Capacity INT,
     Price_Per_Night DECIMAL(18, 2) NOT NULL,
-    Status NVARCHAR(50), -- Trống, Đã đặt, Đang ở, Bảo trì
+    Status NVARCHAR(50), -- Trống, Đã đặt (cọc), Đã nhận, Bảo trì
     PRIMARY KEY (Room_ID)
 );
 
-
--- bảng trung gian rooms_services (n-n)
 CREATE TABLE Rooms_Services (
     Room_ID VARCHAR(50) NOT NULL,
     Service_ID VARCHAR(50) NOT NULL,
@@ -65,26 +63,28 @@ CREATE TABLE Rooms_Services (
 
 CREATE TABLE Bookings (
     Booking_ID VARCHAR(50) NOT NULL,
-    User_ID VARCHAR(50),
-    Room_ID VARCHAR(50),
-    Employee_ID VARCHAR(50),
-    Booking_Date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Check_In DATETIME,
-    Check_Out DATETIME,
-    Status NVARCHAR(50), -- Chờ xác nhận, Đã nhận phòng, Đã trả phòng, Đã hủy
+    User_ID VARCHAR(50) NOT NULL,
+    Room_ID VARCHAR(50) NOT NULL,
+    Employee_ID VARCHAR(50) NULL, -- Có thể NULL nếu khách tự đặt online
+    Booking_Date DATETIME DEFAULT GETDATE(),
+    Room_deposit DECIMAL(18, 2), -- 30% giá phòng
+    Check_In DATETIME NOT NULL,
+    Check_Out DATETIME NOT NULL,
+    Status NVARCHAR(50), -- Đã xác nhận, Đã trả phòng, Đã hủy
     PRIMARY KEY (Booking_ID),
     FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
     FOREIGN KEY (Room_ID) REFERENCES Rooms(Room_ID),
     FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID)
 );
 
+-- Quan hệ 1-1 với Booking
 CREATE TABLE Reviews (
     Review_ID VARCHAR(50) NOT NULL,
-    User_ID VARCHAR(50),
-    Booking_ID VARCHAR(50),
+    User_ID VARCHAR(50) NOT NULL,
+    Booking_ID VARCHAR(50) NOT NULL UNIQUE, 
     Rating INT CHECK (Rating BETWEEN 1 AND 5),
     Comment NVARCHAR(1000),
-    Created_At DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Created_At DATETIME DEFAULT GETDATE(),
     PRIMARY KEY (Review_ID),
     FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
     FOREIGN KEY (Booking_ID) REFERENCES Bookings(Booking_ID)
@@ -92,30 +92,22 @@ CREATE TABLE Reviews (
 
 CREATE TABLE Payment (
     Payment_ID VARCHAR(50) NOT NULL,
-    Booking_ID VARCHAR(50) not null,
-    Amount DECIMAL(18, 2) NOT NULL,
-    Payment_Date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Payment_Method NVARCHAR(100), -- Tiền mặt, Chuyển khoảng
-    Status NVARCHAR(50), 
+    Booking_ID VARCHAR(50) NOT NULL,
+    Amount DECIMAL(18, 2) NOT NULL, -- 70% còn lại sau cọc
+    Payment_Date DATETIME DEFAULT GETDATE(),
+    Payment_Method NVARCHAR(100),
+    Status NVARCHAR(50),
     PRIMARY KEY (Payment_ID),
     FOREIGN KEY (Booking_ID) REFERENCES Bookings(Booking_ID)
 );
 
-CREATE TABLE CancellationRefund (
-    CancellationRefund_ID VARCHAR(50) NOT NULL,
-    Booking_ID VARCHAR(50) UNIQUE,
-    Cancellation_Date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Refund_Amount DECIMAL(18, 2),
-    PRIMARY KEY (CancellationRefund_ID),
-    FOREIGN KEY (Booking_ID) REFERENCES Bookings(Booking_ID)
-);
-
+-- Quan hệ 1-1 với Booking 
 CREATE TABLE Invoices (
     Invoice_ID VARCHAR(50) NOT NULL,
-    User_ID VARCHAR(50),
-    Booking_ID VARCHAR(50) UNIQUE,
-    Total_Amount DECIMAL(18, 2) NOT NULL,
-    Issued_Date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    User_ID VARCHAR(50) NOT NULL,
+    Booking_ID VARCHAR(50) NOT NULL UNIQUE,
+    Total_Amount DECIMAL(18, 2) NOT NULL, -- Tổng (30% cọc + 70% còn lại)
+    Issued_Date DATETIME DEFAULT GETDATE(),
     PRIMARY KEY (Invoice_ID),
     FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
     FOREIGN KEY (Booking_ID) REFERENCES Bookings(Booking_ID)
@@ -123,9 +115,10 @@ CREATE TABLE Invoices (
 
 CREATE TABLE Notifications (
     Notification_ID VARCHAR(50) NOT NULL,
-    User_ID VARCHAR(50),
-    Message NVARCHAR(1000),
-    Date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    User_ID VARCHAR(50) NOT NULL,
+    Message NVARCHAR(1000) NOT NULL,
+    Sent_Date DATETIME DEFAULT GETDATE(),
+    Is_Read BIT DEFAULT 0,
     PRIMARY KEY (Notification_ID),
     FOREIGN KEY (User_ID) REFERENCES Users(User_ID)
 );
