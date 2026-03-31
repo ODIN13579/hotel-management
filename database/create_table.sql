@@ -93,7 +93,7 @@ CREATE TABLE Payment (
     Booking_ID VARCHAR(50),
     Amount DECIMAL(18, 2) NOT NULL,
     Payment_Date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Payment_Method NVARCHAR(100), -- Tiền mặt, Thẻ, Chuyển khoản
+    Payment_Method NVARCHAR(100), -- Tiền mặt, Thẻ, Chuyển khoảng
     PRIMARY KEY (Payment_ID),
     FOREIGN KEY (Booking_ID) REFERENCES Bookings(Booking_ID)
 );
