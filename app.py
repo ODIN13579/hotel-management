@@ -171,7 +171,6 @@ def print_table(result: QueryResult) -> None:
     print(build_line("-"))
     print(f"Tong so dong: {len(result.rows)}")
 
-
 MENU = """
 ================ HOTEL TASK MENU ================
 1. Task 10 - Phan cong nhan vien xu ly dat phong
@@ -186,7 +185,6 @@ MENU = """
 0. Thoat
 =================================================
 """
-
 
 def main() -> None:
     service = HotelTaskService(DB_CONFIG)
