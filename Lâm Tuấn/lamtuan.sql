@@ -89,7 +89,7 @@ INSERT INTO Users VALUES (5, 'NGUYEN VAN A', 'nguyenvanteo@gamil.com','090999999
 
 COMMIT
 
--- Deadlock
+-- Deadlock 
 BEGIN TRAN -- T1
 
 UPDATE Users SET Name = 'Lam Tuan'
