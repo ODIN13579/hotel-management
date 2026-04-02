@@ -1,0 +1,115 @@
+use [hotel_management]
+
+-- lost update
+BEGIN TRAN -- T1
+
+DECLARE @A VARCHAR(255)
+
+SELECT @A = U.Name FROM Users U 
+WHERE U.User_ID = 1
+
+SET @A = 'NGUYEN VAN B'
+
+UPDATE Users SET Name = @A
+WHERE User_ID = 1
+
+COMMIT
+
+BEGIN TRAN -- T2
+
+DECLARE @B VARCHAR(255)
+
+SELECT @B = U.Name FROM Users U 
+WHERE U.User_ID = 1
+
+SET @B = 'NGUYEN VAN C '
+
+UPDATE Users SET Name = @B
+WHERE User_ID = 1
+
+COMMIT
+
+--Dirty Read
+BEGIN TRAN -- T1
+
+UPDATE Users
+SET Name = 'NGUYEN VAN B'
+WHERE User_ID = 1
+
+WAITFOR DELAY '00:00:05'
+
+ROLLBACK TRAN
+
+BEGIN TRAN --T2
+
+SELECT U.Name FROM Users U WHERE U.User_ID = 1
+
+COMMIT
+
+-- Non-repeatable Read
+BEGIN TRAN -- T1
+
+DECLARE @D VARCHAR(255)
+SELECT @D = U.Name FROM Users U
+WHERE U.User_ID = 1
+
+SET @D = 'NGUYEN VAN D'
+
+UPDATE Users SET Name = @D
+WHERE User_ID = 1
+
+COMMIT
+
+BEGIN TRAN -- T2
+
+SELECT * FROM Users U 
+WHERE U.User_ID = 1
+
+WAITFOR DELAY '00:00:05' -- chờ T1 update
+
+SELECT * FROM Users U 
+WHERE U.User_ID = 1
+
+COMMIT
+
+-- Phantom
+BEGIN TRAN -- T1
+
+SELECT * FROM Users WHERE Name LIKE 'NGUYEN%'  -- Lần 1
+
+WAITFOR DELAY '00:00:05'
+
+SELECT * FROM Users WHERE Name LIKE 'NGUYEN%'  -- Lần 2
+
+COMMIT
+
+BEGIN TRAN
+
+INSERT INTO Users VALUES (5, 'NGUYEN VAN A', 'nguyenvanteo@gamil.com','0909999999', '123')
+
+COMMIT
+
+-- Deadlock
+BEGIN TRAN -- T1
+
+UPDATE Users SET Name = 'Lam Tuan'
+WHERE User_ID = 1
+
+WAITFOR DELAY '00:00:05'
+
+UPDATE Users SET Name = 'Huy Tuan'
+WHERE User_ID = 2
+
+COMMIT
+
+BEGIN TRAN -- T2
+
+UPDATE Users SET Name = 'Huy Tuan'
+WHERE User_ID = 2
+
+WAITFOR DELAY '00:00:05'
+
+UPDATE Users SET Name = 'Lam Tuan'
+WHERE User_ID = 1
+
+COMMIT
