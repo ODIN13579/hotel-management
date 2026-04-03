@@ -39,7 +39,7 @@ ROLLBACK TRAN
 
 BEGIN TRAN --T2
 
-SELECT N.Massage FROM Notifications N WHERE N.Notification_ID = 'NB1'
+SELECT N.Message FROM Notifications N WHERE N.Notification_ID = 'NB1'
 
 COMMIT
 
