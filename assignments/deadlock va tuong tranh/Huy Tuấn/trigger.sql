@@ -1,16 +1,18 @@
 -- chức năng 8
--- tạo trigger để tự động gửi thông báo khi đặt phòng
+-- tạo trigger để tự động gửi thông báo khi có đã xác nhận booking 
 CREATE TRIGGER TRG_NotifyBooking
 ON Bookings
-AFTER INSERT
+AFTER INSERT, UPDATE
 AS
 BEGIN
     INSERT INTO Notifications (Notification_ID, User_ID, Message)
     SELECT 
+    -- CONCAT để tạo ID thông báo duy nhất dựa trên Booking_ID
         CONCAT('N', I.Booking_ID),
         I.User_ID,
         N'Đặt phòng thành công!'
-    FROM INSERTED I;
+    FROM INSERTED I
+    WHERE I.Status = N'Confirmed';
 END
 
 
