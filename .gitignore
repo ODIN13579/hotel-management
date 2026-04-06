@@ -6,4 +6,4 @@ secrets.toml
 # tui đang làm phần cấu trúc cho source code chưa xong nên tạm thời chưa đưa lên git
 HOTEL_MANAGEMENT_APP/
 # folder chứ test code của tui ai thích thì lấy tên chung luôn khỏi tạo nhiều file test code khác nhau
-test code/
+test_code/
