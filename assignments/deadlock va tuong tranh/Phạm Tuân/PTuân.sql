@@ -1,6 +1,4 @@
 USE hotel_management;
-
-
 -- FUNCTION
 DROP FUNCTION IF EXISTS fn_checkout_total;
 

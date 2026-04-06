@@ -3,80 +3,71 @@ USE hotel_management;
 -- DEADLOCK
 
 -- T1
-BEGIN TRAN
+START TRANSACTION;
 
--- khóa phòng trước
 UPDATE Rooms
-SET status = 'Booked'
-WHERE room_id = 1
+SET Status = 'Occupied'
+WHERE Room_ID = 'R001';
 
-WAITFOR DELAY '00:00:05'
+SELECT SLEEP(5);
 
--- sau đó tạo booking
-INSERT INTO Bookings (booking_id, room_id, status)
-VALUES (2, 1, 'Pending')
+UPDATE Bookings
+SET Status = 'Confirmed'
+WHERE Booking_ID = 'B001';
 
-COMMIT
+COMMIT;
 
 
 -- T2
-BEGIN TRAN
+START TRANSACTION;
 
--- khóa booking trước
 UPDATE Bookings
-SET status = 'Completed'
-WHERE booking_id = 1
+SET Status = 'Completed'
+WHERE Booking_ID = 'B001';
 
-WAITFOR DELAY '00:00:05'
+SELECT SLEEP(5);
 
--- sau đó cập nhật phòng
 UPDATE Rooms
-SET status = 'Available'
-WHERE room_id = 1
+SET Status = 'Available'
+WHERE Room_ID = 'R001';
 
-COMMIT
+COMMIT;
 ----------------------------------------------------- 
 
 -- LOST UPDATE (Ghi nhận giao dịch)
 
 -- T1
-BEGIN TRAN
-DECLARE @status1 NVARCHAR(50)
+START TRANSACTION;
 
 -- đọc trạng thái
-SELECT @status1 = status
+SELECT Status 
 FROM Bookings
-WHERE booking_id = 1
+WHERE Booking_ID = 'B001';
 
-WAITFOR DELAY '00:00:05'
+-- giả lập delay
+SELECT SLEEP(5);
 
--- xử lý thanh toán
-SET @status1 = 'Completed - T1'
-
+-- xử lý
 UPDATE Bookings
-SET status = @status1
-WHERE booking_id = 1
+SET Status = 'Completed - T1'
+WHERE Booking_ID = 'B001';
 
-COMMIT
-
+COMMIT;
 
 -- T2
-BEGIN TRAN
-DECLARE @status2 NVARCHAR(50)
+START TRANSACTION;
 
 -- đọc trạng thái
-SELECT @status2 = status
+SELECT Status 
 FROM Bookings
-WHERE booking_id = 1
+WHERE Booking_ID = 'B001';
 
--- xử lý thanh toán
-SET @status2 = 'Completed - T2'
-
+-- xử lý
 UPDATE Bookings
-SET status = @status2
-WHERE booking_id = 1
+SET Status = 'Completed - T2'
+WHERE Booking_ID = 'B001';
 
-COMMIT
+COMMIT;
 
 --------------------------------------------------------------------------
 
@@ -105,40 +96,36 @@ START TRANSACTION;
 
 SELECT SLEEP(2);
 
-INSERT INTO Services(service_id, service_name)
-VALUES ('S4', 'Giặt ủi');
+INSERT INTO Services(Service_ID, Name)
+VALUES ('S004', 'Giặt ủi');
 
 COMMIT;
 ------------------------------------------------------------------------------
 
 -- NON-REPEATABLE(KHÔNG ĐỌC DỮ LIỆU)
 
--- T1 (Customer xem hóa đơn)
-SET autocommit = 0;
+-- T1
 SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
 
 START TRANSACTION;
 
-SELECT total_amount FROM Bills WHERE bill_id = 'B1'; -- 1.000.000
+SELECT Total_Amount FROM Invoices WHERE Invoice_ID = 'I001';
 
 SELECT SLEEP(5);
 
-SELECT total_amount FROM Bills WHERE bill_id = 'B1'; -- 1.200.000
+SELECT Total_Amount FROM Invoices WHERE Invoice_ID = 'I001';
 
 COMMIT;
 
 
--- T2 (Admin sửa giá)
-SET autocommit = 0;
-SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
-
+-- T2
 START TRANSACTION;
 
 SELECT SLEEP(2);
 
-UPDATE Bills
-SET total_amount = total_amount + 200000
-WHERE bill_id = 'B1';
+UPDATE Invoices
+SET Total_Amount = Total_Amount + 200000
+WHERE Invoice_ID = 'I001';
 
 COMMIT;
 
@@ -147,24 +134,20 @@ COMMIT;
 -- DIRTY WRITE (MÔ PHỎNG)
 
 -- T1: Lễ tân sửa hóa đơn
-BEGIN TRAN
+START TRANSACTION;
 
-UPDATE Bills
-SET total_amount = 1000000
-WHERE bill_id = 'B1'
+UPDATE Invoices
+SET Total_Amount = 1000000
+WHERE Invoice_ID = 'I001';
 
--- chưa commit
+-- chưa commit → đang giữ lock
 
 
 -- T2: Admin ghi đè khi T1 chưa commit (GIẢ LẬP)
-BEGIN TRAN
+START TRANSACTION;
 
-UPDATE Bills
-SET total_amount = 1200000
-WHERE bill_id = 'B1'
+UPDATE Invoices
+SET Total_Amount = 1200000
+WHERE Invoice_ID = 'I001';
 
-COMMIT
-
-
--- T1 hủy thay đổi
-ROLLBACK
+--  bị chờ (không chạy tiếp được)

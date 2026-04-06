@@ -2,7 +2,6 @@ USE hotel_management;
 
 ------------------------------------------------------------
 -- 1. DIRTY READ
--- Tinh huong:
 -- Session A dang checkout, da sua Payment nhung chua COMMIT.
 -- Session B doc bao cao doanh thu va thay du lieu chua commit.
 ------------------------------------------------------------
@@ -14,68 +13,53 @@ UPDATE Payment
 SET Status = 'successful',
     Payment_Date = GETDATE()
 WHERE Booking_ID = 'B001';
-
 WAITFOR DELAY '00:00:05';
--- thu rollback de thay bao cao Session B doc nham du lieu
 ROLLBACK;
 
 -- SESSION B
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 BEGIN TRAN;
-
 SELECT b.Booking_ID,
        ISNULL(b.Room_Deposit,0) + ISNULL(p.Amount,0) AS Revenue,
        p.Status
 FROM Bookings b
 LEFT JOIN Payment p ON p.Booking_ID = b.Booking_ID
 WHERE b.Booking_ID = 'B001';
-
 COMMIT;
 
 ------------------------------------------------------------
 -- 2. LOST UPDATE
--- Tinh huong:
 -- 2 nhan vien cung phan cong 1 booking cho 2 nguoi khac nhau.
 -- Lan ghi sau de lan ghi truoc.
 ------------------------------------------------------------
 
 -- SESSION A
 BEGIN TRAN;
-
 DECLARE @EmpA VARCHAR(50) = 'E001';
-
 SELECT Employee_ID
 FROM Bookings
 WHERE Booking_ID = 'B001';
-
 WAITFOR DELAY '00:00:05';
-
 UPDATE Bookings
 SET Employee_ID = @EmpA,
     Status = 'confirmed'
 WHERE Booking_ID = 'B001';
-
 COMMIT;
 
 -- SESSION B
 BEGIN TRAN;
-
 DECLARE @EmpB VARCHAR(50) = 'E002';
-
 SELECT Employee_ID
 FROM Bookings
 WHERE Booking_ID = 'B001';
-
 UPDATE Bookings
 SET Employee_ID = @EmpB,
     Status = 'confirmed'
 WHERE Booking_ID = 'B001';
-
 COMMIT;
 
 ------------------------------------------------------------
 -- 3. NON-REPEATABLE READ
--- Tinh huong:
 -- Session A doc Payment.Status 2 lan trong cung 1 transaction.
 -- Giua 2 lan doc, Session B checkout xong va doi pending -> successful.
 ------------------------------------------------------------
@@ -83,37 +67,28 @@ COMMIT;
 -- SESSION A
 SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 BEGIN TRAN;
-
 SELECT Status
 FROM Payment
 WHERE Booking_ID = 'B001';
-
 WAITFOR DELAY '00:00:05';
-
 SELECT Status
 FROM Payment
 WHERE Booking_ID = 'B001';
-
 COMMIT;
-
 -- SESSION B
 BEGIN TRAN;
-
 UPDATE Bookings
 SET Status = 'checked_out'
 WHERE Booking_ID = 'B001';
-
 UPDATE Payment
 SET Status = 'successful',
     Payment_Method = 'cash',
     Payment_Date = GETDATE()
 WHERE Booking_ID = 'B001';
-
 COMMIT;
 
 ------------------------------------------------------------
 -- 4. PHANTOM READ
--- Tinh huong:
 -- Session A dang dem booking confirmed trong tuan.
 -- Session B them 1 booking moi thoa dieu kien.
 -- Lan doc sau cua Session A xuat hien them "ban ghi ma".
@@ -122,26 +97,20 @@ COMMIT;
 -- SESSION A
 SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 BEGIN TRAN;
-
 SELECT COUNT(*) AS TotalConfirmed
 FROM Bookings
 WHERE Status = 'confirmed'
   AND DATEPART(WEEK, Booking_Date) = DATEPART(WEEK, GETDATE())
   AND YEAR(Booking_Date) = YEAR(GETDATE());
-
 WAITFOR DELAY '00:00:05';
-
 SELECT COUNT(*) AS TotalConfirmed
 FROM Bookings
 WHERE Status = 'confirmed'
   AND DATEPART(WEEK, Booking_Date) = DATEPART(WEEK, GETDATE())
   AND YEAR(Booking_Date) = YEAR(GETDATE());
-
 COMMIT;
-
 -- SESSION B
 BEGIN TRAN;
-
 INSERT INTO Bookings(
     Booking_ID, User_ID, Room_ID, Employee_ID,
     Booking_Date, Room_Deposit, Check_In, Check_Out, Status
@@ -151,12 +120,10 @@ VALUES (
     GETDATE(), 300000,
     GETDATE(), DATEADD(DAY, 2, GETDATE()), 'confirmed'
 );
-
 COMMIT;
 
 ------------------------------------------------------------
 -- 5. DEADLOCK
--- Tinh huong:
 -- Session A khoa Rooms truoc roi doi Bookings.
 -- Session B khoa Bookings truoc roi doi Rooms.
 -- 2 ben giu khoa cheo nhau va gay deadlock.
@@ -164,31 +131,23 @@ COMMIT;
 
 -- SESSION A
 BEGIN TRAN;
-
 UPDATE Rooms
 SET Status = 'booked'
 WHERE Room_ID = 'R001';
-
 WAITFOR DELAY '00:00:05';
-
 UPDATE Bookings
 SET Status = 'confirmed'
 WHERE Booking_ID = 'B001';
-
 COMMIT;
 
 -- SESSION B
 BEGIN TRAN;
-
 UPDATE Bookings
 SET Status = 'checked_out'
 WHERE Booking_ID = 'B001';
-
 WAITFOR DELAY '00:00:05';
-
 UPDATE Rooms
 SET Status = 'available'
 WHERE Room_ID = 'R001';
-
 COMMIT;
 
