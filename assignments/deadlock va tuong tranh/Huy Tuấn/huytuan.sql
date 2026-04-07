@@ -6,7 +6,7 @@ DECLARE @M1 NVARCHAR(255)
 -- đọc thông báo
 SELECT @M1 = N.Message from Notifications N
 where N.Notification_ID = 'NB1'
-
+-- cập nhật thông báo nhưng chưa commit
 SET @M1 = 'DAT PHONG KHONG THANH CONG'
 UPDATE Notifications SET Message = @M1
 WHERE Notification_ID = 'NB1'
@@ -15,10 +15,10 @@ COMMIT
 
 BEGIN TRAN --T2
 DECLARE @M2 NVARCHAR(255)
-
+-- đọc thông báo
 SELECT @M2 = N.Message from Notifications N
 where N.Notification_ID = 'NB1'
-
+-- cập nhật thông báo nhưng chưa commit
 SET @M2 = 'DAT PHONG KHONG THANH CONG - VUI LONG DAT LAI'
 UPDATE Notifications SET Message = @M2
 WHERE Notification_ID = 'NB2'
