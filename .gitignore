@@ -1,9 +1,2 @@
-# file và folder nào không muốn đưa lên git thì thêm vào đây, mỗi file hoặc folder một dòng
 .vscode/ 
-# file cấu hình kết nối database, chứa thông tin nhạy cảm nên không nên đưa lên git
-# cấu trúc của file này sau này nói rõ hơn khi tui làm xong phần cấu trúc cho source code, hiện tại tạm thời chưa đưa lên git
-secrets.toml
-# tui đang làm phần cấu trúc cho source code chưa xong nên tạm thời chưa đưa lên git
-HOTEL_MANAGEMENT_APP/
-# folder chứ test code của tui ai thích thì lấy tên chung luôn khỏi tạo nhiều file test code khác nhau
 test_code/
