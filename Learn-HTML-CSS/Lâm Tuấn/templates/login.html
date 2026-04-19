@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang chủ</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    
+    <form method="POST">
+        <!--
+            https://www.facebook.com/huytunn 
+        -->
+        <a class="logo" href="https://www.facebook.com/luong.tram.114594"> 
+            <img src="static/Logo-removebg.png" style="width: 100%; height: 100%; object-fit: contain;">
+        </a>
+        <h1 class="text-4xl font-black text-yellow-500 tracking-tighter">Đặt Phòng Khách Sạn</h1>
+        
+        <fieldset aria-hidden="true">
+            <legend class = "css-123">Tài khoản đăng nhập</legend>
+            <input name="username" placeholder="User">
+        </fieldset>       
+        
+        <fieldset aria-hidden="true">
+            <legend class = "css-123">
+                <span>Mật khẩu</span>
+            </legend>
+            <input name="password" type="password" placeholder="Pass">
+        </fieldset> 
+
+        <button>Login</button>
+    </form>
+</body>
+</html>

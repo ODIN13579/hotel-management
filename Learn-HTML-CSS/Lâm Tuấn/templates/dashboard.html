@@ -1,0 +1,226 @@
+<!-- dashboar -->
+
+<!doctype html>
+<html>
+  <head>
+    <title>Trang chủ</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='dboo.css') }}"
+    />
+  </head>
+  <body>
+    <div class="MuiBox-root css-120nera" bis_skin_checked="1">
+      <div class="MuiBox-root css-1sonigm" bis_skin_checked="1">
+        <div>
+          <button class="MuiBox-root css-1sonigm" onclick="menu.hidden ^= 1">
+            =
+          </button>
+          <aside id="menu" hidden>
+            <nav class="menu-links">
+              <a href="#" class="button-image"> Thông tin cá nhân</a>
+              <a href="/dashboard" class="button-image"> Cập nhật thông tin </a>
+              <a href="/" class="button-image"> Đăng xuất</a>
+            </nav>
+          </aside>
+
+          <a class="MuiBox-root css-70qvj9" href="/dashboard">
+            <img
+              src="/static/Logo-removebg.png"
+              alt="hotel_logo_dashboard.png"
+              style="
+                height: 40px;
+                transition: transform 0.2s;
+                transform: scale(1);
+              "
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <h1>Danh sách phòng!</h1>
+    <h2>Lựa phòng</h2>
+    <!-- khung cho chọn checkin checkout -->
+    <div class="box-image" bis_skin_checked="1">
+      <div class="image-fade_in_back" bis_skin_checked="1">
+        <div class="form">
+          <a
+            href="https://www.facebook.com/luong.tram.114594"
+            bis_skin_checked="1"
+          >
+            <!-- picture appear when into link   -->
+            <picture loading="lazy" decoding="async" class="">
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/PhongDoi.png"
+                alt="Luong Tram"
+              />
+            </picture>
+            <!-- picture appear when hover   -->
+            <picture
+              loading="lazy"
+              decoding="async"
+              class="show-on-hover absolute fill hide-for-small back-image"
+              aria-hidden="true"
+            >
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/NhaVS.png"
+                alt="Lam Tuan"
+              />
+            </picture>
+          </a>
+          <div class="content-room">
+            <div>
+              <h3>The Grade Hotel Dalat</h3>
+            </div>
+            <div>
+              <h3>mô tả</h3>
+            </div>
+          </div>
+
+          <br class="review css-review">
+            <div>
+              <h3>4/5 sao</h3>
+            </div>
+            <br>
+        <h3>56 đánh giá
+        </h3></br>
+            
+          </div>
+        </div>
+
+        <div class="form">
+          <a
+            href="https://www.facebook.com/lam.tuan.85622"
+            bis_skin_checked="1"
+          >
+            <!-- picture appear when into link   -->
+            <picture loading="lazy" decoding="async" class="">
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/PhongDoi.png"
+                alt="Lam Tuan"
+              />
+            </picture>
+            <!-- picture appear when hover   -->
+            <picture
+              loading="lazy"
+              decoding="async"
+              class="show-on-hover absolute fill hide-for-small back-image"
+              aria-hidden="true"
+            >
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/NhaVS.png"
+                alt="Lam Tuan"
+              />
+            </picture>
+          </a>
+          <h3>Room 2</h3>
+        </div>
+
+        <div class="form">
+          <a
+            href="https://www.facebook.com/lam.tuan.85622"
+            bis_skin_checked="1"
+          >
+            <!-- picture appear when into link   -->
+            <picture loading="lazy" decoding="async" class="">
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/PhongDoi.png"
+                alt="Luong Tram"
+              />
+            </picture>
+            <!-- picture appear when hover   -->
+            <picture
+              loading="lazy"
+              decoding="async"
+              class="show-on-hover absolute fill hide-for-small back-image"
+              aria-hidden="true"
+            >
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/NhaVS.png"
+                alt="Lam Tuan"
+              />
+            </picture>
+          </a>
+          <h3>Room 3</h3>
+        </div>
+
+        <div class="form">
+          <a
+            href="https://www.facebook.com/lam.tuan.85622"
+            bis_skin_checked="1"
+          >
+            <!-- picture appear when into link   -->
+            <picture loading="lazy" decoding="async" class="">
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/PhongDoi.png"
+                alt="Luong Tram"
+              />
+            </picture>
+            <!-- picture appear when hover   -->
+            <picture
+              loading="lazy"
+              decoding="async"
+              class="show-on-hover absolute fill hide-for-small back-image"
+              aria-hidden="true"
+            >
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/NhaVS.png"
+                alt="Lam Tuan"
+              />
+            </picture>
+          </a>
+          <h3>Room 4</h3>
+        </div>
+
+        <div class="form">
+          <a
+            href="https://www.facebook.com/lam.tuan.85622"
+            bis_skin_checked="1"
+          >
+            <!-- picture appear when into link   -->
+            <picture loading="lazy" decoding="async" class="">
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/PhongDoi.png"
+                alt="Luong Tram"
+              />
+            </picture>
+            <!-- picture appear when hover   -->
+            <picture
+              loading="lazy"
+              decoding="async"
+              class="show-on-hover absolute fill hide-for-small back-image"
+              aria-hidden="true"
+            >
+              <img
+                loading="lazy"
+                decoding="async"
+                src="/static/NhaVS.png"
+                alt="Lam Tuan"
+              />
+            </picture>
+          </a>
+          <h3>Room 5</h3>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
