@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from db import get_connection
+from UI.db import get_connection
 import uuid
 
 app = Flask(__name__)
