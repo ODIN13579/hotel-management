@@ -1,0 +1,290 @@
+/* ===== BODY ===== */
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to right, #eef2f7, #ffffff);
+  margin: 0;
+  color: #333;
+}
+
+/* ===== TITLE ===== */
+h1 {
+  text-align: center;
+  color: #003580;
+  margin-top: 20px;
+}
+
+h2 {
+  text-align: center;
+  color: #666;
+}
+
+/* ===== LIST ===== */
+.image-fade_in_back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 30px;
+}
+
+/* ===== CARD ===== */
+.form {
+  display: flex;
+  gap: 20px;
+  width: 850px;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.form:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== IMAGE ===== */
+.form img {
+  width: 320px;
+  height: 230px;
+  object-fit: cover;
+}
+
+/* ===== HOVER IMAGE ===== */
+.image-fade_in_back a {
+  position: relative;
+}
+
+.back-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: 0.4s;
+}
+
+.image-fade_in_back a:hover .back-image {
+  opacity: 1;
+}
+
+/* ===== CONTENT ===== */
+.content-room {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* tên khách sạn */
+.content-room h3 {
+  margin: 0;
+  color: #003580;
+}
+
+/* rating */
+.review {
+  background: #003580;
+  color: white;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* ===== PRICE + BUTTON ===== */
+.price-box {
+  text-align: right;
+}
+
+.price {
+  font-size: 22px;
+  font-weight: bold;
+  color: #e63946;
+}
+
+.book-btn {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background: #0071c2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.book-btn:hover {
+  background: #005999;
+}
+
+/* ===== BADGE ===== */
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ffb703;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 40px;
+  background: #003580;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 25px;
+  flex-wrap: wrap;
+}
+
+.footer a {
+  color: #ddd;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: white;
+}
+
+.copyright {
+  width: 100%;
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: #003580;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.search-bar {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-bar input,
+.search-bar select {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+.search-bar button {
+  background: #ffb703;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ===== FILTER ===== */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  justify-content: center;
+}
+
+.filter-bar button {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background: white;
+  cursor: pointer;
+}
+
+/* ===== ROOM LIST ===== */
+.room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* ===== CARD ===== */
+.room-card {
+  display: flex;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.room-card:hover {
+  transform: translateY(-5px);
+}
+
+/* ===== IMAGE ===== */
+.room-card img {
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* ===== INFO ===== */
+.room-info {
+  padding: 15px;
+  flex: 1;
+}
+
+.room-info h3 {
+  margin: 0;
+  color: #003580;
+}
+
+/* ===== RATING ===== */
+.rating {
+  background: #003580;
+  color: white;
+  padding: 5px 10px;
+  display: inline-block;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* ===== BOTTOM ===== */
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.price {
+  color: #e63946;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.bottom button {
+  background: #0071c2;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .room-card {
+    flex-direction: column;
+  }
+
+  .room-card img {
+    width: 100%;
+  }
+}
