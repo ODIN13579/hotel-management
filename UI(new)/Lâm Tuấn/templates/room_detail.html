@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Chi tiết phòng</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='room_detail.css') }}"
+    />
+  </head>
+
+  <body>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+      <h1>The Grade Hotel Dalat</h1>
+      <p class="location">📍 Đà Lạt, Việt Nam</p>
+      <div class="rating">⭐ 4.5 (Excellent)</div>
+    </div>
+
+    <!-- ===== GALLERY ===== -->
+    <div class="gallery">
+      <img class="main-img" src="/static/PhongDoi.png" />
+
+      <div class="thumbs">
+        <img src="/static/PhongDoi.png" />
+        <img src="/static/NhaVS.png" />
+        <img src="/static/PhongDoi.png" />
+      </div>
+    </div>
+
+    <!-- ===== CONTENT ===== -->
+    <div class="container">
+      <!-- LEFT -->
+      <div class="left">
+        <h2>Mô tả phòng</h2>
+        <p>
+          Phòng rộng rãi, thiết kế hiện đại với giường đôi lớn, view thành phố.
+          Trang bị đầy đủ tiện nghi như TV, máy lạnh, wifi miễn phí. Phù hợp cho
+          cặp đôi hoặc gia đình nhỏ.
+        </p>
+
+        <h2>Tiện nghi</h2>
+        <div class="amenities">
+          <div>🛏️ Giường đôi</div>
+          <div>📶 Wifi miễn phí</div>
+          <div>❄️ Máy lạnh</div>
+          <div>📺 TV</div>
+          <div>🚿 Phòng tắm riêng</div>
+          <div>☕ Máy pha cà phê</div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="right">
+        <div class="booking-box">
+          <h2>1.200.000đ / đêm</h2>
+
+          <input type="date" />
+          <input type="date" />
+
+          <button class="book-btn">Đặt ngay</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
