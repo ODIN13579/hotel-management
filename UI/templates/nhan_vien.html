@@ -1,0 +1,120 @@
+{% extends "management_layout.html" %} {% block title %}Quản lý nhân viên{%
+endblock %} {% block content %}
+<header class="room-header">
+  <div>
+    <h1>Quản lý nhân viên</h1>
+    <p>Quản lý thông tin và phân công nhân viên</p>
+  </div>
+  <button class="btn-add-room">
+    <i class="fa-solid fa-plus"></i> Thêm nhân viên
+  </button>
+</header>
+
+<div class="stats-grid">
+  <div class="card">
+    <span class="value">5</span>
+    <span class="label">Tổng nhân viên</span>
+  </div>
+  <div class="card">
+    <span class="value" style="color: #10b981">4</span>
+    <span class="label">Đang làm việc</span>
+  </div>
+  <div class="card">
+    <span class="value" style="color: #f59e0b">3</span>
+    <span class="label">Lễ tân</span>
+  </div>
+  <div class="card">
+    <span class="value" style="color: #7c3aed">2</span>
+    <span class="label">Quản lý</span>
+  </div>
+</div>
+
+<div class="search-container">
+  <input
+    type="text"
+    class="search-bar"
+    placeholder="🔍 Tìm tên, email, SĐT..."
+  />
+  <div class="filter-tabs">
+    <button class="tab-btn active">Tất cả</button>
+    <button class="tab-btn">Lễ tân</button>
+    <button class="tab-btn">Quản lý</button>
+  </div>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Nhân viên</th>
+        <th>Liên hệ</th>
+        <th>Chức vụ</th>
+        <th>Trạng thái</th>
+        <th>Đặt phòng</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div style="display: flex; align-items: center; gap: 10px">
+            <div class="staff-avatar">N</div>
+            <div>
+              <strong>Nguyễn Thị Mai</strong><br />
+              <small style="color: #94a3b8">E001</small>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span style="font-size: 0.85rem">mai.nguyen@hotel.com</span><br />
+          <small style="color: #94a3b8">0801234567</small>
+        </td>
+        <td><span class="role-badge role-receptionist">Lễ tân</span></td>
+        <td><span class="badge status-working">Đang làm việc</span></td>
+        <td style="text-align: center">2</td>
+        <td><i class="fa-solid fa-pen btn-edit-staff"></i></td>
+      </tr>
+
+      <tr>
+        <td>
+          <div style="display: flex; align-items: center; gap: 10px">
+            <div class="staff-avatar" style="background: #7c3aed">L</div>
+            <div>
+              <strong>Lê Thị Thu</strong><br />
+              <small style="color: #94a3b8">E003</small>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span style="font-size: 0.85rem">thu.le@hotel.com</span><br />
+          <small style="color: #94a3b8">0823456789</small>
+        </td>
+        <td><span class="role-badge role-manager">Quản lý</span></td>
+        <td><span class="badge status-working">Đang làm việc</span></td>
+        <td style="text-align: center">0</td>
+        <td><i class="fa-solid fa-pen btn-edit-staff"></i></td>
+      </tr>
+
+      <tr>
+        <td>
+          <div style="display: flex; align-items: center; gap: 10px">
+            <div class="staff-avatar" style="background: #475569">V</div>
+            <div>
+              <strong>Võ Thị Hoa</strong><br />
+              <small style="color: #94a3b8">E005</small>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span style="font-size: 0.85rem">hoa.vo@hotel.com</span><br />
+          <small style="color: #94a3b8">0845678901</small>
+        </td>
+        <td><span class="role-badge role-receptionist">Lễ tân</span></td>
+        <td><span class="badge status-off">Nghỉ phép</span></td>
+        <td style="text-align: center">0</td>
+        <td><i class="fa-solid fa-pen btn-edit-staff"></i></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

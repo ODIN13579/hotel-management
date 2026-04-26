@@ -1,0 +1,68 @@
+{% extends "management_layout.html" %} {% block title %}Quản lý dịch vụ{%
+endblock %} {% block content %}
+<div class="service-header">
+  <div>
+    <h1>Quản lý dịch vụ</h1>
+    <p>Quản lý các dịch vụ tiện ích của khách sạn</p>
+  </div>
+  <a href="#" class="btn-add-room"
+    ><i class="fa-solid fa-plus"></i> Thêm dịch vụ</a
+  >
+</div>
+
+<div class="service-stats">
+  <div class="service-stat-box">
+    <span class="value" style="color: var(--sidebar-bg)">10</span>
+    <span class="label">Tổng dịch vụ</span>
+  </div>
+  <div class="service-stat-box">
+    <span class="value" style="color: #10b981">2</span>
+    <span class="label">Dịch vụ miễn phí</span>
+  </div>
+  <div class="service-stat-box">
+    <span class="value" style="color: #f59e0b">8</span>
+    <span class="label">Dịch vụ có phí</span>
+  </div>
+</div>
+
+<div class="service-grid">
+  <div class="service-card">
+    <i class="fa-solid fa-pen service-edit-icon"></i>
+    <div class="service-card-header">
+      <div class="service-icon"><i class="fa-solid fa-wifi"></i></div>
+      <h3>WiFi Tốc Độ Cao</h3>
+    </div>
+    <p>Kết nối internet tốc độ cao không giới hạn</p>
+    <div class="service-footer">
+      <span class="service-code">SV001</span>
+      <span class="price-tag tag-free">Miễn phí</span>
+    </div>
+  </div>
+
+  <div class="service-card">
+    <i class="fa-solid fa-pen service-edit-icon"></i>
+    <div class="service-card-header">
+      <div class="service-icon"><i class="fa-solid fa-utensils"></i></div>
+      <h3>Bữa Sáng</h3>
+    </div>
+    <p>Buffet sáng với đa dạng món ăn</p>
+    <div class="service-footer">
+      <span class="service-code">SV002</span>
+      <span class="price-tag tag-paid">150.000 đ</span>
+    </div>
+  </div>
+
+  <div class="service-card">
+    <i class="fa-solid fa-pen service-edit-icon"></i>
+    <div class="service-card-header">
+      <div class="service-icon"><i class="fa-solid fa-dumbbell"></i></div>
+      <h3>Phòng Gym</h3>
+    </div>
+    <p>Sử dụng phòng tập gym hiện đại 24/7</p>
+    <div class="service-footer">
+      <span class="service-code">SV003</span>
+      <span class="price-tag tag-paid">100.000 đ</span>
+    </div>
+  </div>
+</div>
+{% endblock %}

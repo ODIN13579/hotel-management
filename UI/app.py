@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from UI.db import get_connection
+from db import get_connection
 import uuid
 
 app = Flask(__name__)
@@ -72,6 +72,35 @@ def register():
         return redirect("/")  
 
     return render_template("register.html")
+
+@app.route("/management")
+def tong_quan():
+    
+    return render_template("tong_quan.html")
+
+@app.route("/bookings")
+def bookings():
+    return render_template("dat_phong.html")
+
+@app.route("/rooms")
+def quan_ly_phong():
+    return render_template("phong.html")
+
+@app.route("/services")
+def quan_ly_dich_vu():
+    return render_template("dich_vu.html")
+
+@app.route("/payments")
+def quan_ly_thanh_toan():
+    return render_template("thanh_toan.html")
+
+@app.route("/invoices")
+def quan_ly_hoa_don():
+    return render_template("hoa_don.html")
+
+@app.route("/staff")
+def quan_ly_nhan_vien():
+    return render_template("nhan_vien.html")
 
 # @app.route("/forgotpass", methods=["GET", "POST"])
 # def forgot():

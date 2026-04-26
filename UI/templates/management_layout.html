@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotel Booking - {% block title %}{% endblock %}</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='management.css') }}"
+    />
+
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <h2>Hotel Booking</h2>
+        <p>Hệ thống Quản lý</p>
+      </div>
+
+      <div class="user-info">
+        <div class="avatar">L</div>
+        <div class="user-details">
+          <span class="name">Lê Thị Thu</span>
+          <span class="role">Quản lý</span>
+        </div>
+      </div>
+
+      <nav>
+        <a href="/management" class="menu-item">
+          <i class="fa-solid fa-table-cells-large"></i> Tổng quan
+        </a>
+        <a href="/bookings" class="menu-item">
+          <i class="fa-regular fa-calendar-check"></i> Đặt phòng
+        </a>
+        <a href="/rooms" class="menu-item">
+          <i class="fa-solid fa-bed"></i> Phòng
+        </a>
+        <a href="/services" class="menu-item">
+          <i class="fa-solid fa-wrench"></i> Dịch vụ
+        </a>
+        <a href="/payments" class="menu-item">
+          <i class="fa-regular fa-credit-card"></i> Thanh toán
+        </a>
+        <a href="invoices" class="menu-item">
+          <i class="fa-regular fa-file-lines"></i> Hóa đơn
+        </a>
+        <a href="/staff" class="menu-item">
+          <i class="fa-solid fa-users-gears"></i> Nhân viên
+        </a>
+      </nav>
+
+      <a href="/" class="menu-item logout">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
+      </a>
+    </aside>
+
+    <main class="main">{% block content %} {% endblock %}</main>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

@@ -1,0 +1,103 @@
+{% extends "management_layout.html" %} {% block title %}Quản lý thanh toán{%
+endblock %} {% block content %}
+<header>
+  <h1>Quản lý thanh toán</h1>
+  <p>Theo dõi và quản lý tất cả giao dịch thanh toán</p>
+</header>
+
+<div class="pay-stat-grid">
+  <div class="pay-card">
+    <i class="fa-regular fa-circle-check text-green"></i>
+    <span class="title">Đã thanh toán</span>
+    <span class="amount text-green">2.170.000 đ</span>
+    <span class="sub">3 giao dịch</span>
+  </div>
+  <div class="pay-card">
+    <i class="fa-regular fa-clock text-yellow"></i>
+    <span class="title">Chờ thanh toán</span>
+    <span class="amount text-yellow">3.500.000 đ</span>
+    <span class="sub">1 giao dịch</span>
+  </div>
+  <div class="pay-card">
+    <i class="fa-solid fa-rotate-left text-red"></i>
+    <span class="title">Đã hoàn tiền</span>
+    <span class="amount text-red">450.000 đ</span>
+    <span class="sub">1 giao dịch</span>
+  </div>
+</div>
+
+<div class="search-container">
+  <input
+    type="text"
+    class="search-bar"
+    placeholder="🔍 Tìm mã thanh toán, khách hàng..."
+  />
+  <div class="filter-tabs">
+    <button class="tab-btn active">Tất cả</button>
+    <button class="tab-btn">Đã thanh toán</button>
+    <button class="tab-btn">Chờ thanh toán</button>
+    <button class="tab-btn">Hoàn tiền</button>
+  </div>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Mã TT</th>
+        <th>Mã ĐP</th>
+        <th>Khách hàng</th>
+        <th>Phòng</th>
+        <th>Số tiền</th>
+        <th>PTTT</th>
+        <th>Ngày TT</th>
+        <th>Trạng thái</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>P003</td>
+        <td>B005</td>
+        <td>Hoàng Thị Lan</td>
+        <td>Phòng Presidential Suite (401)</td>
+        <td><strong>3.500.000 đ</strong></td>
+        <td><span class="method-badge method-credit">Thẻ tín dụng</span></td>
+        <td>16:00 20/03/2026</td>
+        <td>
+          <span class="badge badge-pending"
+            ><i class="fa-regular fa-clock"></i> Chờ thanh toán</span
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>P001</td>
+        <td>B001</td>
+        <td>Nguyễn Văn An</td>
+        <td>Phòng Deluxe (201)</td>
+        <td><strong>1.050.000 đ</strong></td>
+        <td><span class="method-badge method-transfer">Chuyển khoản</span></td>
+        <td>15:00 10/03/2026</td>
+        <td>
+          <span class="badge badge-checkin"
+            ><i class="fa-regular fa-circle-check"></i> Đã thanh toán</span
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>P005</td>
+        <td>B007</td>
+        <td>Trần Thị Bích</td>
+        <td>Phòng Deluxe (201)</td>
+        <td><strong>450.000 đ</strong></td>
+        <td><span class="method-badge method-transfer">Chuyển khoản</span></td>
+        <td>09:00 05/02/2026</td>
+        <td>
+          <span class="badge badge-refund"
+            ><i class="fa-solid fa-rotate-left"></i> Hoàn tiền</span
+          >
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
