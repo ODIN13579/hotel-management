@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Xác nhận đặt phòng</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='confirm.css') }}">
+</head>
+
+<body>
+    <!-- ===== GALLERY ===== -->
+    <div class="gallery">
+        <img class="main-img" src="/static/PhongDoi.png" />
+
+        <div class="thumbs">
+            <img src="/static/PhongDoi.png" />
+            <img src="/static/NhaVS.png" />
+            <img src="/static/PhongDoi.png" />
+        </div>
+    </div>
+
+    <!-- ===== Form confirm ===== -->
+    <div class="container">
+        <div class="left">
+            <div class="detail-booking">
+                <h1>CHI TIẾT ĐẶT PHÒNG</h1>
+                <div class="section">
+                    <h2>Thời gian ở</h2>
+                    <p><b>Check-in:</b> {{ checkin }}</p>
+                    <p><b>Check-out:</b> {{ checkout }}</p>
+                    <p><b>Số đêm:</b> {{ nights }}</p>
+                </div>
+            </div>
+
+            <div class="detail-invoice">
+                <h1>TỔNG TIỀN</h1>
+                <div class="total">
+                    <h2>Tổng tiền: {{ "{:,.0f}".format(total) if total else "0" }}đ</h2>
+                </div>
+            </div>
+        </div>
+        <div class="confirm-box">
+
+            <h1>XÁC NHẬN ĐẶT PHÒNG</h1>
+
+            <!-- ===== ROOM ===== -->
+            <div class="section">
+                <h2>Thông tin phòng</h2>
+                <p><b>Phòng:</b> {{ room[1] }}</p>
+                <p><b>Loại:</b> {{ room[2] }}</p>
+                <p><b>Giá / đêm:</b> {{ "{:,.0f}".format(room[4]) }}đ</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('confirm') }}">
+
+                <!-- CUSTOMER -->
+                <div class="section">
+                    <h2>Thông tin của bạn</h2>
+                    <div class="input-box">
+                        <input type="text" name="username" required>
+                        <label class="lb">Tên tài khoản: </label>
+                    </div>
+
+                    <div class="input-box">
+                        <input type="text" name="email" required>
+                        <label class="lb">Email: </label>
+                    </div>
+
+                    <div class="input-box">
+                        <input type="text" name="numberphone" required>
+                        <label class="lb">Số điện thoại: </label>
+                    </div>
+                </div>
+
+                <!-- hidden -->
+                <input type="hidden" name="room_id" value="{{ room[0] }}">
+                <input type="hidden" name="checkin" value="{{ checkin }}">
+                <input type="hidden" name="checkout" value="{{ checkout }}">
+
+                <button type="submit" class="confirm-btn">Xác nhận đặt phòng</button>
+
+            </form>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

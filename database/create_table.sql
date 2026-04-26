@@ -95,7 +95,7 @@ CREATE TABLE Payment (
     Booking_ID VARCHAR(50) NOT NULL,
     Amount DECIMAL(18, 2) NOT NULL, -- 70% còn lại sau cọc
     Payment_Date DATETIME DEFAULT GETDATE(),
-    Payment_Method NVARCHAR(100),
+    -- Payment_Method NVARCHAR(100),
     Status NVARCHAR(50),
     PRIMARY KEY (Payment_ID),
     FOREIGN KEY (Booking_ID) REFERENCES Bookings(Booking_ID)

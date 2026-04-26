@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Chi tiết phòng</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='room_detail.css') }}">
+
+</head>
+
+<body>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <h1>Phòng {{ room[1] }}</h1>
+        <p class="location">📍 Đà Lạt, Việt Nam</p>
+
+        <div class="rating">⭐ {{ review if review else "Chưa có đánh giá" }}</div>
+
+    </div>
+
+    <!-- ===== GALLERY ===== -->
+    <div class="gallery">
+        <img class="main-img" src="/static/PhongDoi.png" />
+
+        <div class="thumbs">
+            <img src="/static/PhongDoi.png" />
+            <img src="/static/NhaVS.png" />
+            <img src="/static/PhongDoi.png" />
+        </div>
+    </div>
+
+    <!-- ===== CONTENT ===== -->
+    <div class="container">
+        <!-- LEFT -->
+        <div class="left">
+            <h2>Mô tả phòng</h2>
+            <p>
+                Phòng rộng rãi, thiết kế hiện đại với giường đôi lớn, view thành phố. Trang bị đầy đủ tiện nghi như TV, máy lạnh, wifi miễn phí. Phù hợp cho cặp đôi hoặc gia đình nhỏ.
+            </p>
+
+            <h2>Tiện nghi</h2>
+            <div class="amenities">
+
+                <div class="Standard">🛏️ Giường đôi</div>
+                <div class="Standard">📶 Wifi miễn phí</div>
+                <div class="Standard">❄️ Máy lạnh</div>
+                <div class="Standard">📺 TV</div>
+                <div class="Standard">🚿 Phòng tắm riêng</div>
+                <div class="Standard">☕ Máy pha cà phê</div>
+
+                {% if show_Deluxe %}
+                <div class="Deluxe">🍽️ Mini bar</div>
+                <div class="Deluxe">🧴 Đồ vệ sinh cá nhân</div>
+                <div class="Deluxe">🪞 Gương trang điểm</div>
+                <div class="Deluxe">🧳 Két sắt</div>
+                <div class="Deluxe">📞 Điện thoại nội bộ</div>
+                {% endif %} {% if show_VIP %}
+                <div class="VIP">🛁 Bồn tắm / Jacuzzi</div>
+                <div class="VIP">🛋️ Phòng khách riêng</div>
+                <div class="VIP">🍷 Rượu / minibar cao cấp</div>
+                <div class="VIP">🧘 Spa trong phòng</div>
+                <div class="VIP">🧑‍🍳 Room service 24/7</div>
+                {% endif %}
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="right">
+                <form method="POST" action="{{ url_for('confirm') }}">
+
+                    <div class="booking-box">
+                        <h2>{{ "{:,.0f}".format(room[4]) if room else "0" }}đ / đêm</h2>
+
+                        <input type="date" name="checkin" />
+                        <input type="date" name="checkout" />
+                        <input type="hidden" name="room_id" value="{{ room[0] }}">
+
+                        <button type="submit" class="book-btn">Đặt ngay</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+</body>
+
+</html>
