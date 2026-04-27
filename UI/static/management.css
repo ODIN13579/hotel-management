@@ -115,7 +115,7 @@ header h1 {
 }
 
 .logout {
-  margin-top: auto;
+  margin-top: auto; /* Đẩy nút đăng xuất xuống đáy menu */
   color: #f87171;
   border-top: 1px solid #334155;
   padding-top: 15px;
@@ -136,7 +136,7 @@ header h1 {
   width: 100%;
   padding: 12px 20px;
   border: 1px solid var(--border-color);
-  border-radius: 25px;
+  border-radius: 25px; /* Bo tròn kiểu viên thuốc */
   font-size: 0.9rem;
   outline: none;
 }
@@ -184,7 +184,7 @@ header h1 {
 
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* Bỏ khoảng cách giữa các viền ô */
   margin-top: 15px;
 }
 
@@ -278,10 +278,18 @@ td {
 /* ==========================================
    6. TRANG TỔNG QUAN (DASHBOARD)
    ========================================== */
-.stats-grid,
+.stats-grid {
+  display: grid;
+  /* Đã cập nhật: Tự động chia cột đều nhau cho cả trường hợp 3 thẻ hoặc 4 thẻ */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Chia 4 cột bằng nhau */
+  /* Giữ cố định 4 cột cho thanh trạng thái phòng */
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   margin-bottom: 25px;
 }
@@ -293,7 +301,7 @@ td {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Lưới 2 cột cho biểu đồ */
+/* Các Class Biểu đồ & Thông báo (Giữ lại làm thư viện dùng chung nếu sau này cần) */
 .charts-container {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -2,56 +2,36 @@
 {% block content %}
 <header>
   <h1>Tổng quan</h1>
-  <p>Xin chào, Lê Thị Thu! Hôm nay là Chủ Nhật, 26/04/2026</p>
+  <p>Xin chào, Lê Thị Thu! Hôm nay là Thứ Hai, 27/04/2026</p>
 </header>
-
-<div class="alert">
-  <i class="fa-solid fa-circle-exclamation"></i>
-  <div>
-    <strong>Có 2 đặt phòng đang chờ xác nhận</strong>
-    <p>Vui lòng xem và xác nhận để khách hàng không phải chờ lâu.</p>
-  </div>
-</div>
 
 <div class="stats-grid">
   <div class="card">
     <i class="fa-solid fa-bed"></i>
-    <span class="value">6</span>
+    <span class="value">{{ stats.TotalRooms }}</span>
     <span class="label">Tổng phòng</span>
   </div>
+
   <div class="card">
     <i class="fa-regular fa-calendar-days"></i>
-    <span class="value">4</span>
+    <span class="value">{{ stats.TodayBookings }}</span>
     <span class="label">Đặt phòng hôm nay</span>
   </div>
+
   <div class="card">
     <i class="fa-solid fa-money-bill-wave"></i>
-    <span class="value">2.170.000 đ</span>
+    <span class="value"
+      >{{ "{:,.0f}".format(stats.MonthlyRevenue).replace(',', '.') }} đ</span
+    >
     <span class="label">Doanh thu tháng</span>
-  </div>
-  <div class="card">
-    <i class="fa-solid fa-user-group"></i>
-    <span class="value">5</span>
-    <span class="label">Khách hàng mới</span>
   </div>
 </div>
 
 <div class="status-grid">
-  <div class="status-box bg-green">3 <span>Trống</span></div>
-  <div class="status-box bg-yellow">1 <span>Đã đặt</span></div>
-  <div class="status-box bg-blue">1 <span>Đã nhận</span></div>
-  <div class="status-box bg-red">1 <span>Bảo trì</span></div>
-</div>
-
-<div class="charts-container">
-  <div class="chart-box">
-    <h3>Doanh thu 6 tháng (VNĐ)</h3>
-    <div class="chart-placeholder">Biểu đồ doanh thu</div>
-  </div>
-  <div class="chart-box">
-    <h3>Lượt đặt phòng 6 tháng</h3>
-    <div class="chart-placeholder">Biểu đồ lượt đặt</div>
-  </div>
+  <div class="status-box bg-green">{{ stats.Trong }} <span>Trống</span></div>
+  <div class="status-box bg-yellow">{{ stats.DaDat }} <span>Đã đặt</span></div>
+  <div class="status-box bg-blue">{{ stats.DaNhan }} <span>Đã nhận</span></div>
+  <div class="status-box bg-red">{{ stats.BaoTri }} <span>Bảo trì</span></div>
 </div>
 
 <div class="table-container">

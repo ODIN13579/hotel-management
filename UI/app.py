@@ -5,6 +5,31 @@ import uuid
 
 app = Flask(__name__)
 
+def get_dashboard_summary():
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("EXEC sp_GetDashboardSummary")
+        row = cursor.fetchone()
+        
+        if row:
+            return {
+        'TotalRooms': row.TotalRooms,
+        'TodayBookings': row.TodayBookings,
+        'MonthlyRevenue': row.MonthlyRevenue,
+        'Trong': row.Trong,   
+        'DaDat': row.DaDat,   
+        'DaNhan': row.DaNhan, 
+        'BaoTri': row.BaoTri  
+    }
+        return None
+    except Exception as e:
+        print(f"Lỗi truy vấn: {e}")
+        return None
+    finally:
+        conn.close()
+
+
 # ================= LOGIN =================
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -147,8 +172,18 @@ def confirm():
 # ================ MANAGEMENT =================
 @app.route("/management")
 def tong_quan():
-    
-    return render_template("tong_quan.html")
+    data = get_dashboard_summary()
+    if not data:
+        data = {
+            'TotalRooms': 0,
+            'TodayBookings': 0,
+            'MonthlyRevenue': 0.00,
+            'Trong': 0,
+            'DaDat': 0,
+            'DaNhan': 0,
+            'BaoTri': 0
+        }
+    return render_template("tong_quan.html", stats=data)
 
 @app.route("/bookings")
 def bookings():
