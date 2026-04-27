@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from db import get_connection
-from datetime import datetimes
+from datetime import datetime
 import uuid
 
 app = Flask(__name__)
@@ -144,6 +144,7 @@ def confirm():
         total=total
     )
 
+# ================ MANAGEMENT =================
 @app.route("/management")
 def tong_quan():
     
