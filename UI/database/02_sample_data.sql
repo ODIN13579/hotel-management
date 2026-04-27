@@ -24,7 +24,7 @@ INSERT INTO Rooms (Room_ID, Room_Number, Room_type, Capacity, Price_Per_Night, S
 ('R01', '101', N'Standard', 2, 500000.00, N'Có sẵn'),
 ('R02', '102', N'Standard', 2, 500000.00, N'Có sẵn'),
 ('R03', '103', N'Standard', 2, 500000.00, N'Bảo trì'),
-('R04', '201', N'Superior', 2, 800000.00, N'Đã nhận phòng'),
+('R04', '201', N'Superior', 2, 800000.00, N'Đã nhận'),
 ('R05', '202', N'Superior', 3, 900000.00, N'Có sẵn'),
 ('R06', '203', N'Superior', 3, 900000.00, N'Có sẵn'),
 ('R07', '301', N'Deluxe', 2, 1200000.00, N'Đã đặt'),
