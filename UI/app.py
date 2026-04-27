@@ -29,6 +29,27 @@ def get_dashboard_summary():
     finally:
         conn.close()
 
+def get_recent_bookings():
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        # Lấy dữ liệu từ View đã tạo trong SQL Server
+        cursor.execute("SELECT * FROM v_DashboardRecentBookings")
+        
+        # Chuyển đổi kết quả thành danh sách các Dictionary
+        columns = [column[0] for column in cursor.description]
+        bookings = []
+        for row in cursor.fetchall():
+            bookings.append(dict(zip(columns, row)))
+            
+        return bookings
+    except Exception as e:
+        print(f"Lỗi khi lấy danh sách đặt phòng: {e}")
+        return []
+    finally:
+        conn.close()
+
+
 
 # ================= LOGIN =================
 @app.route("/", methods=["GET", "POST"])
@@ -172,9 +193,11 @@ def confirm():
 # ================ MANAGEMENT =================
 @app.route("/management")
 def tong_quan():
-    data = get_dashboard_summary()
-    if not data:
-        data = {
+    stats_data = get_dashboard_summary()
+    recent_data = get_recent_bookings()
+    
+    if not stats_data:
+        stats_data = {
             'TotalRooms': 0,
             'TodayBookings': 0,
             'MonthlyRevenue': 0.00,
@@ -183,7 +206,9 @@ def tong_quan():
             'DaNhan': 0,
             'BaoTri': 0
         }
-    return render_template("tong_quan.html", stats=data)
+    return render_template("tong_quan.html",
+                            stats=stats_data,
+                            recent_bookings=recent_data)
 
 @app.route("/bookings")
 def bookings():
