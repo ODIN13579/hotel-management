@@ -1,9 +1,6 @@
 from flask import Flask, render_template, request, redirect
-<<<<<<< HEAD
 from flask import session
-=======
->>>>>>> 51ae4db30f397a81f74e96b6463e6ea34ff4b033
-from _db import get_connection
+from db import get_connection
 from datetime import datetime
 import uuid
 
@@ -83,7 +80,6 @@ def login():
                 return redirect("/management")
             
     return render_template("login.html")
-
 
 # ================= DASHBOARD =================
 @app.route("/dashboard")
@@ -211,7 +207,6 @@ def confirm():
 # ================ MANAGEMENT =================
 @app.route("/management")
 def tong_quan():    
-    return render_template("tong_quan.html")
     stats_data = get_dashboard_summary()
     recent_data = get_recent_bookings()
     
@@ -374,11 +369,11 @@ def delete_payment(payment_id):
     conn.close()
 
     return redirect("/payments")
-    return render_template("dich_vu.html")
+    # return render_template("dich_vu.html")
 
-@app.route("/payments")
-def quan_ly_thanh_toan():
-    return render_template("thanh_toan.html")
+# @app.route("/payments")
+# def quan_ly_thanh_toan():
+#     return render_template("thanh_toan.html")
 
 @app.route("/invoices")
 def quan_ly_hoa_don():
@@ -481,7 +476,7 @@ def delete_staff(employee_id):
 if __name__ == "__main__":
 
   app.run(host="0.0.0.0", port=5000, debug=True)
-    return render_template("nhan_vien.html")
+    # return render_template("nhan_vien.html")
 
 
-app.run(host="0.0.0.0", port=5000, debug=True)
+# app.run(host="0.0.0.0", port=5000, debug=True)

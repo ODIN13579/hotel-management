@@ -5,3 +5,5 @@ Trạng thái Đặt phòng: đã xác nhận, đã trả phòng, đã hủy
 Trạng thái thanh toán: đang chờ xử lý, thành công, thất bại
 
 Trạng thái nhân viên: đang làm việc, nghỉ phép, nghỉ không phép
+
+loại phòng: deluxe, vip, standard
