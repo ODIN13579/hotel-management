@@ -52,6 +52,36 @@
     <h3>Lượt đặt phòng 6 tháng</h3>
     <div class="chart-placeholder">Biểu đồ lượt đặt</div>
   </div>
+  <p>Xin chào, Lê Thị Thu! Hôm nay là Thứ Hai, 27/04/2026</p>
+</header>
+
+<div class="stats-grid">
+  <div class="card">
+    <i class="fa-solid fa-bed"></i>
+    <span class="value">{{ stats.TotalRooms }}</span>
+    <span class="label">Tổng phòng</span>
+  </div>
+
+  <div class="card">
+    <i class="fa-regular fa-calendar-days"></i>
+    <span class="value">{{ stats.TodayBookings }}</span>
+    <span class="label">Đặt phòng hôm nay</span>
+  </div>
+
+  <div class="card">
+    <i class="fa-solid fa-money-bill-wave"></i>
+    <span class="value"
+      >{{ "{:,.0f}".format(stats.MonthlyRevenue).replace(',', '.') }} đ</span
+    >
+    <span class="label">Doanh thu tháng</span>
+  </div>
+</div>
+
+<div class="status-grid">
+  <div class="status-box bg-green">{{ stats.Trong }} <span>Trống</span></div>
+  <div class="status-box bg-yellow">{{ stats.DaDat }} <span>Đã đặt</span></div>
+  <div class="status-box bg-blue">{{ stats.DaNhan }} <span>Đã nhận</span></div>
+  <div class="status-box bg-red">{{ stats.BaoTri }} <span>Bảo trì</span></div>
 </div>
 
 <div class="table-container">
@@ -95,6 +125,27 @@
         <td>15/03/2026</td>
         <td><span class="badge badge-checkin">Đã nhận phòng</span></td>
       </tr>
+      {% for booking in recent_bookings %}
+      <tr>
+        <td>{{ booking.Booking_ID }}</td>
+        <td><strong>{{ booking.Customer_Name }}</strong></td>
+        <td>{{ booking.Room_Number }}</td>
+        <td>{{ booking.Check_In.strftime('%d/%m/%Y') }}</td>
+        <td>
+          <span
+            class="badge {% if booking.Status == 'đã xác nhận' %}badge-confirmed {% elif booking.Status == 'đã trả phòng' %}badge-checkout {% elif booking.Status == 'đã hủy' %}badge-cancel {% else %}badge-pending{% endif %}"
+          >
+            {{ booking.Status }}
+          </span>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5" style="text-align: center; color: var(--text-gray)">
+          Chưa có dữ liệu đặt phòng nào.
+        </td>
+      </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>

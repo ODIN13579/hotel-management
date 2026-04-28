@@ -5,6 +5,52 @@ import uuid
 
 app = Flask(__name__)
 
+def get_dashboard_summary():
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("EXEC sp_GetDashboardSummary")
+        row = cursor.fetchone()
+        
+        if row:
+            return {
+        'TotalRooms': row.TotalRooms,
+        'TodayBookings': row.TodayBookings,
+        'MonthlyRevenue': row.MonthlyRevenue,
+        'Trong': row.Trong,   
+        'DaDat': row.DaDat,   
+        'DaNhan': row.DaNhan, 
+        'BaoTri': row.BaoTri  
+    }
+        return None
+    except Exception as e:
+        print(f"Lỗi truy vấn: {e}")
+        return None
+    finally:
+        conn.close()
+
+def get_recent_bookings():
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        # Lấy dữ liệu từ View đã tạo trong SQL Server
+        cursor.execute("SELECT * FROM v_DashboardRecentBookings")
+        
+        # Chuyển đổi kết quả thành danh sách các Dictionary
+        columns = [column[0] for column in cursor.description]
+        bookings = []
+        for row in cursor.fetchall():
+            bookings.append(dict(zip(columns, row)))
+            
+        return bookings
+    except Exception as e:
+        print(f"Lỗi khi lấy danh sách đặt phòng: {e}")
+        return []
+    finally:
+        conn.close()
+
+
+
 # ================= LOGIN =================
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -146,9 +192,24 @@ def confirm():
 
 # ================ MANAGEMENT =================
 @app.route("/management")
-def tong_quan():
-    
+def tong_quan():    
     return render_template("tong_quan.html")
+    stats_data = get_dashboard_summary()
+    recent_data = get_recent_bookings()
+    
+    if not stats_data:
+        stats_data = {
+            'TotalRooms': 0,
+            'TodayBookings': 0,
+            'MonthlyRevenue': 0.00,
+            'Trong': 0,
+            'DaDat': 0,
+            'DaNhan': 0,
+            'BaoTri': 0
+        }
+    return render_template("tong_quan.html",
+                            stats=stats_data,
+                            recent_bookings=recent_data)
 
 @app.route("/bookings")
 def bookings():
@@ -270,6 +331,11 @@ def delete_payment(payment_id):
     conn.close()
 
     return redirect("/payments")
+    return render_template("dich_vu.html")
+
+@app.route("/payments")
+def quan_ly_thanh_toan():
+    return render_template("thanh_toan.html")
 
 @app.route("/invoices")
 def quan_ly_hoa_don():
@@ -372,3 +438,7 @@ def delete_staff(employee_id):
 if __name__ == "__main__":
 
   app.run(host="0.0.0.0", port=5000, debug=True)
+    return render_template("nhan_vien.html")
+
+
+app.run(host="0.0.0.0", port=5000, debug=True)
