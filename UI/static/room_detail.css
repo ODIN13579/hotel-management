@@ -5,7 +5,63 @@ body {
 }
 
 
-/* ===== HEADER ===== */
+/* ===== TITLE LOGO ===== */
+
+
+/* HEADER TOP */
+
+.header1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #0071c2;
+}
+
+
+/* USER MENU */
+
+.user-menu {
+    position: relative;
+}
+
+
+/* ICON */
+
+.user-trigger {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+}
+
+
+/* DROPDOWN */
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    padding: 20px 20px 20px 20px;
+    min-width: 180px;
+    height: 180px;
+    border-radius: 8px;
+    padding-bottom: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* HOVER SHOW */
+
+.user-menu:hover .dropdown {
+    display: block;
+}
+
+
+/* ===== BOTTOM HEADER ===== */
 
 .header {
     background: #5c93e1;

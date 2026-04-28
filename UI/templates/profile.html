@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Thông tin cá nhân</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>👤 Thông tin cá nhân</h2>
+
+        <!-- HIỂN THỊ THÔNG TIN  -->
+        <div class="info">
+            <p><b>User ID:</b> {{ user[0] }}</p>
+            <p><b>Họ tên:</b> {{ user[1] }}</p>
+            <p><b>Email:</b> {{ user[2] }}</p>
+            <p><b>Phone:</b> {{ user[3] }}</p>
+            <p><b>Password:</b> ********</p>
+        </div>
+
+        <div class="section-title">✏️ Cập nhật thông tin</div>
+
+        <!-- Update aas -->
+        <form method="POST">
+            <label>Họ tên</label>
+            <input type="text" name="name" value="{{ user[1] }}">
+
+            <label>Email</label>
+            <input type="text" value="{{ user[2] }}" disabled>
+
+            <label>Số điện thoại</label>
+            <input type="text" name="phone" value="{{ user[3] }}">
+
+            <button type="submit">Cập nhật</button>
+        </form>
+
+    </div>
+
+</body>
+
+</html>

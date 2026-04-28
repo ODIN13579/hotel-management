@@ -5,14 +5,48 @@
     <title>Chi tiết phòng</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ url_for('static', filename='room_detail.css') }}">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
 
 <body>
-    <!-- ===== HEADER ===== -->
+    <!-- ===== HEADER TOP ===== -->
+    <div class="header1">
+
+        <!-- LOGO -->
+        <div class="logonen">
+            <a href="/dashboard">
+                <img src="{{ url_for('static', filename='TRIPNEST.png') }}" width="135">
+            </a>
+        </div>
+
+        <!-- USER MENU -->
+        <div class="user-menu">
+
+            <div class="user-trigger">
+                <i class="fa fa-user"></i>
+                <svg viewBox="0 0 24 24">
+                <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"></path> 
+            </svg>
+            </div>
+
+            <div class="dropdown">
+                <p><strong>{{ user[1] }}</strong></p>
+                <p>Email: {{ user[2] }}</p>
+                <hr>
+                <a href="{{ url_for('profile', id=user[0]) }}">Thông tin cá nhân</a>
+                <br></br>
+                <a href="/">Đăng xuất</a>
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+    <!-- ===== BOTTOM HEADER ===== -->
     <div class="header">
         <h1>Phòng {{ room[1] }}</h1>
-        <p class="location">📍 Đà Lạt, Việt Nam</p>
+        <p class="location">📍 Vũng Tàu, Việt Nam</p>
 
         <div class="rating">⭐ {{ review if review else "Chưa có đánh giá" }}</div>
 
@@ -72,8 +106,8 @@
                     <div class="booking-box">
                         <h2>{{ "{:,.0f}".format(room[4]) if room else "0" }}đ / đêm</h2>
 
-                        <input type="date" name="checkin" />
-                        <input type="date" name="checkout" />
+                        <input type="date" name="checkin" required />
+                        <input type="date" name="checkout" required />
                         <input type="hidden" name="room_id" value="{{ room[0] }}">
 
                         <button type="submit" class="book-btn">Đặt ngay</button>

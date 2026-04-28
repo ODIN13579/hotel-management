@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request, redirect
+<<<<<<< HEAD
+from flask import session
+=======
+>>>>>>> 51ae4db30f397a81f74e96b6463e6ea34ff4b033
 from _db import get_connection
 from datetime import datetime
 import uuid
 
 app = Flask(__name__)
+app.secret_key = "abc123"
 
 def get_dashboard_summary():
     conn = get_connection()
@@ -66,6 +71,9 @@ def login():
         result = cursor.fetchone()
 
         if result:
+            session["user_id"] = result[0]
+            # if not user_id:
+            #     return redirect("/")
             return redirect("/dashboard")
         else:
             cursor.execute("""SELECT * FROM Employees WHERE Email = ? AND Password = ?""", (user, pw))
@@ -83,13 +91,18 @@ def dashboard():
     conn = get_connection()
     cursor = conn.cursor()
 
+    user_id = session.get("user_id")
+
     cursor.execute("SELECT * FROM Rooms")
     rooms = cursor.fetchall()
 
     cursor.execute("SELECT * FROM Reviews")
     reviews = cursor.fetchall()
 
-    return render_template("dashboard.html", rooms=rooms, reviews=reviews)
+    cursor.execute("SELECT * FROM Users WHERE User_ID = ?", (user_id,))
+    user = cursor.fetchone()
+
+    return render_template("dashboard.html", rooms=rooms, reviews=reviews, user=user)
 
 
 # ================= ADD USER =================
@@ -136,6 +149,8 @@ def forgotpass():
 def room_detail():
     if request.method == "POST":
         room_id = request.form["room_id"]
+        
+        user_id = session.get("user_id")
 
         conn = get_connection()
         cursor = conn.cursor()
@@ -152,7 +167,10 @@ def room_detail():
         show_VIP = room_type == "VIP"
         show_Deluxe = room_type in  ["Deluxe", "VIP"]
 
-        return render_template("room_detail.html", room=room, review=review, show_Deluxe=show_Deluxe, show_VIP=show_VIP)
+        cursor.execute("SELECT * FROM Users WHERE User_ID = ?", (user_id,))
+        user = cursor.fetchone()
+
+        return render_template("room_detail.html", room=room, review=review, show_Deluxe=show_Deluxe, show_VIP=show_VIP, user=user  )
     return "Không có dữ liệu"
         
 
@@ -210,6 +228,31 @@ def tong_quan():
     return render_template("tong_quan.html",
                             stats=stats_data,
                             recent_bookings=recent_data)
+
+# ================= thông tin cá nhân =================
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    id = session.get("user_id")
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM Users WHERE User_ID = ?", (id,))
+    user = cursor.fetchone()
+
+    if request.method == "POST":
+        name = request.form.get("name")
+        phone = request.form.get("phone")
+
+        cursor.execute("""
+            UPDATE Users
+            SET Name = ?, Phone = ?
+            WHERE User_ID = ?
+        """, (name, phone, id))
+        conn.commit()
+
+        return redirect(f"/profile/{id}")
+
+    return render_template("profile.html", user=user)
 
 @app.route("/bookings")
 def bookings():
