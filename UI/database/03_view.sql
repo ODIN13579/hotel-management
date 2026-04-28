@@ -1,4 +1,4 @@
--- View lấy thông tin đặt phòng đầy đủ để hiển thị
+-- View lấy thông tin đặt phòng gần đây để hiển thị
 CREATE or alter VIEW v_DashboardRecentBookings AS
 SELECT TOP 10 
     b.Booking_ID, 
