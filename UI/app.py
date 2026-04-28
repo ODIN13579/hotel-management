@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from db import get_connection
+from _db import get_connection
 from datetime import datetime
 import uuid
 
@@ -192,7 +192,8 @@ def confirm():
 
 # ================ MANAGEMENT =================
 @app.route("/management")
-def tong_quan():
+def tong_quan():    
+    return render_template("tong_quan.html")
     stats_data = get_dashboard_summary()
     recent_data = get_recent_bookings()
     
@@ -220,6 +221,116 @@ def quan_ly_phong():
 
 @app.route("/services")
 def quan_ly_dich_vu():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM Services")
+    services = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("dich_vu.html", services=services)
+
+
+@app.route("/services/add", methods=["POST"])
+def add_service():
+    sid = "S" + str(uuid.uuid4())[:5]
+    name = request.form.get("name")
+    description = request.form.get("description")
+    price = request.form.get("price")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO Services(Service_ID, Name, Description, Price)
+        VALUES (?, ?, ?, ?)
+    """, (sid, name, description, price))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/services")
+
+
+@app.route("/services/delete/<service_id>")
+def delete_service(service_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM Services WHERE Service_ID = ?", (service_id,))
+    conn.commit()
+    conn.close()
+
+    return redirect("/services")
+
+
+@app.route("/services/update", methods=["POST"])
+def update_service():
+    service_id = request.form.get("service_id")
+    name = request.form.get("name")
+    description = request.form.get("description")
+    price = request.form.get("price")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE Services
+        SET Name = ?, Description = ?, Price = ?
+        WHERE Service_ID = ?
+    """, (name, description, price, service_id))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/services")
+
+
+@app.route("/payments")
+def quan_ly_thanh_toan():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM Payment")
+    payments = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("thanh_toan.html", payments=payments)
+
+
+@app.route("/payments/update-status", methods=["POST"])
+def update_payment_status():
+    payment_id = request.form.get("payment_id")
+    status = request.form.get("status")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE Payment
+        SET Status = ?
+        WHERE Payment_ID = ?
+    """, (status, payment_id))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/payments")
+
+
+@app.route("/payments/delete/<payment_id>")
+def delete_payment(payment_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM Payment WHERE Payment_ID = ?", (payment_id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/payments")
     return render_template("dich_vu.html")
 
 @app.route("/payments")
@@ -232,6 +343,101 @@ def quan_ly_hoa_don():
 
 @app.route("/staff")
 def quan_ly_nhan_vien():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM Employees")
+    employees = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("nhan_vien.html", employees=employees)
+
+
+@app.route("/staff/add", methods=["POST"])
+def add_staff():
+    eid = "E" + str(uuid.uuid4())[:5]
+    name = request.form.get("name")
+    email = request.form.get("email")
+    phone = request.form.get("phone")
+    password = request.form.get("password")
+    role = request.form.get("role")
+    status = request.form.get("status")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO Employees(Employee_ID, Name, Email, Phone, Password, Role, Status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (eid, name, email, phone, password, role, status))
+    conn.commit()
+    conn.close()
+
+    return redirect("/staff")
+
+
+@app.route("/staff/update", methods=["POST"])
+def update_staff():
+    employee_id = request.form.get("employee_id")
+    name = request.form.get("name")
+    email = request.form.get("email")
+    phone = request.form.get("phone")
+    password = request.form.get("password")
+    role = request.form.get("role")
+    status = request.form.get("status")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE Employees
+        SET Name = ?, Email = ?, Phone = ?, Password = ?, Role = ?, Status = ?
+        WHERE Employee_ID = ?
+    """, (name, email, phone, password, role, status, employee_id))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/staff")
+
+
+@app.route("/staff/update-status", methods=["POST"])
+def update_staff_status():
+    employee_id = request.form.get("employee_id")
+    status = request.form.get("status")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE Employees
+        SET Status = ?
+        WHERE Employee_ID = ?
+    """, (status, employee_id))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/staff")
+
+
+@app.route("/staff/delete/<employee_id>")
+def delete_staff(employee_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM Employees WHERE Employee_ID = ?",
+        (employee_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/staff")
+if __name__ == "__main__":
+
+  app.run(host="0.0.0.0", port=5000, debug=True)
     return render_template("nhan_vien.html")
 
 

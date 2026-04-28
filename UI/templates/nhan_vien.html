@@ -5,6 +5,18 @@ endblock %} {% block content %}
     <h1>Quản lý nhân viên</h1>
     <p>Quản lý thông tin và phân công nhân viên</p>
   </div>
+  <form action="/staff/add" method="POST">
+    <input name="name" placeholder="Tên">
+    <input name="email" placeholder="Email">
+    <input name="phone" placeholder="SĐT">
+    <input name="password" placeholder="Password">
+    <input name="role" placeholder="Chức vụ">
+    <input name="status" placeholder="Trạng thái">
+
+    <button type="submit" class="btn-add-room">
+        <i class="fa-solid fa-plus"></i> Thêm nhân viên
+    </button>
+</form>
   <button class="btn-add-room">
     <i class="fa-solid fa-plus"></i> Thêm nhân viên
   </button>
@@ -41,7 +53,6 @@ endblock %} {% block content %}
     <button class="tab-btn">Quản lý</button>
   </div>
 </div>
-
 <div class="table-container">
   <table>
     <thead>
@@ -55,6 +66,49 @@ endblock %} {% block content %}
       </tr>
     </thead>
     <tbody>
+  {% for employee in employees %}
+  <tr>
+    <td>
+      <div style="display: flex; align-items: center; gap: 10px">
+        <div class="staff-avatar">{{ employee[1][0] }}</div>
+        <div>
+          <strong>{{ employee[1] }}</strong><br />
+          <small style="color: #94a3b8">{{ employee[0] }}</small>
+        </div>
+      </div>
+    </td>
+
+    <td>
+      <span style="font-size: 0.85rem">{{ employee[2] }}</span><br />
+      <small style="color: #94a3b8">{{ employee[3] }}</small>
+    </td>
+
+    <td>
+      <span class="role-badge role-receptionist">{{ employee[5] }}</span>
+    </td>
+
+    <td>
+      <form action="/staff/update-status" method="POST">
+        <input type="hidden" name="employee_id" value="{{ employee[0] }}">
+        <select name="stastus">
+          <option value="đang làm việc" {% if employee[6] == "đang làm việc" %}selected{% endif %}>Đang làm việc</option>
+          <option value="nghỉ phép" {% if employee[6] == "nghỉ phép" %}selected{% endif %}>Nghỉ phép</option>
+          <option value="nghỉ không phép" {% if employee[6] == "nghỉ không phép" %}selected{% endif %}>Nghỉ không phép</option>
+        </select>
+        <button type="submit">Lưu</button>
+      </form>
+    </td>
+
+    <td style="text-align: center">0</td>
+
+    <td>
+      <a href="/staff/delete/{{ employee[0] }}" onclick="return confirm('Xoá nhân viên này?')">
+        Xoá
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
       <tr>
         <td>
           <div style="display: flex; align-items: center; gap: 10px">
