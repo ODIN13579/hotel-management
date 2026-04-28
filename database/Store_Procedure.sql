@@ -82,3 +82,41 @@ BEGIN
     WHERE User_ID=@id
 END
 GO
+
+-- 6. Đặt phòng
+CREATE PROCEDURE AddBooking (
+	@booking_id VARCHAR(50),
+	@user_id VARCHAR(50),
+    @room_id VARCHAR(50),
+    @employee_id VARCHAR(50),
+    @booking_date VARCHAR(50),
+    @room_deposit VARCHAR(50),
+    @checkin DATETIME,
+    @checkout DATETIME,
+    @status VARCHAR(50)
+)
+AS
+BEGIN	
+    INSERT INTO [dbo].[Bookings]
+               ([Booking_ID]
+               ,[User_ID]
+               ,[Room_ID]
+               ,[Employee_ID]
+               ,[Booking_Date]
+               ,[Room_deposit]
+               ,[Check_In]
+               ,[Check_Out]
+               ,[Status])
+         VALUES
+               (@booking_id
+               ,@user_id
+               ,@room_id
+               ,@employee_id
+               ,@booking_date
+               ,@room_deposit
+               ,@checkin
+               ,@checkout
+               ,@status)
+
+END
+GO

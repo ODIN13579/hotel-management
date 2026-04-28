@@ -60,3 +60,30 @@ BEGIN
     RETURN @type
 END
 GO
+
+-- 5. Lấy đánh giá của phòng
+CREATE FUNCTION GetRatingRoom (@room_id VARCHAR(50))
+RETURNS FLOAT
+AS
+BEGIN
+    DECLARE @rating FLOAT
+
+    SELECT @rating = AVG(Rw.Rating)
+    FROM Reviews Rw
+    JOIN Bookings B ON Rw.Booking_ID = B.Booking_ID
+    WHERE B.Room_ID = @room_id
+
+    RETURN @rating
+END
+GO
+
+-- 6. Lấy loại phòng
+CREATE FUNCTION GetRoomType(@room_id VARCHAR(50))
+RETURNS VARCHAR(50)
+AS
+BEGIN
+    DECLARE @room_type VARCHAR(50)
+    SELECT @room_type = R.Room_Type FROM Rooms R WHERE R.Room_ID = @room_id
+
+    RETURN @room_type
+END
