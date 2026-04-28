@@ -1,0 +1,93 @@
+{% extends "management_layout.html" %} {% block title %}Quản lý thanh toán{%
+endblock %} {% block content %}
+<header>
+  <h1>Quản lý thanh toán</h1>
+  <p>Theo dõi và quản lý tất cả giao dịch thanh toán</p>
+</header>
+
+<div class="pay-stat-grid">
+  <div class="pay-card">
+    <i class="fa-regular fa-circle-check text-green"></i>
+    <span class="title">Đã thanh toán</span>
+    <span class="amount text-green">2.170.000 đ</span>
+    <span class="sub">3 giao dịch</span>
+  </div>
+  <div class="pay-card">
+    <i class="fa-regular fa-clock text-yellow"></i>
+    <span class="title">Chờ thanh toán</span>
+    <span class="amount text-yellow">3.500.000 đ</span>
+    <span class="sub">1 giao dịch</span>
+  </div>
+  <div class="pay-card">
+    <i class="fa-solid fa-rotate-left text-red"></i>
+    <span class="title">Đã hoàn tiền</span>
+    <span class="amount text-red">450.000 đ</span>
+    <span class="sub">1 giao dịch</span>
+  </div>
+</div>
+
+<div class="search-container">
+  <input
+    type="text"
+    class="search-bar"
+    placeholder="🔍 Tìm mã thanh toán, khách hàng..."
+  />
+  <div class="filter-tabs">
+    <button class="tab-btn active">Tất cả</button>
+    <button class="tab-btn">Đã thanh toán</button>
+    <button class="tab-btn">Chờ thanh toán</button>
+    <button class="tab-btn">Hoàn tiền</button>
+  </div>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Mã TT</th>
+        <th>Mã ĐP</th>
+        <th>Khách hàng</th>
+        <th>Phòng</th>
+        <th>Số tiền</th>
+        <th>PTTT</th>
+        <th>Ngày TT</th>
+        <th>Trạng thái</th>
+      </tr>
+    </thead>
+    <tbody>
+  {% for payment in payments %}
+  <tr>
+    <td>{{ payment[0] }}</td>
+    <td>{{ payment[1] }}</td>
+    <td>---</td>
+    <td>---</td>
+    <td><strong>{{ "{:,.0f}".format(payment[2]) }} đ</strong></td>
+    <td>---</td>
+<td>{{ payment[3].strftime("%d/%m/%Y %H:%M") if payment[3] else "" }}</td>
+<td>
+  {% if payment[4] == "thành công" %}
+    <span class="badge badge-checkin">Đã thanh toán</span><br>
+  {% elif payment[4] == "đang chờ xử lý" %}
+    <span class="badge badge-pending">Chờ thanh toán</span><br>
+  {% else %}
+    <span class="badge badge-refund">Thất bại</span><br>
+  {% endif %}
+
+  <form action="/payments/update-status" method="POST">
+    <input type="hidden" name="payment_id" value="{{ payment[0] }}">
+
+    <select name="status">
+      <option value="đang chờ xử lý" {% if payment[4] == "đang chờ xử lý" %}selected{% endif %}>Đang chờ xử lý</option>
+      <option value="thành công" {% if payment[4] == "thành công" %}selected{% endif %}>Thành công</option>
+      <option value="thất bại" {% if payment[4] == "thất bại" %}selected{% endif %}>Thất bại</option>
+    </select>
+
+    <button type="submit">Lưu</button>
+  </form>
+</td>
+</tr>
+  {% endfor %}
+</tbody>
+  </table>
+</div>
+{% endblock %}

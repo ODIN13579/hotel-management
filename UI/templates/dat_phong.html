@@ -1,0 +1,82 @@
+{% extends "management_layout.html" %} {% block title %}Quản lý đặt phòng{%
+endblock %} {% block content %}
+<header>
+  <h1>Quản lý đặt phòng</h1>
+  <p>Xác nhận, check-in, check-out và theo dõi tất cả đặt phòng</p>
+</header>
+
+<div class="search-container">
+  <input
+    type="text"
+    class="search-bar"
+    placeholder="🔍 Tìm theo mã ĐP, tên khách, số phòng..."
+  />
+
+  <div class="filter-tabs">
+    <button class="tab-btn active">Tất cả <span>8</span></button>
+    <button class="tab-btn">Chờ xác nhận <span>2</span></button>
+    <button class="tab-btn">Đã xác nhận <span>2</span></button>
+    <button class="tab-btn">Đang ở <span>1</span></button>
+    <button class="tab-btn">Đã trả phòng <span>2</span></button>
+    <button class="tab-btn">Đã hủy <span>1</span></button>
+  </div>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Mã ĐP</th>
+        <th>Khách hàng</th>
+        <th>Phòng</th>
+        <th>Nhận phòng</th>
+        <th>Trả phòng</th>
+        <th>Đặt cọc</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>B008</td>
+        <td><strong>Lê Minh Châu</strong><br /><small>0923456789</small></td>
+        <td><strong>Phòng Suite</strong><br /><small>Phòng 301</small></td>
+        <td>10/04/2026</td>
+        <td>14/04/2026</td>
+        <td>750.000 đ</td>
+        <td><span class="badge badge-pending">Chờ xác nhận</span></td>
+        <td class="action-btns">
+          <i class="fa-regular fa-eye btn-view"></i>
+          <i class="fa-regular fa-circle-check btn-check"></i>
+          <i class="fa-regular fa-circle-xmark btn-delete"></i>
+        </td>
+      </tr>
+      <tr>
+        <td>B002</td>
+        <td><strong>Trần Thị Bích</strong><br /><small>0912345678</small></td>
+        <td><strong>Phòng Gia Đình</strong><br /><small>Phòng 102</small></td>
+        <td>15/03/2026</td>
+        <td>18/03/2026</td>
+        <td>600.000 đ</td>
+        <td><span class="badge badge-inhouse">Đã nhận phòng</span></td>
+        <td class="action-btns">
+          <i class="fa-regular fa-eye btn-view"></i>
+          <i class="fa-regular fa-calendar-check btn-checkin"></i>
+        </td>
+      </tr>
+      <tr>
+        <td>B007</td>
+        <td><strong>Trần Thị Bích</strong><br /><small>0912345678</small></td>
+        <td><strong>Phòng Deluxe</strong><br /><small>Phòng 201</small></td>
+        <td>10/02/2026</td>
+        <td>12/02/2026</td>
+        <td>450.000 đ</td>
+        <td><span class="badge badge-cancel">Đã hủy</span></td>
+        <td class="action-btns">
+          <i class="fa-regular fa-eye btn-view"></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

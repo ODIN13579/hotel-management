@@ -1,0 +1,5 @@
+# pip install -r UI/requirements.txt
+pyodbc
+flask
+uuid
+datetime

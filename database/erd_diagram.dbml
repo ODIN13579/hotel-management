@@ -1,0 +1,89 @@
+// đăng nhập có thể dùng sdt hoặc email làm tài khoảng
+// đọc file create_table.sql và thêm những thay đổi vào đây cho thôi
+Table Users {
+  User_ID varchar [not null, pk]
+  Name nvarchar [not null]
+  Email varchar [unique]
+  Phone varchar [unique]
+  Password varchar [not null] // phải có hash
+}
+
+Table Employees {
+  Employee_ID varchar [not null, pk]
+  Name nvarchar [not null]
+  Email varchar [unique]
+  Phone varchar [unique]
+  Password varchar [not null]
+  Role varchar
+  Status varchar
+}
+
+Table Services {
+  Service_ID varchar [not null, pk]
+  Name nvarchar [not null]
+  Description nvarchar 
+  Price decimal(18,2)
+}
+
+Table Rooms {
+  Room_ID varchar [not null, pk]
+  Room_Number varchar [unique, not null]
+  Room_type varchar 
+  Capacity integer 
+  Price_Per_Night decimal(18,2)
+  Status varchar // phòng trống, phòng đã đặt(cọc), phòng đã nhận, bảo trì
+}
+
+Table Rooms_Services {
+  Room_ID varchar [ref: > Rooms.Room_ID]
+  Service_ID varchar [ref: > Services.Service_ID]
+  primary key (Room_ID, Service_ID)
+}
+
+Table Bookings {
+  Booking_ID varchar [pk]
+  User_ID varchar [ref: > Users.User_ID] 
+  Room_ID varchar [ref: > Rooms.Room_ID] 
+  Employee_ID varchar [ref: > Employees.Employee_ID, note: 'có thể null nếu khách tự đặt online']
+  Booking_Date datetime // ngày đặt phòng trên wed
+  Room_deposit decimal(18,2)// 30% của giá phòng
+  Check_In datetime // ngày nhận phòng, ko đến mất cọc
+  Check_Out datetime 
+  Status varchar // đã xác nhận, đã trả phòng, đã hủy
+}
+
+Table Reviews {
+  Review_ID varchar [pk] 
+  User_ID varchar [ref: > Users.User_ID]
+  Booking_ID varchar [ref: - Bookings.Booking_ID] // 1-1 một lần thôi nhiều spam
+  Rating integer [note: '1-5 sao']
+  Comment nvarchar 
+  Created_At datetime 
+}
+
+Table Payment {
+  Payment_ID varchar [pk]
+  Booking_ID varchar [ref: > Bookings.Booking_ID]
+  Amount decimal(18,2) // 70% sau khi cộng cọc 30% (số tiền khách phải trả)
+  Payment_Date datetime 
+  Payment_Method varchar
+  Status varchar 
+}
+
+Table Invoices {
+  Invoice_ID  varchar [pk]
+  User_ID varchar [ref: > Users.User_ID]
+  Booking_ID varchar [ref: - Bookings.Booking_ID] // 1-1
+  Total_Amount decimal(18,2) // tổng tiền tất cả bao gồn 30% + 70% còn lại
+  Issued_Date datetime 
+}
+
+// doanh thu = payment.amount + booking.room_deposit(dùng view)
+
+Table Notifications {
+  Notification_ID  varchar [pk]
+  User_ID varchar [ref: > Users.User_ID]
+  Message nvarchar 
+  Sent_Date datetime
+  Is_Read boolean 
+}

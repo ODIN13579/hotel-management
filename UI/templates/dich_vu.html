@@ -1,0 +1,67 @@
+{% extends "management_layout.html" %} {% block title %}Quản lý dịch vụ{%
+endblock %} {% block content %}
+<div class="service-header">
+  <div>
+    <h1>Quản lý dịch vụ</h1>
+    <p>Quản lý các dịch vụ tiện ích của khách sạn</p>
+  </div>
+  <form action="/services/add" method="POST">
+  <input name="name" placeholder="Tên dịch vụ">
+  <input name="description" placeholder="Mô tả">
+  <input name="price" placeholder="Giá">
+
+  <button class="btn-add-room">
+    <i class="fa-solid fa-plus"></i> Thêm dịch vụ
+  </button>
+</form>
+</div>
+
+<div class="service-stats">
+  <div class="service-stat-box">
+    <span class="value" style="color: var(--sidebar-bg)">10</span>
+    <span class="label">Tổng dịch vụ</span>
+  </div>
+  <div class="service-stat-box">
+    <span class="value" style="color: #10b981">2</span>
+    <span class="label">Dịch vụ miễn phí</span>
+  </div>
+  <div class="service-stat-box">
+    <span class="value" style="color: #f59e0b">8</span>
+    <span class="label">Dịch vụ có phí</span>
+  </div>
+</div>
+
+<div class="service-grid">
+  {% for service in services %}
+  <div class="service-card">
+
+    <!-- XOÁ -->
+    <a href="/services/delete/{{ service[0] }}">
+      <i class="fa-solid fa-trash service-edit-icon"></i>
+    </a>
+
+    <div class="service-card-header">
+      <div class="service-icon">
+        <i class="fa-solid fa-star"></i>
+      </div>
+      <h3>{{ service[1] }}</h3>
+    </div>
+
+    <p>{{ service[2] }}</p>
+
+    <div class="service-footer">
+      <span class="service-code">{{ service[0] }}</span>
+
+      {% if service[3]|int == 0 %}
+        <span class="price-tag tag-free">Miễn phí</span>
+      {% else %}
+        <span class="price-tag tag-paid">
+          {{ "{:,.0f}".format(service[3]) }} đ
+        </span>
+      {% endif %}
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

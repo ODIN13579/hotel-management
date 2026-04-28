@@ -1,0 +1,182 @@
+{% extends "management_layout.html" %} {% block title %}Quản lý hóa đơn{%
+endblock %} {% block content %}
+<header>
+  <h1>Quản lý hóa đơn</h1>
+  <p>Xem và in hóa đơn thanh toán</p>
+</header>
+
+<div class="invoice-stats">
+  <div class="service-stat-box">
+    <span class="value">3</span>
+    <span class="label">Tổng hóa đơn</span>
+  </div>
+  <div class="service-stat-box">
+    <span class="value" style="color: #10b981">3.100.000 đ</span>
+    <span class="label">Tổng doanh thu</span>
+  </div>
+  <div class="service-stat-box">
+    <span class="value" style="color: #f59e0b">1.033.333 đ</span>
+    <span class="label">Trung bình/hóa đơn</span>
+  </div>
+</div>
+
+<div class="search-container">
+  <input
+    type="text"
+    class="search-bar"
+    placeholder="🔍 Tìm mã hóa đơn, khách hàng..."
+  />
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Mã HĐ</th>
+        <th>Khách hàng</th>
+        <th>Mã ĐP</th>
+        <th>Phòng</th>
+        <th>Tổng tiền</th>
+        <th>Ngày xuất</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>INV001</td>
+        <td><strong>Nguyễn Văn An</strong><br /><small>0901234567</small></td>
+        <td>B001</td>
+        <td>Phòng Deluxe (201)</td>
+        <td><strong>1.500.000 đ</strong></td>
+        <td>12:00 13/03/2026</td>
+        <td>
+          <button class="btn-view-invoice btn-open-modal">
+            <i class="fa-regular fa-file-lines"></i> Xem
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-overlay" id="invoiceModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <span class="close-btn" id="closeIcon">&times;</span>
+      <small style="color: var(--accent-yellow)"
+        >GRAND IMPERIAL HOTEL & RESORT</small
+      >
+      <h2>Hóa đơn thanh toán</h2>
+      <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 10px">
+        <p>Mã HĐ: INV001</p>
+        <p>Ngày xuất: 12:00 13/03/2026</p>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <div class="info-section">
+        <p
+          style="
+            font-size: 0.7rem;
+            color: var(--text-gray);
+            margin-bottom: 5px;
+            font-weight: bold;
+          "
+        >
+          THÔNG TIN KHÁCH HÀNG
+        </p>
+        <strong>Nguyễn Văn An</strong><br />
+        <small>an.nguyen@email.com</small><br />
+        <small>0901234567</small>
+      </div>
+
+      <p
+        style="
+          font-size: 0.7rem;
+          color: var(--text-gray);
+          margin-bottom: 10px;
+          font-weight: bold;
+        "
+      >
+        CHI TIẾT LƯU TRÚ
+      </p>
+      <div class="info-row">
+        <span class="label">Phòng</span
+        ><span class="value">Phòng Deluxe - 201</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Nhận phòng</span
+        ><span class="value">10/3/2026</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Trả phòng</span><span class="value">13/3/2026</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Số đêm</span><span class="value">3 đêm</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Giá/đêm</span><span class="value">1.500.000 đ</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Đã đặt cọc (30%)</span
+        ><span class="value" style="color: #f59e0b">450.000 đ</span>
+      </div>
+
+      <div class="total-row">
+        <span>TỔNG CỘNG</span>
+        <span>1.500.000 đ</span>
+      </div>
+      <p
+        style="
+          text-align: center;
+          font-size: 0.75rem;
+          color: var(--text-gray);
+          margin-top: 25px;
+          font-style: italic;
+        "
+      >
+        Cảm ơn quý khách đã sử dụng dịch vụ của Grand Imperial!
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-print">
+        <i class="fa-solid fa-print"></i> In hóa đơn
+      </button>
+      <button class="btn-close-modal" id="closeBtn">Đóng</button>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  // Khi trang đã load xong
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("invoiceModal");
+    const openBtns = document.querySelectorAll(".btn-open-modal");
+    const closeBtn = document.getElementById("closeBtn");
+    const closeIcon = document.getElementById("closeIcon");
+
+    // Hàm mở modal
+    openBtns.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        modal.classList.add("active");
+      });
+    });
+
+    // Hàm đóng modal
+    function closeModal() {
+      modal.classList.remove("active");
+    }
+
+    closeBtn.addEventListener("click", closeModal);
+    closeIcon.addEventListener("click", closeModal);
+
+    // Đóng khi click ra vùng xám bên ngoài
+    window.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+  });
+</script>
+{% endblock %}

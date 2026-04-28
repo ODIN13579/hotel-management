@@ -1,0 +1,792 @@
+/* ==========================================
+   1. KHAI BÁO BIẾN (VARIABLES)
+   ========================================== */
+:root {
+  --sidebar-bg: #1e293b;
+  --main-bg: #f8fafc;
+  --primary-blue: #3b82f6;
+  --accent-yellow: #fbbf24;
+  --text-dark: #1e293b;
+  --text-gray: #64748b;
+  --white: #ffffff;
+  --border-color: #e2e8f0;
+}
+
+/* ==========================================
+   2. THIẾT LẬP CHUNG (GLOBAL STYLES)
+   ========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Giúp padding không làm tăng kích thước phần tử */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  display: flex; /* Sidebar bên trái, Main bên phải */
+  background-color: var(--main-bg);
+  min-height: 100vh;
+}
+
+/* ==========================================
+   3. THANH MENU (SIDEBAR)
+   ========================================== */
+.sidebar {
+  width: 260px;
+  background-color: var(--sidebar-bg);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  position: fixed; /* Giữ menu đứng yên khi cuộn trang */
+  height: 100vh;
+}
+
+.brand {
+  padding: 0 25px 30px;
+  border-bottom: 1px solid #334155;
+  margin-bottom: 20px;
+}
+
+.brand h2 {
+  color: var(--accent-yellow);
+  font-size: 1.1rem;
+}
+
+.user-info {
+  padding: 0 25px 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  background: var(--accent-yellow);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sidebar-bg);
+  font-weight: bold;
+}
+
+.menu-item {
+  padding: 14px 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+  color: #94a3b8;
+  transition: 0.3s ease;
+}
+
+.search-container {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.search-bar {
+  width: 100%;
+  padding: 12px 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 25px; /* Bo tròn kiểu viên thuốc */
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: #f1f5f9;
+  color: var(--text-gray);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tab-btn span {
+  margin-left: 5px;
+  font-weight: bold;
+  opacity: 0.6;
+}
+
+.tab-btn.active,
+.tab-btn:hover {
+  background: var(--sidebar-bg);
+  color: white;
+}
+
+/* --- ICON HÀNH ĐỘNG (ACTION ICONS) --- */
+.action-btns {
+  display: flex;
+  gap: 12px;
+  font-size: 1.1rem;
+}
+
+/* Hiệu ứng khi di chuột hoặc trang đang mở */
+.menu-item:hover,
+.menu-item.active {
+  background-color: var(--accent-yellow);
+  color: var(--sidebar-bg);
+  font-weight: 600;
+}
+
+.logout {
+  margin-top: auto; /* Đẩy nút đăng xuất xuống đáy menu */
+  color: #f87171;
+  border-top: 1px solid #334155;
+  padding-top: 15px;
+}
+
+.main {
+  margin-left: 260px; /* Chừa chỗ cho Sidebar fixed */
+  flex: 1;
+  padding: 30px;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  color: var(--text-dark);
+}
+
+/* Khối thông báo vàng */
+.alert {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 25px 0;
+  color: #92400e;
+}
+
+.stats-grid,
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Chia 4 cột bằng nhau */
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.card {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Lưới 2 cột cho biểu đồ */
+.charts-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.chart-box {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 12px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-placeholder {
+  flex: 1;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+}
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.btn-add-room {
+  background: var(--sidebar-bg);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Lưới thẻ phòng */
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.room-card {
+  background: var(--white);
+  border-radius: 15px;
+  overflow: hidden; /* Cắt ảnh thừa ở góc bo */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.room-img-container {
+  position: relative;
+  height: 180px;
+}
+
+.room-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Giúp ảnh không bị méo */
+}
+
+/* Các nhãn đè lên ảnh */
+.status-tag,
+.room-number-tag {
+  position: absolute;
+  top: 12px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.table-container {
+  background: var(--white);
+  padding: 25px;
+  border-radius: 15px;
+  margin-top: 30px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Bỏ khoảng cách giữa các viền ô */
+  margin-top: 15px;
+}
+
+.status-tag {
+  left: 12px;
+}
+.room-number-tag {
+  right: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-dark);
+}
+
+/* Nội dung dưới ảnh */
+.room-info {
+  padding: 20px;
+}
+.room-info h3 {
+  font-size: 1.1rem;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+.room-meta {
+  color: var(--text-gray);
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+.room-meta span {
+  margin-right: 15px;
+}
+
+.room-facilities {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+/* --- PHẦN QUẢN LÝ HÓA ĐƠN --- */
+.invoice-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.btn-view-invoice {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: white;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* --- MODAL (POPUP CHI TIẾT HÓA ĐƠN) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none; /* SỬA TỪ flex THÀNH none ĐỂ ẨN ĐI */
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+/* Thêm class này để khi "kích hoạt" nó mới hiện ra */
+.modal-overlay.active {
+  display: flex;
+}
+.staff-avatar {
+  width: 35px;
+  height: 35px;
+  background: var(--sidebar-bg);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+/* Nhãn chức vụ */
+.role-badge {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.role-receptionist {
+  background: #eff6ff;
+  color: #2563eb;
+} /* Lễ tân - Xanh dương */
+.role-manager {
+  background: #f5f3ff;
+  color: #7c3aed;
+} /* Quản lý - Tím */
+
+/* Nhãn trạng thái làm việc */
+.status-working {
+  background: #dcfce7;
+  color: #166534;
+} /* Đang làm việc */
+.status-off {
+  background: #fef9c3;
+  color: #854d0e;
+} /* Nghỉ phép */
+
+/* Nút chỉnh sửa (Icon bút chì) */
+.btn-edit-staff {
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+.btn-edit-staff:hover {
+  color: var(--primary-blue);
+}
+.modal-container {
+  background: white;
+  width: 500px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background: var(--sidebar-bg);
+  color: white;
+  padding: 20px 30px;
+  position: relative;
+}
+
+.modal-header h2 {
+  font-size: 1.2rem;
+  margin-top: 5px;
+}
+.modal-header .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+
+.modal-body {
+  padding: 30px;
+}
+
+.info-section {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.info-row .label {
+  color: var(--text-gray);
+}
+.info-row .value {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.total-row {
+  border-top: 2px solid #f1f5f9;
+  padding-top: 15px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary-blue);
+}
+
+.modal-footer {
+  padding: 0 30px 30px;
+  display: flex;
+  gap: 15px;
+}
+
+.btn-print {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-close-modal {
+  flex: 1;
+  padding: 12px;
+  background: var(--sidebar-bg);
+  color: white;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+.facility-tag {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  background: #f8fafc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.room-actions {
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 15px;
+}
+
+.btn-edit-room {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: white;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-tool-room {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid #fbbf24;
+  background: white;
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+th {
+  text-align: left;
+  padding: 12px;
+  color: var(--text-gray);
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+td {
+  padding: 15px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+}
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.service-card {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 15px;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.service-card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.service-icon {
+  width: 45px;
+  height: 45px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sidebar-bg);
+  font-size: 1.2rem;
+}
+
+.service-edit-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+
+.service-card h3 {
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+.service-card p {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  line-height: 1.4;
+}
+
+.service-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.pay-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.pay-card {
+  background: var(--white);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.pay-card i {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  font-size: 1.2rem;
+}
+
+.pay-card .title {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  display: block;
+  margin-bottom: 10px;
+}
+.pay-card .amount {
+  font-size: 1.8rem;
+  font-weight: 800;
+  display: block;
+}
+.pay-card .sub {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 5px;
+}
+
+/* Màu sắc riêng cho từng loại thẻ thanh toán */
+.text-green {
+  color: #10b981;
+}
+.text-yellow {
+  color: #f59e0b;
+}
+.text-red {
+  color: #ef4444;
+}
+
+/* Nhãn Phương thức thanh toán (PTTT) */
+.method-badge {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.method-credit {
+  background: #f5f3ff;
+  color: #7c3aed;
+} /* Tím - Thẻ tín dụng */
+.method-transfer {
+  background: #eff6ff;
+  color: #2563eb;
+} /* Xanh - Chuyển khoản */
+.method-cash {
+  background: #f1f5f9;
+  color: #475569;
+} /* Xám - Tiền mặt */
+
+/* Trạng thái Hoàn tiền */
+.badge-refund {
+  background: #fee2e2;
+  color: #ef4444;
+}
+/* Lưới thống kê 3 cột ở trên cùng */
+.service-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.service-stat-box {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.service-stat-box .value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  display: block;
+}
+.service-stat-box .label {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+}
+/* Các nhãn trạng thái bo tròn (Badges) */
+.tag-free {
+  background: #dcfce7;
+  color: #166534;
+}
+.tag-paid {
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #ffedd5;
+}
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.action-btns i {
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-view {
+  color: var(--text-gray);
+}
+.btn-check {
+  color: var(--primary-blue);
+}
+.btn-delete {
+  color: #f87171;
+}
+.btn-checkin {
+  color: #10b981;
+}
+.badge-inhouse {
+  background: #dcfce7;
+  color: #166534;
+} /* Đang ở */
+.badge-checkout {
+  background: #f1f5f9;
+  color: #64748b;
+} /* Đã trả phòng */
+.badge-cancel {
+  background: #fee2e2;
+  color: #991b1b;
+} /* Đã hủy */
+.badge-pending {
+  background: #fef9c3;
+  color: #854d0e;
+} /* Vàng nhạt */
+.badge-confirmed {
+  background: #dbeafe;
+  color: #1e40af;
+} /* Xanh nhạt */
+.badge-checkin {
+  background: #dcfce7;
+  color: #166534;
+} /* Xanh lá nhạt */
+
+/* Các ô trạng thái phòng (Trống, Đã đặt...) */
+.bg-green {
+  background: #dcfce7;
+  color: #166534;
+}
+.bg-yellow {
+  background: #fef9c3;
+  color: #854d0e;
+}
+.bg-blue {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.bg-red {
+  background: #fee2e2;
+  color: #991b1b;
+}

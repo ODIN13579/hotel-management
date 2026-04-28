@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Đăng kí tài khoản</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+
+<body>
+
+
+    <div class="container">
+        <form method="POST">
+            <div class="register-box">
+                <h2>Vui lòng nhập thông tin</h2>
+                <!-- sửa lý logic của UserID -->
+
+
+                <div class="input-box">
+                    <span class="icon"><i class="fa-solid fa-user"></i></span>
+                    <input name="name" type="text" class="" required>
+                    <label class="lb">Nhập tên tài khoản</label>
+                </div>
+
+                <div class="input-box">
+                    <span class="icon"><i class="fa-solid fa-envelope"></i></span>
+                    <input name="mail" type="text" class="" required>
+                    <label class="lb">Nhập mail</label>
+                </div>
+
+                <div class="input-box">
+                    <span class="icon"><i class="fa-solid fa-phone"></i></span>
+                    <input name="numberphone" type="text" class="" required>
+                    <label class="lb">Nhập số điện thoại</label>
+                </div>
+
+                <div class="input-box">
+                    <span class="icon"><i class="fa-solid fa-lock"></i></span>
+                    <input name="password" type="password" class="pass" required>
+                    <label class="lb">Mật khẩu</label>
+                </div>
+
+                <button type="submit">Tạo tài khoản</button>
+                <div class="register-link">
+                    <p>Nếu đã có tài khoản, hãy
+                        <a href="/">Đăng nhập</a>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

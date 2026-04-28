@@ -1,0 +1,88 @@
+<!-- dashboar -->
+
+<!doctype html>
+<html>
+  <head>
+    <title>Trang chủ</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='dboo.css') }}"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <!-- ===== HEADER SEARCH ===== -->
+    <div class="header">
+      <h1>🏨 Booking Rooms</h1>
+
+      <div class="search-bar">
+        <input type="text" placeholder="Bạn muốn đi đâu?" />
+        <input type="date" />
+        <input type="date" />
+
+        <select>
+          <option>1 khách</option>
+          <option>2 khách</option>
+          <option>3 khách</option>
+        </select>
+
+        <button>Tìm</button>
+      </div>
+    </div>
+
+    <!-- ===== FILTER ===== -->
+    <div class="filter-bar">
+      <button>💰 Giá thấp</button>
+      <button>⭐ Đánh giá cao</button>
+      <button>🏨 Cao cấp</button>
+    </div>
+
+    <!-- ===== ROOM LIST ===== -->
+    <div class="room-list">
+      {% for room in rooms %}
+      <div class="room-card">
+        <a href="{{ url_for('room_detail', room_id=room.id) }}">
+          <img src="/static/{{ room.image }}" />
+        </a>
+
+        <div class="room-info">
+          <h3>{{ room.name }}</h3>
+          <p>📍 {{ room.location }}</p>
+
+          <div class="rating">⭐ {{ room.rating }}</div>
+
+          <div class="bottom">
+            <div class="price">{{ room.price }}</div>
+            <button>Xem phòng</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+
+    <footer class="footer">
+      <div class="contact">
+        <h4>Liên hệ</h4>
+        <p>Email: support@eshop.com</p>
+        <p>Điện thoại: 0123-456-789</p>
+      </div>
+
+      <div class="law">
+        <h4>Chính sách</h4>
+        <p>Chính sách đổi trả</p>
+        <p>Chính sách bảo hành</p>
+        <p>Chính sách vận chuyển</p>
+      </div>
+
+      <div class="social">
+        <h4>Theo dõi</h4>
+        <a href="#">Facebook | </a>
+        <a href="#">Instagram | </a>
+        <a href="#">Twitter</a>
+      </div>
+      <p class="copyright">@ 2026 E-shop. Tất cả quyền được bảo lưu</p>
+    </footer>
+  </body>
+</html>

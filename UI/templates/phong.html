@@ -1,0 +1,107 @@
+{% extends "management_layout.html" %} {% block title %}Quản lý phòng{% endblock
+%} {% block content %}
+<div class="room-header">
+  <div>
+    <h1>Quản lý phòng</h1>
+    <p>Theo dõi và cập nhật trạng thái phòng</p>
+  </div>
+  <a href="#" class="btn-add-room"
+    ><i class="fa-solid fa-plus"></i> Thêm phòng</a
+  >
+</div>
+
+<div class="status-grid">
+  <div
+    class="status-box bg-blue"
+    style="background: var(--sidebar-bg); color: white"
+  >
+    6 <span>Tất cả</span>
+  </div>
+  <div class="status-box bg-green">3 <span>Trống</span></div>
+  <div class="status-box bg-yellow">1 <span>Đã đặt</span></div>
+  <div class="status-box bg-blue">1 <span>Đã nhận</span></div>
+  <div class="status-box bg-red">1 <span>Bảo trì</span></div>
+</div>
+
+<div class="room-grid">
+  <div class="room-card">
+    <div class="room-img-container">
+      <img src="{{ url_for('static', filename='PhongDoi.png') }}" alt="Room" />
+      <span class="status-tag bg-green">Trống</span>
+      <span class="room-number-tag">Phòng 101</span>
+    </div>
+    <div class="room-info">
+      <h3>Phòng Tiêu Chuẩn</h3>
+      <div class="room-meta">
+        <span><i class="fa-solid fa-user-group"></i> 2 Khách</span>
+        <span><i class="fa-solid fa-money-bill"></i> 800.000 đ</span>
+      </div>
+      <div class="room-facilities">
+        <span class="facility-tag">WiFi Tốc Độ Cao</span>
+        <span class="facility-tag">Room Service 24/7</span>
+      </div>
+      <div class="room-actions">
+        <button class="btn-edit-room">
+          <i class="fa-solid fa-pen"></i> Chỉnh sửa
+        </button>
+        <button class="btn-tool-room">
+          <i class="fa-solid fa-wrench"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="room-card">
+    <div class="room-img-container">
+      <img src="{{ url_for('static', filename='PhongDoi.png') }}" alt="Room" />
+      <span class="status-tag bg-yellow">Đã đặt</span>
+      <span class="room-number-tag">Phòng 201</span>
+    </div>
+    <div class="room-info">
+      <h3>Phòng Deluxe</h3>
+      <div class="room-meta">
+        <span><i class="fa-solid fa-user-group"></i> 2 Khách</span>
+        <span><i class="fa-solid fa-money-bill"></i> 1.500.000 đ</span>
+      </div>
+      <div class="room-facilities">
+        <span class="facility-tag">Bữa Sáng</span>
+        <span class="facility-tag">Phòng Gym</span>
+      </div>
+      <div class="room-actions">
+        <button class="btn-edit-room">
+          <i class="fa-solid fa-pen"></i> Chỉnh sửa
+        </button>
+        <button class="btn-tool-room">
+          <i class="fa-solid fa-wrench"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="room-card">
+    <div class="room-img-container">
+      <img src="{{ url_for('static', filename='PhongDoi.png') }}" alt="Room" />
+      <span class="status-tag bg-red">Bảo trì</span>
+      <span class="room-number-tag">Phòng 202</span>
+    </div>
+    <div class="room-info">
+      <h3>Phòng Penthouse</h3>
+      <div class="room-meta">
+        <span><i class="fa-solid fa-user-group"></i> 4 Khách</span>
+        <span><i class="fa-solid fa-money-bill"></i> 5.000.000 đ</span>
+      </div>
+      <div class="room-facilities">
+        <span class="facility-tag">Hồ Bơi Riêng</span>
+      </div>
+      <div class="room-actions">
+        <button class="btn-edit-room">
+          <i class="fa-solid fa-pen"></i> Chỉnh sửa
+        </button>
+        <button class="btn-tool-room">
+          <i class="fa-solid fa-wrench"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

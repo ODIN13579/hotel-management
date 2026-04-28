@@ -1,0 +1,4 @@
+.vscode/ 
+test_code/
+__pycache__/
+db.py
