@@ -14,10 +14,23 @@ INSERT INTO Employees (Employee_ID, Name, Email, Phone, Password, Role, Status) 
 
 -- 3. Thêm dữ liệu Dịch vụ
 INSERT INTO Services (Service_ID, Name, Description, Price) VALUES
-('S01', N'Ăn sáng Buffet', N'Buffet sáng tự chọn từ 6h00 - 9h30', 150000.00),
-('S02', N'Hồ bơi vô cực', N'Sử dụng hồ bơi trên sân thượng', 100000.00),
-('S03', N'Spa & Massage', N'Gói thư giãn toàn thân 60 phút', 500000.00),
-('S04', N'Giặt ủi', N'Dịch vụ giặt sấy giao trong ngày', 50000.00);
+('S001', N'Giường đôi', N'Giường đôi tiêu chuẩn', 0),
+('S002', N'Wifi miễn phí', N'Wifi tốc độ cao miễn phí', 0),
+('S003', N'Máy lạnh', N'Điều hòa nhiệt độ', 0),
+('S004', N'TV', N'Tivi màn hình phẳng', 0),
+('S005', N'Phòng tắm riêng', N'Phòng tắm riêng có nước nóng', 0),
+
+('S006', N'Máy pha cà phê', N'Máy pha cà phê trong phòng', 50000),
+('S007', N'Mini bar', N'Tủ đồ uống trong phòng', 200000),
+('S008', N'Đồ vệ sinh cá nhân', N'Bộ đồ vệ sinh miễn phí', 0),
+('S009', N'Gương trang điểm', N'Gương trang điểm có đèn', 0),
+('S010', N'Điện thoại nội bộ', N'Liên lạc nội bộ khách sạn', 0),
+
+('S011', N'Bồn tắm / Jacuzzi', N'Bồn tắm cao cấp / Jacuzzi', 300000),
+('S012', N'Phòng khách riêng', N'Phòng khách riêng trong suite', 500000),
+('S013', N'Spa trong phòng', N'Dịch vụ spa tại phòng', 400000),
+('S014', N'Room service 24/7', N'Phục vụ phòng 24/7', 100000),
+('S015', N'Rượu / minibar cao cấp', N'Minibar cao cấp với rượu', 300000);
 
 -- 4. Thêm dữ liệu 10 Phòng
 INSERT INTO Rooms (Room_ID, Room_Number, Room_type, Capacity, Price_Per_Night, Status) VALUES
