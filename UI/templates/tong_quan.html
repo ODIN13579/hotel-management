@@ -2,7 +2,10 @@
 {% block content %}
 <header>
   <h1>Tổng quan</h1>
-  <p>Xin chào, Lê Thị Thu! Hôm nay là Thứ Hai, 27/04/2026</p>
+  <p>
+    Xin chào, {{ session.admin.name if 'admin' in session else 'bạn' }}! Hôm nay
+    là {{ current_date }}
+  </p>
 </header>
 
 <div class="stats-grid">

@@ -77,6 +77,11 @@ def login():
             result_admin = cursor.fetchone()
             
             if result_admin:
+                session["admin"] = {
+                    "id": result_admin[0],
+                    "name": result_admin[1],
+                    "role": result_admin[5]
+                }
                 return redirect("/management")
             
     return render_template("login.html")
@@ -201,6 +206,12 @@ def confirm():
         total=total
     )
 
+# ================ LOGOUT =================
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
 # ================ MANAGEMENT =================
 @app.route("/management")
 def tong_quan():    
@@ -217,9 +228,15 @@ def tong_quan():
             'DaNhan': 0,
             'BaoTri': 0
         }
+
+    now = datetime.now()
+    weekdays = ["thứ 2", "thứ 3", "thứ 4", "thứ 5", "thứ 6", "thứ 7", "chủ nhật"]
+    current_date_vn = f"{weekdays[now.weekday()]}, {now.strftime('%d/%m/%Y')}"
+
     return render_template("tong_quan.html",
                             stats=stats_data,
-                            recent_bookings=recent_data)
+                            recent_bookings=recent_data,
+                            current_date=current_date_vn)
 
 # ================= thông tin cá nhân =================
 @app.route("/profile", methods=["GET", "POST"])

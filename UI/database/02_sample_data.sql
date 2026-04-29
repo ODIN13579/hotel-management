@@ -24,13 +24,13 @@ INSERT INTO Rooms (Room_ID, Room_Number, Room_type, Capacity, Price_Per_Night, S
 ('R01', '101', N'Standard', 2, 500000.00, N'Có sẵn'),
 ('R02', '102', N'Standard', 2, 500000.00, N'Có sẵn'),
 ('R03', '103', N'Standard', 2, 500000.00, N'Bảo trì'),
-('R04', '201', N'Superior', 2, 800000.00, N'Đã nhận'),
-('R05', '202', N'Superior', 3, 900000.00, N'Có sẵn'),
-('R06', '203', N'Superior', 3, 900000.00, N'Có sẵn'),
+('R04', '201', N'Standard', 2, 800000.00, N'Đã nhận'),
+('R05', '202', N'Standard', 3, 900000.00, N'Có sẵn'),
+('R06', '203', N'Standard', 3, 900000.00, N'Có sẵn'),
 ('R07', '301', N'Deluxe', 2, 1200000.00, N'Đã đặt'),
 ('R08', '302', N'Deluxe', 4, 1500000.00, N'Có sẵn'),
-('R09', '401', N'Suite VIP', 2, 2500000.00, N'Bảo trì'),
-('R10', '402', N'Suite VIP', 4, 3000000.00, N'Đã đặt');
+('R09', '401', N'VIP', 2, 2500000.00, N'Bảo trì'),
+('R10', '402', N'VIP', 4, 3000000.00, N'Đã đặt');
 
 -- 5. Liên kết Dịch vụ vào Phòng
 INSERT INTO Rooms_Services (Room_ID, Service_ID) VALUES
