@@ -120,3 +120,30 @@ BEGIN
 
 END
 GO
+
+-- 7. Thêm tài khoản user
+CREATE PROCEDURE InsertNewUser(
+    @user_id VARCHAR(50),
+    @username VARCHAR(50),
+    @email VARCHAR(50),
+    @phone VARCHAR(50),
+    @pass VARCHAR(50)
+)
+AS
+BEGIN
+
+
+    INSERT INTO [dbo].[Users]
+               ([User_ID]
+               ,[Name]
+               ,[Email]
+               ,[Phone]
+               ,[Password])
+         VALUES
+               (@user_id
+               , @username
+               , @email
+               , @phone
+               , @pass)
+END
+GO

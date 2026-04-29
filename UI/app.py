@@ -64,7 +64,7 @@ def login():
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM Users WHERE Email = ? AND Password = ?", (user, pw))
+        cursor.execute("SELECT * FROM LoginUser(?, ?)", (user, pw))
         result = cursor.fetchone()
 
         if result:
@@ -73,7 +73,7 @@ def login():
             #     return redirect("/")
             return redirect("/dashboard")
         else:
-            cursor.execute("""SELECT * FROM Employees WHERE Email = ? AND Password = ?""", (user, pw))
+            cursor.execute("SELECT * FROM LoginManager  (?, ?)", (user, pw))
             result_admin = cursor.fetchone()
             
             if result_admin:
@@ -95,7 +95,7 @@ def dashboard():
     cursor.execute("SELECT * FROM Reviews")
     reviews = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM Users WHERE User_ID = ?", (user_id,))
+    cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
     user = cursor.fetchone()
 
     return render_template("dashboard.html", rooms=rooms, reviews=reviews, user=user)
@@ -114,10 +114,7 @@ def register():
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("""
-            INSERT INTO Users(User_ID, Name, Email, Phone, Password)
-            VALUES (?, ?, ?, ?, ?)
-        """, (uid, name, mail, np, pw))
+        cursor.execute("EXEC InsertNewUser ?, ?, ?, ?, ?", (uid, name, mail, np, pw))
         conn.commit()
 
         return redirect("/")  
@@ -151,7 +148,7 @@ def room_detail():
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM Rooms WHERE Room_ID = ?", (room_id,))
+        cursor.execute("SELECT * FROM GetRoom(?)", (room_id,))
         room = cursor.fetchone()
 
         cursor.execute("SELECT dbo.GetRatingRoom(?)", (room_id,))
@@ -163,7 +160,7 @@ def room_detail():
         show_VIP = room_type == "VIP"
         show_Deluxe = room_type in  ["Deluxe", "VIP"]
 
-        cursor.execute("SELECT * FROM Users WHERE User_ID = ?", (user_id,))
+        cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
         user = cursor.fetchone()
 
         return render_template("room_detail.html", room=room, review=review, show_Deluxe=show_Deluxe, show_VIP=show_VIP, user=user  )
@@ -180,7 +177,7 @@ def confirm():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM Rooms WHERE Room_ID = ?", (room_id,))
+    cursor.execute("SELECT * FROM GetRoom(?)", (room_id,))
     room = cursor.fetchone()
 
     # tính số đêm
@@ -231,7 +228,7 @@ def profile():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM Users WHERE User_ID = ?", (id,))
+    cursor.execute("SELECT * FROM GetUser(?)", (id,))
     user = cursor.fetchone()
 
     if request.method == "POST":
