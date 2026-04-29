@@ -147,3 +147,17 @@ BEGIN
                , @pass)
 END
 GO
+
+-- 8. Cập nhật thông tin User
+CREATE PROCEDURE UpdateInforUser(
+    @user_id VARCHAR(50),
+    @new_name VARCHAR(50),
+    @new_phone VARCHAR(50)
+)
+AS
+BEGIN
+    UPDATE Users 
+    SET Name = @new_name, Phone = @new_phone
+    WHERE User_ID = @user_id
+END
+GO
