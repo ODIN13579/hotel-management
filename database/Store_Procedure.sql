@@ -148,7 +148,7 @@ BEGIN
 END
 GO
 
--- 8.Cập nhật thông tin User
+-- 8. Cập nhật thông tin User
 CREATE PROCEDURE UpdateInforUser(
     @user_id VARCHAR(50),
     @new_name VARCHAR(50),
