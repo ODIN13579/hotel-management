@@ -163,7 +163,7 @@ def room_detail():
         cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
         user = cursor.fetchone()
 
-        return render_template("room_detail.html", room=room, review=review, show_Deluxe=show_Deluxe, show_VIP=show_VIP, user=user  )
+        return render_template("room_detail.html", room=room, review=review, show_Deluxe=show_Deluxe, show_VIP=show_VIP, user=users)
     return "Không có dữ liệu"
         
 
@@ -235,11 +235,7 @@ def profile():
         name = request.form.get("name")
         phone = request.form.get("phone")
 
-        cursor.execute("""
-            UPDATE Users
-            SET Name = ?, Phone = ?
-            WHERE User_ID = ?
-        """, (name, phone, id))
+        cursor.execute("EXEC UpdateInforUser ?, ?, ?", (name, phone, id))
         conn.commit()
 
         return redirect(f"/profile/{id}")
