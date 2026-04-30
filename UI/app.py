@@ -163,7 +163,7 @@ def room_detail():
         cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
         user = cursor.fetchone()
 
-        return render_template("room_detail.html", room=room, review=review, show_Deluxe=show_Deluxe, show_VIP=show_VIP, user=users)
+        return render_template("room_detail.html", room=room, review=review, show_Deluxe=show_Deluxe, show_VIP=show_VIP, user=user)
     return "Không có dữ liệu"
         
 
@@ -268,7 +268,10 @@ def add_service():
     sid = "S" + str(uuid.uuid4())[:5]
     name = request.form.get("name")
     description = request.form.get("description")
-    price = request.form.get("price")
+    price_raw = request.form.get("price") or "0"
+
+    price_raw = price_raw.replace(".", "").replace(",", "")
+    price = float(price_raw)
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -323,7 +326,20 @@ def quan_ly_thanh_toan():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM Payment")
+    cursor.execute("""
+    SELECT 
+      p.Payment_ID,
+      p.Booking_ID,
+      p.Amount,
+      p.Payment_Date,
+      p.Status,
+      u.Name,
+      r.Room_Number
+    FROM Payment p
+    JOIN Bookings b ON p.Booking_ID = b.Booking_ID
+    JOIN Users u ON b.User_ID = u.User_ID
+    JOIN Rooms r ON b.Room_ID = r.Room_ID
+    """)
     payments = cursor.fetchall()
 
     conn.close()
@@ -377,7 +393,10 @@ def quan_ly_nhan_vien():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM Employees")
+    cursor.execute("""
+       SELECT * FROM Employees
+       WHERE Status != N'nghỉ không phép'
+    """)
     employees = cursor.fetchall()
 
     conn.close()
@@ -440,6 +459,7 @@ def update_staff_status():
 
     conn = get_connection()
     cursor = conn.cursor()
+    
     cursor.execute("""
         UPDATE Employees
         SET Status = ?
@@ -457,10 +477,11 @@ def delete_staff(employee_id):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "DELETE FROM Employees WHERE Employee_ID = ?",
-        (employee_id,)
-    )
+    cursor.execute("""
+        UPDATE Employees
+        SET Status = N'nghỉ không phép'
+        WHERE Employee_ID = ?
+    """, (employee_id,))
 
     conn.commit()
     conn.close()

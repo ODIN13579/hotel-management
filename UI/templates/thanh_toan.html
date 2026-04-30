@@ -59,10 +59,10 @@ endblock %} {% block content %}
   <tr>
     <td>{{ payment[0] }}</td>
     <td>{{ payment[1] }}</td>
-    <td>---</td>
-    <td>---</td>
+    <td>{{ payment[5] }}</td>  <!-- tên khách -->
+    <td>Phòng {{ payment[6] }}</td>
     <td><strong>{{ "{:,.0f}".format(payment[2]) }} đ</strong></td>
-    <td>---</td>
+    <td>chuyển khoản</td>
 <td>{{ payment[3].strftime("%d/%m/%Y %H:%M") if payment[3] else "" }}</td>
 <td>
   {% if payment[4] == "thành công" %}
@@ -87,49 +87,6 @@ endblock %} {% block content %}
 </td>
 </tr>
   {% endfor %}
-</tbody>
-      <tr>
-        <td>P003</td>
-        <td>B005</td>
-        <td>Hoàng Thị Lan</td>
-        <td>Phòng Presidential Suite (401)</td>
-        <td><strong>3.500.000 đ</strong></td>
-        <td><span class="method-badge method-credit">Thẻ tín dụng</span></td>
-        <td>16:00 20/03/2026</td>
-        <td>
-          <span class="badge badge-pending"
-            ><i class="fa-regular fa-clock"></i> Chờ thanh toán</span
-          >
-        </td>
-      </tr>
-      <tr>
-        <td>P001</td>
-        <td>B001</td>
-        <td>Nguyễn Văn An</td>
-        <td>Phòng Deluxe (201)</td>
-        <td><strong>1.050.000 đ</strong></td>
-        <td><span class="method-badge method-transfer">Chuyển khoản</span></td>
-        <td>15:00 10/03/2026</td>
-        <td>
-          <span class="badge badge-checkin"
-            ><i class="fa-regular fa-circle-check"></i> Đã thanh toán</span
-          >
-        </td>
-      </tr>
-      <tr>
-        <td>P005</td>
-        <td>B007</td>
-        <td>Trần Thị Bích</td>
-        <td>Phòng Deluxe (201)</td>
-        <td><strong>450.000 đ</strong></td>
-        <td><span class="method-badge method-transfer">Chuyển khoản</span></td>
-        <td>09:00 05/02/2026</td>
-        <td>
-          <span class="badge badge-refund"
-            ><i class="fa-solid fa-rotate-left"></i> Hoàn tiền</span
-          >
-        </td>
-      </tr>
     </tbody>
   </table>
 </div>

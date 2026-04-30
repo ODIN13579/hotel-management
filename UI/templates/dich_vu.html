@@ -5,7 +5,6 @@ endblock %} {% block content %}
     <h1>Quản lý dịch vụ</h1>
     <p>Quản lý các dịch vụ tiện ích của khách sạn</p>
   </div>
-<<<<<<< HEAD
   <form action="/services/add" method="POST">
   <input name="name" placeholder="Tên dịch vụ">
   <input name="description" placeholder="Mô tả">
@@ -15,11 +14,7 @@ endblock %} {% block content %}
     <i class="fa-solid fa-plus"></i> Thêm dịch vụ
   </button>
 </form>
-=======
-  <a href="#" class="btn-add-room"
-    ><i class="fa-solid fa-plus"></i> Thêm dịch vụ</a
-  >
->>>>>>> 78494ab822c6938954b42e9755583384c8be5f28
+
 </div>
 
 <div class="service-stats">
@@ -69,43 +64,5 @@ endblock %} {% block content %}
 
   </div>
   {% endfor %}
-  <div class="service-card">
-    <i class="fa-solid fa-pen service-edit-icon"></i>
-    <div class="service-card-header">
-      <div class="service-icon"><i class="fa-solid fa-wifi"></i></div>
-      <h3>WiFi Tốc Độ Cao</h3>
-    </div>
-    <p>Kết nối internet tốc độ cao không giới hạn</p>
-    <div class="service-footer">
-      <span class="service-code">SV001</span>
-      <span class="price-tag tag-free">Miễn phí</span>
-    </div>
-  </div>
-
-  <div class="service-card">
-    <i class="fa-solid fa-pen service-edit-icon"></i>
-    <div class="service-card-header">
-      <div class="service-icon"><i class="fa-solid fa-utensils"></i></div>
-      <h3>Bữa Sáng</h3>
-    </div>
-    <p>Buffet sáng với đa dạng món ăn</p>
-    <div class="service-footer">
-      <span class="service-code">SV002</span>
-      <span class="price-tag tag-paid">150.000 đ</span>
-    </div>
-  </div>
-
-  <div class="service-card">
-    <i class="fa-solid fa-pen service-edit-icon"></i>
-    <div class="service-card-header">
-      <div class="service-icon"><i class="fa-solid fa-dumbbell"></i></div>
-      <h3>Phòng Gym</h3>
-    </div>
-    <p>Sử dụng phòng tập gym hiện đại 24/7</p>
-    <div class="service-footer">
-      <span class="service-code">SV003</span>
-      <span class="price-tag tag-paid">100.000 đ</span>
-    </div>
-  </div>
 </div>
 {% endblock %}
