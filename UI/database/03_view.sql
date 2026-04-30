@@ -1,5 +1,5 @@
--- View lấy thông tin đặt phòng đầy đủ 10 phòng để hiển thị
-CREATE or alter VIEW v_DashboardRecentBookings AS
+-- View lấy thông tin đặt phòng 10 đơn gần nhất để hiển thị (chỉ lấy đơn đang hoạt động)
+CREATE OR ALTER VIEW v_DashboardRecentBookings AS
 SELECT TOP 10 
     b.Booking_ID, 
     u.Name AS Customer_Name, 
@@ -9,7 +9,8 @@ SELECT TOP 10
 FROM Bookings b
 JOIN Users u ON b.User_ID = u.User_ID
 JOIN Rooms r ON b.Room_ID = r.Room_ID
-ORDER BY b.Booking_Date DESC; -- Luôn đưa đơn mới nhất lên đầu
+WHERE b.Status NOT IN (N'Đã trả phòng', N'Đã hủy') -- Lọc bỏ các phòng đã xong hoặc bị hủy
+ORDER BY b.Booking_Date DESC; 
 GO
 -- VIEW: LẤY TOÀN BỘ DANH SÁCH ĐẶT PHÒNG
 CREATE OR ALTER VIEW v_ManageBookings AS

@@ -38,7 +38,7 @@
 </div>
 
 <div class="table-container">
-  <h3>Đặt phòng gần đây</h3>
+  <h3>Đặt phòng gần đây (Đang hoạt động)</h3>
   <table>
     <thead>
       <tr>
@@ -57,8 +57,10 @@
         <td>{{ booking.Room_Number }}</td>
         <td>{{ booking.Check_In.strftime('%d/%m/%Y') }}</td>
         <td>
+          <!-- Ép toàn bộ trạng thái về chữ thường để so sánh chuẩn xác -->
+          {% set st = (booking.Status|string|lower).strip() %}
           <span
-            class="badge {% if booking.Status == 'đã xác nhận' %}badge-confirmed {% elif booking.Status == 'đã trả phòng' %}badge-checkout {% elif booking.Status == 'đã hủy' %}badge-cancel {% else %}badge-pending{% endif %}"
+            class="badge {% if st == 'chờ xác nhận' %}badge-pending {% elif st == 'đã xác nhận' %}badge-confirmed {% elif st == 'đã nhận phòng' %}badge-inhouse {% elif st == 'đã trả phòng' %}badge-checkout {% elif st == 'đã hủy' %}badge-cancel {% else %}badge-pending{% endif %}"
           >
             {{ booking.Status }}
           </span>
@@ -67,7 +69,7 @@
       {% else %}
       <tr>
         <td colspan="5" style="text-align: center; color: var(--text-gray)">
-          Chưa có dữ liệu đặt phòng nào.
+          Chưa có dữ liệu đặt phòng nào đang hoạt động.
         </td>
       </tr>
       {% endfor %}
