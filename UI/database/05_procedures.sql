@@ -201,3 +201,125 @@ BEGIN
     WHERE User_ID = @user_id
 END
 GO
+
+-- 9. "Xác nhận" (Booking: Đã xác nhận | Room: đã đặt)
+CREATE OR ALTER PROCEDURE sp_ConfirmBooking
+    @BookingID VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Bookings SET Status = N'Đã xác nhận' WHERE Booking_ID = @BookingID;
+    
+    UPDATE Rooms SET Status = N'đã đặt'
+    WHERE Room_ID = (SELECT Room_ID FROM Bookings WHERE Booking_ID = @BookingID);
+END;
+GO
+
+-- 10. "Nhận phòng" (Booking: Đã nhận phòng | Room: đã nhận)
+CREATE OR ALTER PROCEDURE sp_CheckInBooking
+    @BookingID VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Bookings SET Status = N'Đã nhận phòng' WHERE Booking_ID = @BookingID;
+    
+    UPDATE Rooms SET Status = N'đã nhận'
+    WHERE Room_ID = (SELECT Room_ID FROM Bookings WHERE Booking_ID = @BookingID);
+END;
+GO
+-- 11. "Trả phòng" (Booking: Đã trả phòng | Room: có sẵn)
+CREATE OR ALTER PROCEDURE sp_CheckOutBooking
+    @BookingID VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Bookings SET Status = N'Đã trả phòng' WHERE Booking_ID = @BookingID;
+    
+    UPDATE Rooms SET Status = N'có sẵn'
+    WHERE Room_ID = (SELECT Room_ID FROM Bookings WHERE Booking_ID = @BookingID);
+END;
+GO
+-- 12."Hủy" (Booking: Đã hủy | Room: có sẵn)
+CREATE OR ALTER PROCEDURE sp_CancelBooking
+    @BookingID VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Bookings SET Status = N'Đã hủy' WHERE Booking_ID = @BookingID;
+    
+    UPDATE Rooms SET Status = N'có sẵn'
+    WHERE Room_ID = (SELECT Room_ID FROM Bookings WHERE Booking_ID = @BookingID);
+END;
+GO
+
+-- 13. Cập nhật thông tin cơ bản của phòng
+CREATE OR ALTER PROCEDURE sp_UpdateRoomInfo
+    @RoomID VARCHAR(50),
+    @RoomType NVARCHAR(100),
+    @Capacity INT,
+    @Price DECIMAL(18,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Rooms
+    SET Room_type = @RoomType,
+        Capacity = @Capacity,
+        Price_Per_Night = @Price
+    WHERE Room_ID = @RoomID;
+END;
+GO
+
+-- 14. Procedure tính thống kê Hóa đơn (theo tháng hiện tại)
+CREATE OR ALTER PROCEDURE sp_GetInvoiceStats
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @TotalInvoices INT = (SELECT COUNT(*) FROM Invoices);
+    
+    DECLARE @MonthlyRevenue DECIMAL(18,2) = (
+        SELECT ISNULL(SUM(Total_Amount), 0) 
+        FROM Invoices 
+        WHERE MONTH(Issued_Date) = MONTH(GETDATE()) 
+          AND YEAR(Issued_Date) = YEAR(GETDATE())
+    );
+
+    DECLARE @MonthlyInvoices INT = (
+        SELECT COUNT(*) FROM Invoices 
+        WHERE MONTH(Issued_Date) = MONTH(GETDATE()) 
+          AND YEAR(Issued_Date) = YEAR(GETDATE())
+    );
+
+    DECLARE @AvgPerInvoice DECIMAL(18,2) = 0;
+    IF @MonthlyInvoices > 0
+        SET @AvgPerInvoice = @MonthlyRevenue / @MonthlyInvoices;
+
+    SELECT 
+        @TotalInvoices AS TotalInvoices,
+        @MonthlyRevenue AS MonthlyRevenue,
+        @AvgPerInvoice AS AvgPerInvoice;
+END;
+GO
+-- 15 Procedure chuyển trạng thái phòng giữa "có sẵn" và "bảo trì"
+CREATE OR ALTER PROCEDURE sp_ToggleRoomMaintenance
+    @RoomID VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @CurrentStatus NVARCHAR(50);
+    
+    -- Lấy trạng thái hiện tại của phòng
+    SELECT @CurrentStatus = Status FROM Rooms WHERE Room_ID = @RoomID;
+    
+    -- Nếu đang "có sẵn" -> Đổi thành "bảo trì"
+    IF @CurrentStatus = N'có sẵn'
+    BEGIN
+        UPDATE Rooms SET Status = N'bảo trì' WHERE Room_ID = @RoomID;
+    END
+    -- Nếu đang "bảo trì" -> Đổi lại thành "có sẵn"
+    ELSE IF @CurrentStatus = N'bảo trì'
+    BEGIN
+        UPDATE Rooms SET Status = N'có sẵn' WHERE Room_ID = @RoomID;
+    END
+    -- Bỏ qua nếu phòng "đã đặt" hoặc "đã nhận" để tránh lỗi dữ liệu đặt phòng
+END;
+GO

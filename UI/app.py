@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_from_directory
 from flask import session
 from db import get_connection
 from datetime import datetime
 import uuid
+import os
 
 app = Flask(__name__)
 app.secret_key = "abc123"
@@ -51,7 +52,12 @@ def get_recent_bookings():
     finally:
         conn.close()
 
-
+# ================= ROUTE LẤY ẢNH TỪ THƯ MỤC BÊN NGOÀI =================
+@app.route('/room_images/<path:filename>')
+def room_images(filename):
+    # Chỉ đường cho Flask tới thư mục "10 phòng" nằm ngang hàng với app.py
+    image_dir = os.path.join(app.root_path, '10 phòng')
+    return send_from_directory(image_dir, filename)
 
 # ================= LOGIN =================
 @app.route("/", methods=["GET", "POST"])
@@ -77,6 +83,11 @@ def login():
             result_admin = cursor.fetchone()
             
             if result_admin:
+                session["admin"] = {
+                    "id": result_admin[0],
+                    "name": result_admin[1],
+                    "role": result_admin[5]
+                }
                 return redirect("/management")
             
     return render_template("login.html")
@@ -201,6 +212,12 @@ def confirm():
         total=total
     )
 
+# ================ LOGOUT =================
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
 # ================ MANAGEMENT =================
 @app.route("/management")
 def tong_quan():    
@@ -217,9 +234,15 @@ def tong_quan():
             'DaNhan': 0,
             'BaoTri': 0
         }
+
+    now = datetime.now()
+    weekdays = ["thứ 2", "thứ 3", "thứ 4", "thứ 5", "thứ 6", "thứ 7", "chủ nhật"]
+    current_date_vn = f"{weekdays[now.weekday()]}, {now.strftime('%d/%m/%Y')}"
+
     return render_template("tong_quan.html",
                             stats=stats_data,
-                            recent_bookings=recent_data)
+                            recent_bookings=recent_data,
+                            current_date=current_date_vn)
 
 # ================= thông tin cá nhân =================
 @app.route("/profile", methods=["GET", "POST"])
@@ -242,13 +265,110 @@ def profile():
 
     return render_template("profile.html", user=user)
 
-@app.route("/bookings")
-def bookings():
-    return render_template("dat_phong.html")
+# @app.route("/bookings")
+# def bookings():
+#     return render_template("dat_phong.html")
 
+# ================= QUẢN LÝ PHÒNG =================
 @app.route("/rooms")
 def quan_ly_phong():
-    return render_template("phong.html")
+    if "admin" not in session:
+        return redirect("/")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Lấy danh sách phòng
+        cursor.execute("SELECT * FROM Rooms ORDER BY Room_Number")
+        columns = [column[0] for column in cursor.description]
+        rooms = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        
+        # Thống kê trạng thái phòng
+        stats = {
+            'TatCa': len(rooms),
+            'Trong': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'có sẵn'),
+            'DaDat': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'đã đặt'),
+            'DaNhan': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'đã nhận'),
+            'BaoTri': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'bảo trì')
+        }
+
+        # --- PHẦN THÊM MỚI CHO CHỈNH SỬA ---
+        # Lấy tất cả dịch vụ hiện có trong hệ thống
+        cursor.execute("SELECT * FROM Services")
+        cols_svc = [column[0] for column in cursor.description]
+        all_services = [dict(zip(cols_svc, row)) for row in cursor.fetchall()]
+
+        # Lấy mapping phòng và các dịch vụ phòng đó đang sở hữu
+        cursor.execute("SELECT Room_ID, Service_ID FROM Rooms_Services")
+        room_services_map = {}
+        for row in cursor.fetchall():
+            rid, sid = row[0], row[1]
+            if rid not in room_services_map:
+                room_services_map[rid] = []
+            room_services_map[rid].append(sid)
+        
+        return render_template("phong.html", rooms=rooms, stats=stats, 
+                               all_services=all_services, room_services_map=room_services_map)
+    except Exception as e:
+        print(f"Lỗi tải danh sách phòng: {e}")
+        return "Lỗi hệ thống", 500
+    finally:
+        conn.close()
+# ================= NÚT BẢO TRÌ PHÒNG =================
+@app.route("/rooms/maintenance/<room_id>")
+def toggle_maintenance(room_id):
+    if "admin" not in session:
+        return redirect("/")
+        
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        # Gọi thủ tục SQL để đảo trạng thái phòng
+        cursor.execute("EXEC sp_ToggleRoomMaintenance ?", (room_id,))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Lỗi khi bảo trì phòng: {e}")
+    finally:
+        conn.close()
+        
+    # Quay lại trang quản lý phòng sau khi bấm
+    return redirect("/rooms")
+
+# ================= ROUTE CẬP NHẬT PHÒNG =================
+@app.route("/rooms/update", methods=["POST"])
+def update_room():
+    if "admin" not in session:
+        return redirect("/")
+        
+    room_id = request.form.get("room_id")
+    room_type = request.form.get("room_type")
+    capacity = request.form.get("capacity")
+    price = request.form.get("price")
+    # Lấy mảng các Service_ID được check từ form
+    selected_services = request.form.getlist("services") 
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # 1. Gọi Procedure cập nhật bảng Rooms
+        cursor.execute("EXEC sp_UpdateRoomInfo ?, ?, ?, ?", (room_id, room_type, capacity, price))
+        
+        # 2. Xử lý bảng Rooms_Services (Xóa liên kết cũ, thêm liên kết mới)
+        cursor.execute("DELETE FROM Rooms_Services WHERE Room_ID = ?", (room_id,))
+        for svc_id in selected_services:
+            cursor.execute("INSERT INTO Rooms_Services (Room_ID, Service_ID) VALUES (?, ?)", (room_id, svc_id))
+        
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Lỗi cập nhật phòng: {e}")
+    finally:
+        conn.close()
+        
+    return redirect("/rooms")
 
 @app.route("/services")
 def quan_ly_dich_vu():
@@ -384,9 +504,35 @@ def delete_payment(payment_id):
 # def quan_ly_thanh_toan():
 #     return render_template("thanh_toan.html")
 
+# ================= QUẢN LÝ HÓA ĐƠN =================
 @app.route("/invoices")
 def quan_ly_hoa_don():
-    return render_template("hoa_don.html")
+    if "admin" not in session:
+        return redirect("/")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        # 1. Lấy thông số thống kê
+        cursor.execute("EXEC sp_GetInvoiceStats")
+        row = cursor.fetchone()
+        stats = {
+            'TotalInvoices': row.TotalInvoices if row else 0,
+            'MonthlyRevenue': row.MonthlyRevenue if row else 0,
+            'AvgPerInvoice': row.AvgPerInvoice if row else 0
+        }
+
+        # 2. Lấy danh sách hóa đơn
+        cursor.execute("SELECT * FROM v_ManageInvoices ORDER BY Issued_Date DESC")
+        columns = [column[0] for column in cursor.description]
+        invoices = [dict(zip(columns, r)) for r in cursor.fetchall()]
+
+        return render_template("hoa_don.html", invoices=invoices, stats=stats)
+    except Exception as e:
+        print(f"Lỗi tải danh sách hóa đơn: {e}")
+        return "Lỗi hệ thống", 500
+    finally:
+        conn.close()
 
 @app.route("/staff")
 def quan_ly_nhan_vien():
@@ -403,6 +549,120 @@ def quan_ly_nhan_vien():
 
     return render_template("nhan_vien.html", employees=employees)
 
+# ================= QUẢN LÝ ĐẶT PHÒNG =================
+@app.route("/bookings")
+def quan_ly_dat_phong():
+    # Kiểm tra nếu không phải admin thì chuyển hướng về trang chủ
+    if "admin" not in session:
+        return redirect("/")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Lấy danh sách từ View
+        cursor.execute("SELECT * FROM v_ManageBookings ORDER BY Check_In DESC")
+        columns = [column[0] for column in cursor.description]
+        bookings = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        
+        # Đếm số lượng cho các tab trạng thái
+        tabs_count = {
+            'TatCa': len(bookings),
+            'ChoXacNhan': sum(1 for b in bookings if b['Status'] == 'Chờ xác nhận'),
+            'DaXacNhan': sum(1 for b in bookings if b['Status'] == 'Đã xác nhận'),
+            'DangO': sum(1 for b in bookings if b['Status'] == 'Đã nhận phòng'),
+            'DaTraPhong': sum(1 for b in bookings if b['Status'] == 'Đã trả phòng'),
+            'DaHuy': sum(1 for b in bookings if b['Status'] == 'Đã hủy')
+        }
+        
+        return render_template("dat_phong.html", bookings=bookings, tabs=tabs_count)
+    except Exception as e:
+        print(f"Lỗi tải trang đặt phòng: {e}")
+        return "Lỗi hệ thống", 500
+    finally:
+        conn.close()
+# ================= THÊM PHÒNG MỚI =================
+@app.route("/rooms/add", methods=["POST"])
+def add_room():
+    if "admin" not in session:
+        return redirect("/")
+        
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Tìm ID lớn nhất hiện tại để tính ID tiếp theo
+        cursor.execute("SELECT Room_ID FROM Rooms")
+        all_ids = [row[0] for row in cursor.fetchall()]
+        
+        # Lọc ra các ID là số và tìm số lớn nhất
+        numeric_ids = [int(i) for i in all_ids if i.isdigit()]
+        next_id_num = max(numeric_ids) + 1 if numeric_ids else 1
+        room_id = str(next_id_num) # ID mới sẽ là "1", "2", "3"...
+
+        # Lấy dữ liệu từ form
+        room_number = request.form.get("room_number")
+        room_type = request.form.get("room_type")
+        capacity = request.form.get("capacity")
+        price = request.form.get("price")
+        status = "có sẵn"
+        selected_services = request.form.getlist("services")
+
+        # Thêm vào bảng Rooms
+        cursor.execute("""
+            INSERT INTO Rooms (Room_ID, Room_Number, Room_type, Capacity, Price_Per_Night, Status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (room_id, room_number, room_type, capacity, price, status))
+        
+        # Thêm dịch vụ
+        for svc_id in selected_services:
+            cursor.execute("INSERT INTO Rooms_Services (Room_ID, Service_ID) VALUES (?, ?)", (room_id, svc_id))
+            
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Lỗi thêm phòng: {e}")
+    finally:
+        conn.close()
+        
+    return redirect("/rooms")
+
+# ================= CÁC NÚT HÀNH ĐỘNG ĐẶT PHÒNG =================
+@app.route("/bookings/confirm/<booking_id>")
+def confirm_booking(booking_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC sp_ConfirmBooking ?", (booking_id,))
+    conn.commit()
+    conn.close()
+    return redirect("/bookings")
+
+@app.route("/bookings/checkin/<booking_id>")
+def checkin_booking(booking_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC sp_CheckInBooking ?", (booking_id,))
+    conn.commit()
+    conn.close()
+    return redirect("/bookings")
+
+@app.route("/bookings/checkout/<booking_id>")
+def checkout_booking(booking_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC sp_CheckOutBooking ?", (booking_id,))
+    conn.commit()
+    conn.close()
+    return redirect("/bookings")
+
+@app.route("/bookings/cancel/<booking_id>")
+def cancel_booking(booking_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("EXEC sp_CancelBooking ?", (booking_id,))
+    conn.commit()
+    conn.close()
+    return redirect("/bookings")
 
 @app.route("/staff/add", methods=["POST"])
 def add_staff():
