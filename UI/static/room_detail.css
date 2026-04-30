@@ -89,7 +89,7 @@ body {
 
 .main-img {
     width: 100%;
-    height: 400px;
+    height: 650px;
     object-fit: cover;
     border-radius: 10px;
 }
@@ -106,6 +106,50 @@ body {
     object-fit: cover;
     border-radius: 5px;
     cursor: pointer;
+}
+
+
+/* LIGHTBOX ẨN */
+
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+
+/* HIỆN KHI CLICK */
+
+.lightbox:target {
+    display: flex;
+}
+
+
+/* ẢNH TRONG POPUP */
+
+.lightbox img {
+    width: 1000px;
+    height: 650px;
+    border-radius: 10px;
+}
+
+
+/* NÚT ĐÓNG */
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 40px;
+    color: white;
+    text-decoration: none;
 }
 
 
@@ -226,4 +270,37 @@ body {
 .booking-box:hover {
     transform: scale(1.02);
     transition: 0.3s;
+}
+
+.review {
+    display: flex;
+    margin: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.avatar {
+    width: 10%;
+    /* flex: 1; */
+    max-width: 50px;
+    background: lightblue;
+}
+
+.avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 40px;
+    margin: 25px 0px;
+}
+
+.content {
+    width: 100%;
+    background: lightgreen;
+}
+
+.infor {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 0px 10px;
 }

@@ -129,11 +129,11 @@ CREATE PROCEDURE AddBooking (
 	@user_id VARCHAR(50),
     @room_id VARCHAR(50),
     @employee_id VARCHAR(50),
-    @booking_date VARCHAR(50),
-    @room_deposit VARCHAR(50),
+    @booking_date DATETIME,
+    @room_deposit DECIMAL(18,2),
     @checkin DATETIME,
     @checkout DATETIME,
-    @status VARCHAR(50)
+    @status NVARCHAR(50)
 )
 AS
 BEGIN	
@@ -312,4 +312,32 @@ BEGIN
     END
     -- Bỏ qua nếu phòng "đã đặt" hoặc "đã nhận" để tránh lỗi dữ liệu đặt phòng
 END;
+GO
+
+
+-- 16 Tạo thanh toán
+CREATE PROCEDURE CreatePayment (
+    @payment_id VARCHAR(50),
+	@booking_id VARCHAR(50),
+	@amount DECIMAL(18,2),  
+    @payment_date DATETIME,
+    @status NVARCHAR(50)
+)
+AS
+BEGIN	
+    INSERT INTO [dbo].[Payment]
+               ([Payment_ID]
+               ,[Booking_ID]
+               ,[Amount]
+               ,[Payment_Date]
+               ,[Payment_Method]
+               ,[Status])
+         VALUES
+               (@payment_id
+               ,@booking_id
+               ,@amount
+               ,@payment_date
+               ,N'Chuyển khoản'
+               ,@status)
+END
 GO

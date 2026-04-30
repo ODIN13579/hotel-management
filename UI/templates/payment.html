@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Thanh toán</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='payment.css') }}" />
+</head>
+
+<body>
+    <div class="container">
+        <h2>Thanh toán hóa đơn</h2>
+        <!-- HIỂN THỊ THÔNG TIN -->
+        <div class="section">
+            <p><b>Payment ID: {{ payment_id }}</b></p>
+            <p><b>Booking ID: {{ booking_id }}</b></p>
+            <p><b>Ngày thanh toán: {{ day }}</b></p>
+            <p><b>Số tiền: {{ "{:,.0f}".format(total) if total else "0" }}đ</b></p>
+            <p><b>Trạng thái: {{ status }}</b></p>
+        </div>
+
+        <!-- FORM THANH TOÁN -->
+
+        <label>Phương thức thanh toán</label>
+        <p value="bank">Chuyển khoản</p>
+
+        <div class="payment-method">
+            <h3>Quét mã QR để thanh toán</h3>
+            <div class="qr-box">
+                <img src="../static/z7776866932218_4f99499282f1a440559eb71b45b12244.jpg" alt="QR Code" />
+            </div>
+        </div>
+
+
+        <form action="{{ url_for('process_payment') }}" method="POST">
+            <input type="hidden" name="booking_id" value="{{ booking_id }}">
+            <input type="hidden" name="payment_id" value="{{ payment_id }}">
+            <input type="hidden" name="total" value="{{ total }}">
+            <input type="hidden" name="room_id" value="{{ room[0] }}">
+            <input type="hidden" name="booking_date" value="{{ day }}">
+            <input type="hidden" name="checkin" value="{{ checkin }}">
+            <input type="hidden" name="checkout" value="{{ checkout }}">
+            <input type="hidden" name="status" value="{{ status }}">
+
+
+            <button type="submit">Thanh toán</button>
+        </form>
+
+
+        <a href="/dashboard" type="submit" class="Exit">Quay lại</a>
+    </div>
+</body>
+
+</html>
