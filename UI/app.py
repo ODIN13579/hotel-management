@@ -8,6 +8,8 @@ import os
 app = Flask(__name__)
 app.secret_key = "abc123"
 
+IMAGE_ROOT = r"D:/New folder/hotel-management/UI/static/10_phong"
+
 def get_dashboard_summary():
     conn = get_connection()
     cursor = conn.cursor()
@@ -109,7 +111,27 @@ def dashboard():
     cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
     user = cursor.fetchone()
 
-    return render_template("dashboard.html", rooms=rooms, reviews=reviews, user=user)
+    # ===== IMAGE MAP =====
+    image_map = {
+        "R01": "p1/p1_01.webp",
+        "R02": "p2/p2_01.webp",
+        "R03": "p3/p3_01.webp",
+        "R04": "p4/p4_01.webp",
+        "R05": "p5/p5_01.webp",
+        "R06": "p6/p6_01.webp",
+        "R07": "p7/p7_01.webp",
+        "R08": "p8/p8_01.webp",
+        "R09": "p9/p9_01.webp",
+        "R10": "p10/p10_01.webp",
+    }
+
+    return render_template(
+        "dashboard.html", 
+        rooms=rooms, 
+        reviews=reviews, 
+        user=user, 
+        image_map=image_map
+    )
 
 
 # ================= ADD USER =================
@@ -149,6 +171,13 @@ def forgotpass():
     return render_template("forgotpass.html")
 
 #===============Detail Room================
+@app.route("/10_phong/<folder>/<filename>")
+def serve_room_image(folder, filename):
+    return send_from_directory(
+        os.path.join(IMAGE_ROOT, folder),
+        filename
+    )
+
 @app.route("/room_detail", methods=["GET", "POST"])
 def room_detail():
     if request.method == "POST":
@@ -174,7 +203,39 @@ def room_detail():
         cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
         user = cursor.fetchone()
 
-        return render_template("room_detail.html", room=room, review=review, show_Deluxe=show_Deluxe, show_VIP=show_VIP, user=user)
+        # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
+        folder_map = {
+            "R01": "p1",
+            "R02": "p2",
+            "R03": "p3",
+            "R04": "p4",
+            "R05": "p5",
+            "R06": "p6",
+            "R07": "p7",
+            "R08": "p8",
+            "R09": "p9",
+            "R10": "p10",
+        }
+
+        folder = folder_map.get(room_id, "p1")
+        base_path = os.path.join(IMAGE_ROOT, folder)
+
+        images = []
+
+        if os.path.exists(base_path):
+            for file in sorted(os.listdir(base_path)):
+                if file.endswith((".webp", ".jpg", ".png")):
+                    images.append(f"/10_phong/{folder}/{file}")
+
+        return render_template(
+            "room_detail.html", 
+            room=room, 
+            review=review, 
+            show_Deluxe=show_Deluxe,
+            show_VIP=show_VIP, 
+            user=user,
+            images=images
+        )
     return "Không có dữ liệu"
         
 
@@ -201,7 +262,34 @@ def confirm():
         nights = 1
 
     total = nights * room[4]
+    
+    user_id = session.get("user_id")
+    cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
+    user = cursor.fetchone()
 
+ # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
+    folder_map = {
+        "R01": "p1",
+        "R02": "p2",
+        "R03": "p3",
+        "R04": "p4",
+        "R05": "p5",
+        "R06": "p6",
+        "R07": "p7",
+        "R08": "p8",
+        "R09": "p9",
+        "R10": "p10",
+    }
+
+    folder = folder_map.get(room_id, "p1")
+    base_path = os.path.join(IMAGE_ROOT, folder)
+
+    images = []
+    
+    if os.path.exists(base_path):
+        for file in sorted(os.listdir(base_path)):
+            if file.endswith((".webp", ".jpg", ".png")):
+                images.append(f"/10_phong/{folder}/{file}")
 
     return render_template(
         "confirm.html",
@@ -209,8 +297,94 @@ def confirm():
         checkin=checkin,
         checkout=checkout,
         nights=nights,
-        total=total
+        total=total,
+        user=user,
+        images=images
     )
+
+
+#===============Payment================
+@app.route("/payment", methods=["GET", "POST"])
+def payment():
+    user_id = session.get("user_id")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
+    user = cursor.fetchone()
+
+    booking_id = "B" + str(uuid.uuid4())[:3]
+    payment_id = "P" + str(uuid.uuid4())[:3]
+    day = datetime.now().date()
+    status = "Đã xác nhận"
+
+    if request.method == "POST":
+        # lấy dữ liệu từ confirm
+        room_id = request.form.get("room_id")
+        checkin = request.form.get("checkin")
+        checkout = request.form.get("checkout")
+        total = float(request.form.get("total"))
+
+        # tạo ID
+        booking_id = "B" + str(uuid.uuid4())[:3]
+        payment_id = "P" + str(uuid.uuid4())[:3]
+        day = datetime.now().strftime("%d/%m/%Y")
+        status = "đang chờ xử lý"
+
+        room_id = request.form.get("room_id")
+
+        cursor.execute("SELECT * FROM GetRoom(?)", (room_id,))
+        room = cursor.fetchone()
+
+        return render_template("payment.html",
+                               user=user,
+                               booking_id=booking_id,
+                               payment_id=payment_id,
+                               total=total,
+                               day=day,
+                               status=status,
+                               room_id=room_id,
+                               checkin=checkin,
+                               checkout=checkout,
+                               room=room)
+
+    return redirect("/dashboard")
+
+@app.route("/process_payment", methods=["POST"])
+def process_payment():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    booking_id = request.form.get("booking_id")
+    payment_id = request.form.get("payment_id")
+
+    total_str = request.form.get("total")
+    # xoá dấu , . đ
+    total_str = total_str.replace(",", "").replace(".", "").replace("đ", "").strip()
+    total = float(total_str)
+    
+    room_id = request.form.get("room_id")
+    checkin = datetime.strptime(request.form.get("checkin"), "%Y-%m-%d")
+    checkout = datetime.strptime(request.form.get("checkout"), "%Y-%m-%d")
+    booking_date = datetime.now()
+    status_booking = "đã xác nhận"
+    user_id = session.get("user_id")
+    employee_id = "E02"
+
+    # INSERT BOOKING
+    cursor.execute("EXEC AddBooking ?, ?, ?, ?, ?, ?, ?, ?, ?", 
+                   (booking_id, user_id, room_id, employee_id, booking_date, total, checkin, checkout, status_booking))
+
+    # INSERT PAYMENT
+    status_payment = "thành công"
+    cursor.execute("EXEC CreatePayment ?, ?, ?, ?, ?", (payment_id, booking_id, total, booking_date, status_payment))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/dashboard")
+
 
 # ================ LOGOUT =================
 @app.route("/logout")

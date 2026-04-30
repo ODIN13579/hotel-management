@@ -54,12 +54,23 @@
 
     <!-- ===== GALLERY ===== -->
     <div class="gallery">
-        <img class="main-img" src="/static/PhongDoi.png" />
+        <!-- ẢNH CHÍNH -->
+        <img class="main-img" src="{{ images[0] if images else url_for('static', filename='default.webp') }}">
 
+        <!-- DANH SÁCH ẢNH -->
+        <!-- THUMBNAILS -->
         <div class="thumbs">
-            <img src="/static/PhongDoi.png" />
-            <img src="/static/NhaVS.png" />
-            <img src="/static/PhongDoi.png" />
+            {% for img in images %}
+            <a href="#img{{ loop.index }}">
+                <img src="{{ img }}">
+            </a>
+
+            <!-- POPUP -->
+            <div id="img{{ loop.index }}" class="lightbox">
+                <a href="#" class="close">&times;</a>
+                <img src="{{ img }}">
+            </div>
+            {% endfor %}
         </div>
     </div>
 
@@ -98,8 +109,39 @@
 
             </div>
 
-            <!-- RIGHT -->
+            <!-- Review Room -->
+            <div class="review">
+                <!-- Avatar -->
+                <div class="avatar">
+                    <img src="{{ url_for('static', filename='avt.jpg') }}" />
+                </div>
 
+                <!-- Content -->
+                <div class="content">
+                    <div class="infor">
+                        <!-- User name -->
+                        <div>
+                            <p><b>name</b></p>
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="rating-user">
+                            <p>⭐<b>rating</b></p>
+                        </div>
+
+                        <!-- Date review -->
+                        <div class="date-review">
+                            <p><i>date</i></p>
+                        </div>
+                    </div>
+
+                    <div class="comment">
+                        <p>comment</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT -->
             <div class="right">
                 <form method="POST" action="{{ url_for('confirm') }}">
 
@@ -115,6 +157,8 @@
                 </form>
             </div>
         </div>
+
+
 </body>
 
 </html>

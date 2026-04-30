@@ -10,12 +10,23 @@
 <body>
     <!-- ===== GALLERY ===== -->
     <div class="gallery">
-        <img class="main-img" src="/static/PhongDoi.png" />
+        <!-- ẢNH CHÍNH -->
+        <img class="main-img" src="{{ images[0] if images else url_for('static', filename='default.webp') }}">
 
+        <!-- DANH SÁCH ẢNH -->
+        <!-- THUMBNAILS -->
         <div class="thumbs">
-            <img src="/static/PhongDoi.png" />
-            <img src="/static/NhaVS.png" />
-            <img src="/static/PhongDoi.png" />
+            {% for img in images %}
+            <a href="#img{{ loop.index }}">
+                <img src="{{ img }}">
+            </a>
+
+            <!-- POPUP -->
+            <div id="img{{ loop.index }}" class="lightbox">
+                <a href="#" class="close">&times;</a>
+                <img src="{{ img }}">
+            </div>
+            {% endfor %}
         </div>
     </div>
 
@@ -51,36 +62,25 @@
                 <p><b>Giá / đêm:</b> {{ "{:,.0f}".format(room[4]) }}đ</p>
             </div>
 
-            <form method="POST" action="{{ url_for('confirm') }}">
+            <!-- ===== CUSTOMER ===== -->
+            <div class="section">
+                <h2>Thông tin của bạn</h2>
+                <p><b>Tên tài khoản:</b> {{ user[1] }}</p>
+                <p><b>Email:</b> {{ user[2] }}</p>
+                <p><b>Số điện thoại:</b> {{ user[3] }}</p>
+            </div>
 
-                <!-- CUSTOMER -->
-                <div class="section">
-                    <h2>Thông tin của bạn</h2>
-                    <div class="input-box">
-                        <input type="text" name="username" required>
-                        <label class="lb">Tên tài khoản: </label>
-                    </div>
-
-                    <div class="input-box">
-                        <input type="text" name="email" required>
-                        <label class="lb">Email: </label>
-                    </div>
-
-                    <div class="input-box">
-                        <input type="text" name="numberphone" required>
-                        <label class="lb">Số điện thoại: </label>
-                    </div>
-                </div>
-
-                <!-- hidden -->
+            <br>
+            <form action="{{ url_for('payment') }}" method="POST">
                 <input type="hidden" name="room_id" value="{{ room[0] }}">
                 <input type="hidden" name="checkin" value="{{ checkin }}">
                 <input type="hidden" name="checkout" value="{{ checkout }}">
+                <input type="hidden" name="total" value="{{ total }}">
 
-                <button type="submit" class="confirm-btn">Xác nhận đặt phòng</button>
-
+                <button type="submit" class="confirm-btn">
+                    Xác nhận đặt phòng
+                </button>
             </form>
-
         </div>
     </div>
 
