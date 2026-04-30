@@ -268,3 +268,58 @@ BEGIN
     WHERE Room_ID = @RoomID;
 END;
 GO
+
+-- 14. Procedure tính thống kê Hóa đơn (theo tháng hiện tại)
+CREATE OR ALTER PROCEDURE sp_GetInvoiceStats
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @TotalInvoices INT = (SELECT COUNT(*) FROM Invoices);
+    
+    DECLARE @MonthlyRevenue DECIMAL(18,2) = (
+        SELECT ISNULL(SUM(Total_Amount), 0) 
+        FROM Invoices 
+        WHERE MONTH(Issued_Date) = MONTH(GETDATE()) 
+          AND YEAR(Issued_Date) = YEAR(GETDATE())
+    );
+
+    DECLARE @MonthlyInvoices INT = (
+        SELECT COUNT(*) FROM Invoices 
+        WHERE MONTH(Issued_Date) = MONTH(GETDATE()) 
+          AND YEAR(Issued_Date) = YEAR(GETDATE())
+    );
+
+    DECLARE @AvgPerInvoice DECIMAL(18,2) = 0;
+    IF @MonthlyInvoices > 0
+        SET @AvgPerInvoice = @MonthlyRevenue / @MonthlyInvoices;
+
+    SELECT 
+        @TotalInvoices AS TotalInvoices,
+        @MonthlyRevenue AS MonthlyRevenue,
+        @AvgPerInvoice AS AvgPerInvoice;
+END;
+GO
+-- 15 Procedure chuyển trạng thái phòng giữa "có sẵn" và "bảo trì"
+CREATE OR ALTER PROCEDURE sp_ToggleRoomMaintenance
+    @RoomID VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @CurrentStatus NVARCHAR(50);
+    
+    -- Lấy trạng thái hiện tại của phòng
+    SELECT @CurrentStatus = Status FROM Rooms WHERE Room_ID = @RoomID;
+    
+    -- Nếu đang "có sẵn" -> Đổi thành "bảo trì"
+    IF @CurrentStatus = N'có sẵn'
+    BEGIN
+        UPDATE Rooms SET Status = N'bảo trì' WHERE Room_ID = @RoomID;
+    END
+    -- Nếu đang "bảo trì" -> Đổi lại thành "có sẵn"
+    ELSE IF @CurrentStatus = N'bảo trì'
+    BEGIN
+        UPDATE Rooms SET Status = N'có sẵn' WHERE Room_ID = @RoomID;
+    END
+    -- Bỏ qua nếu phòng "đã đặt" hoặc "đã nhận" để tránh lỗi dữ liệu đặt phòng
+END;
+GO

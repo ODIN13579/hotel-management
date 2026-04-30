@@ -32,10 +32,12 @@
   {% for room in rooms %}
   <div class="room-card" data-status="{{ room.Status }}">
     <div class="room-img-container">
+      {% set r_id = loop.index | string %}
+
       <img
-        src="{{ url_for('static', filename='10 Phòng/p' + room.Room_ID|string + '/p' + room.Room_ID|string + '_01.webp') }}"
+        src="{{ url_for('room_images', filename='p' ~ r_id ~ '/p' ~ r_id ~ '_01.webp') }}"
         alt="Phòng {{ room.Room_Number }}"
-        onerror="this.src='{{ url_for('static', filename='PhongDoi.png') }}';"
+        onerror="this.onerror=null; this.src='{{ url_for('static', filename='PhongDoi.png') }}';"
         style="width: 100%; height: 100%; object-fit: cover"
       />
 
@@ -68,6 +70,7 @@
       </div>
 
       <div class="room-actions">
+        <!-- Nút sửa đảm bảo dùng nháy đơn cho data-services -->
         <button
           class="btn-edit-room"
           data-id="{{ room.Room_ID }}"
@@ -81,7 +84,11 @@
           <i class="fa-solid fa-pen"></i> Chỉnh sửa
         </button>
 
-        <button class="btn-tool-room" title="Cài đặt / Bảo trì">
+        <button
+          class="btn-tool-room"
+          title="Bảo trì / Mở lại phòng"
+          onclick="window.location.href='/rooms/maintenance/{{ room.Room_ID }}'"
+        >
           <i class="fa-solid fa-wrench"></i>
         </button>
       </div>
@@ -94,6 +101,7 @@
   {% endfor %}
 </div>
 
+<!-- ======================= MODAL SỬA PHÒNG ======================= -->
 <div
   class="modal-overlay"
   id="editRoomModal"
@@ -146,7 +154,6 @@
 
     <form action="/rooms/update" method="POST">
       <input type="hidden" name="room_id" id="edit_room_id" />
-
       <div
         style="
           display: grid;
@@ -206,7 +213,6 @@
           />
         </div>
       </div>
-
       <div style="margin-bottom: 20px">
         <label
           style="
@@ -230,7 +236,6 @@
           "
         />
       </div>
-
       <div style="margin-bottom: 25px">
         <label
           style="
@@ -275,7 +280,6 @@
           {% endfor %}
         </div>
       </div>
-
       <div style="text-align: right">
         <button
           type="button"
@@ -311,6 +315,8 @@
     </form>
   </div>
 </div>
+
+<!-- ======================= MODAL THÊM PHÒNG ======================= -->
 <div
   class="modal-overlay"
   id="addRoomModal"
@@ -379,7 +385,6 @@
           "
         />
       </div>
-
       <div
         style="
           display: grid;
@@ -437,7 +442,6 @@
           />
         </div>
       </div>
-
       <div style="margin-bottom: 20px">
         <label
           style="
@@ -460,7 +464,6 @@
           "
         />
       </div>
-
       <div style="margin-bottom: 25px">
         <label
           style="
@@ -504,7 +507,6 @@
           {% endfor %}
         </div>
       </div>
-
       <div style="text-align: right">
         <button
           type="button"
@@ -554,7 +556,6 @@
         const cardStatus = (card.getAttribute("data-status") || "")
           .toLowerCase()
           .trim();
-
         if (targetStatus === "all" || cardStatus === targetStatus) {
           card.style.display = "block";
         } else {
@@ -564,14 +565,13 @@
     });
   });
 
-  // Mở Modal Chỉnh Sửa Phòng
+  // Mở/Đóng Modal Chỉnh Sửa Phòng
   function openEditRoomModal(btnElement) {
     document.getElementById("edit_room_id").value =
       btnElement.getAttribute("data-id");
     document.getElementById("display_room_number").innerText =
       btnElement.getAttribute("data-num");
 
-    // Xử lý dropdown loại phòng
     let rawType = btnElement.getAttribute("data-type");
     let rType = rawType ? rawType.toLowerCase() : "";
     let typeSelect = document.getElementById("edit_room_type");
@@ -582,14 +582,12 @@
       }
     }
 
-    // Set Số khách và Giá tiền
     document.getElementById("edit_capacity").value =
       btnElement.getAttribute("data-cap");
     document.getElementById("edit_price").value = Math.floor(
       btnElement.getAttribute("data-price"),
     );
 
-    // Set Checkbox dịch vụ (có block try-catch để chống lỗi)
     let roomServices = [];
     try {
       roomServices = JSON.parse(
@@ -607,16 +605,15 @@
     document.getElementById("editRoomModal").style.display = "flex";
   }
 
-  // Đóng Modal
   function closeEditModal() {
     document.getElementById("editRoomModal").style.display = "none";
   }
-  // Mở Modal Thêm Phòng
+
+  // Mở/Đóng Modal Thêm Phòng
   function openAddRoomModal() {
     document.getElementById("addRoomModal").style.display = "flex";
   }
 
-  // Đóng Modal Thêm Phòng
   function closeAddModal() {
     document.getElementById("addRoomModal").style.display = "none";
   }

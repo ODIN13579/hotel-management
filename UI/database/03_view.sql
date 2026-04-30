@@ -37,3 +37,26 @@ SELECT
     SUM(CASE WHEN Status = N'bảo trì' THEN 1 ELSE 0 END) AS BaoTri
 FROM Rooms;
 GO
+-- 1. View lấy danh sách hóa đơn kèm thông tin khách và phòng
+CREATE OR ALTER VIEW v_ManageInvoices AS
+SELECT 
+    i.Invoice_ID,
+    u.Name AS Customer_Name,
+    u.Phone AS Customer_Phone,
+    u.Email AS Customer_Email,
+    b.Booking_ID,
+    r.Room_type,
+    r.Room_Number,
+    b.Check_In,
+    b.Check_Out,
+    -- Tính số đêm (nếu checkin checkout cùng ngày thì tính là 1)
+    CASE WHEN DATEDIFF(day, b.Check_In, b.Check_Out) = 0 THEN 1 
+         ELSE DATEDIFF(day, b.Check_In, b.Check_Out) END AS Nights,
+    ISNULL(b.Room_deposit, 0) AS Room_deposit,
+    i.Total_Amount,
+    i.Issued_Date
+FROM Invoices i
+JOIN Users u ON i.User_ID = u.User_ID
+JOIN Bookings b ON i.Booking_ID = b.Booking_ID
+JOIN Rooms r ON b.Room_ID = r.Room_ID;
+GO

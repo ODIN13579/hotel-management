@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_from_directory
 from flask import session
 from db import get_connection
 from datetime import datetime
 import uuid
+import os
 
 app = Flask(__name__)
 app.secret_key = "abc123"
@@ -51,7 +52,12 @@ def get_recent_bookings():
     finally:
         conn.close()
 
-
+# ================= ROUTE LẤY ẢNH TỪ THƯ MỤC BÊN NGOÀI =================
+@app.route('/room_images/<path:filename>')
+def room_images(filename):
+    # Chỉ đường cho Flask tới thư mục "10 phòng" nằm ngang hàng với app.py
+    image_dir = os.path.join(app.root_path, '10 phòng')
+    return send_from_directory(image_dir, filename)
 
 # ================= LOGIN =================
 @app.route("/", methods=["GET", "POST"])
@@ -309,6 +315,26 @@ def quan_ly_phong():
         return "Lỗi hệ thống", 500
     finally:
         conn.close()
+# ================= NÚT BẢO TRÌ PHÒNG =================
+@app.route("/rooms/maintenance/<room_id>")
+def toggle_maintenance(room_id):
+    if "admin" not in session:
+        return redirect("/")
+        
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        # Gọi thủ tục SQL để đảo trạng thái phòng
+        cursor.execute("EXEC sp_ToggleRoomMaintenance ?", (room_id,))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Lỗi khi bảo trì phòng: {e}")
+    finally:
+        conn.close()
+        
+    # Quay lại trang quản lý phòng sau khi bấm
+    return redirect("/rooms")
 
 # ================= ROUTE CẬP NHẬT PHÒNG =================
 @app.route("/rooms/update", methods=["POST"])
@@ -462,9 +488,35 @@ def delete_payment(payment_id):
 # def quan_ly_thanh_toan():
 #     return render_template("thanh_toan.html")
 
+# ================= QUẢN LÝ HÓA ĐƠN =================
 @app.route("/invoices")
 def quan_ly_hoa_don():
-    return render_template("hoa_don.html")
+    if "admin" not in session:
+        return redirect("/")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        # 1. Lấy thông số thống kê
+        cursor.execute("EXEC sp_GetInvoiceStats")
+        row = cursor.fetchone()
+        stats = {
+            'TotalInvoices': row.TotalInvoices if row else 0,
+            'MonthlyRevenue': row.MonthlyRevenue if row else 0,
+            'AvgPerInvoice': row.AvgPerInvoice if row else 0
+        }
+
+        # 2. Lấy danh sách hóa đơn
+        cursor.execute("SELECT * FROM v_ManageInvoices ORDER BY Issued_Date DESC")
+        columns = [column[0] for column in cursor.description]
+        invoices = [dict(zip(columns, r)) for r in cursor.fetchall()]
+
+        return render_template("hoa_don.html", invoices=invoices, stats=stats)
+    except Exception as e:
+        print(f"Lỗi tải danh sách hóa đơn: {e}")
+        return "Lỗi hệ thống", 500
+    finally:
+        conn.close()
 
 @app.route("/staff")
 def quan_ly_nhan_vien():
@@ -520,8 +572,7 @@ def add_room():
     cursor = conn.cursor()
     
     try:
-        # Bước 1: Tìm ID lớn nhất hiện tại để tính ID tiếp theo
-        # (Dùng MAX sẽ an toàn hơn COUNT nếu bạn có xóa phòng cũ)
+        # Tìm ID lớn nhất hiện tại để tính ID tiếp theo
         cursor.execute("SELECT Room_ID FROM Rooms")
         all_ids = [row[0] for row in cursor.fetchall()]
         
@@ -530,7 +581,7 @@ def add_room():
         next_id_num = max(numeric_ids) + 1 if numeric_ids else 1
         room_id = str(next_id_num) # ID mới sẽ là "1", "2", "3"...
 
-        # Bước 2: Lấy dữ liệu từ form
+        # Lấy dữ liệu từ form
         room_number = request.form.get("room_number")
         room_type = request.form.get("room_type")
         capacity = request.form.get("capacity")
@@ -538,13 +589,13 @@ def add_room():
         status = "có sẵn"
         selected_services = request.form.getlist("services")
 
-        # Bước 3: Thêm vào bảng Rooms
+        # Thêm vào bảng Rooms
         cursor.execute("""
             INSERT INTO Rooms (Room_ID, Room_Number, Room_type, Capacity, Price_Per_Night, Status)
             VALUES (?, ?, ?, ?, ?, ?)
         """, (room_id, room_number, room_type, capacity, price, status))
         
-        # Bước 4: Thêm dịch vụ
+        # Thêm dịch vụ
         for svc_id in selected_services:
             cursor.execute("INSERT INTO Rooms_Services (Room_ID, Service_ID) VALUES (?, ?)", (room_id, svc_id))
             
