@@ -54,11 +54,11 @@ def get_recent_bookings():
     finally:
         conn.close()
 
-# ================= ROUTE LẤY ẢNH TỪ THƯ MỤC BÊN NGOÀI =================
+# ================= ROUTE LẤY ẢNH TỪ THƯ MỤC STATIC =================
 @app.route('/room_images/<path:filename>')
 def room_images(filename):
-    # Chỉ đường cho Flask tới thư mục "10 phòng" nằm ngang hàng với app.py
-    image_dir = os.path.join(app.root_path, '10 phòng')
+    # Chỉ đường cho Flask tới thư mục "10 phòng" nằm TRONG thư mục static
+    image_dir = os.path.join(app.root_path, 'static', '10 phòng')
     return send_from_directory(image_dir, filename)
 
 # ================= LOGIN =================
