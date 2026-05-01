@@ -5,29 +5,64 @@
     <meta charset="UTF-8">
     <title>Xác nhận đặt phòng</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='confirm.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
 
 <body>
+    <!-- ===== HEADER TOP ===== -->
+    <div class="header1">
+
+        <!-- LOGO -->
+        <div class="logonen">
+            <a href="/dashboard">
+                <img src="{{ url_for('static', filename='TRIPNEST.png') }}" width="135">
+            </a>
+        </div>
+
+        <!-- USER MENU -->
+        <div class="user-menu">
+
+            <div class="user-trigger">
+                <i class="fa fa-user"></i>
+                <svg viewBox="0 0 24 24">
+                <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"></path> 
+            </svg>
+            </div>
+
+            <div class="dropdown">
+                <p><strong>{{ user[1] }}</strong></p>
+                <p>Email: {{ user[2] }}</p>
+                <hr>
+                <a href="{{ url_for('profile', id=user[0]) }}">Thông tin cá nhân</a>
+                <a href="{{ url_for('booking_previous') }}">Lịch sử đặt phòng</a>
+                <a href="/">Đăng xuất</a>
+            </div>
+
+        </div>
+
+    </div>
+
     <!-- ===== GALLERY ===== -->
     <div class="gallery">
         <!-- ẢNH CHÍNH -->
         <img class="main-img" src="{{ images[0] if images else url_for('static', filename='default.webp') }}">
 
-        <!-- DANH SÁCH ẢNH -->
         <!-- THUMBNAILS -->
         <div class="thumbs">
             {% for img in images %}
             <a href="#img{{ loop.index }}">
                 <img src="{{ img }}">
             </a>
-
-            <!-- POPUP -->
-            <div id="img{{ loop.index }}" class="lightbox">
-                <a href="#" class="close">&times;</a>
-                <img src="{{ img }}">
-            </div>
             {% endfor %}
         </div>
+
+        <!-- POPUP (để riêng, tránh lỗi layout) -->
+        {% for img in images %}
+        <div id="img{{ loop.index }}" class="lightbox">
+            <a href="#" class="close">&times;</a>
+            <img src="{{ img }}">
+        </div>
+        {% endfor %}
     </div>
 
     <!-- ===== Form confirm ===== -->
