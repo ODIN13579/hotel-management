@@ -314,6 +314,40 @@ def confirm():
         images=images
     )
 
+#===============Previous booking================
+@app.route("/booking_previous", methods=["GET", "POST"])
+def booking_previous():
+    user_id = session.get("user_id")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
+    user = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM GetBooking(?)", (user_id,))
+    bookings = cursor.fetchall()
+
+    image_map = {
+        "R01": "p1/p1_01.webp",
+        "R02": "p2/p2_01.webp",
+        "R03": "p3/p3_01.webp",
+        "R04": "p4/p4_01.webp",
+        "R05": "p5/p5_01.webp",
+        "R06": "p6/p6_01.webp",
+        "R07": "p7/p7_01.webp",
+        "R08": "p8/p8_01.webp",
+        "R09": "p9/p9_01.webp",
+        "R10": "p10/p10_01.webp",
+    }
+
+
+    return render_template("booking_previous.html", 
+                           user=user,
+                           bookings=bookings,
+                           image_map=image_map
+                        )
+
 
 #===============Payment================
 @app.route("/payment", methods=["GET", "POST"])
