@@ -13,6 +13,71 @@ body {
     margin: 10px auto;
 }
 
+
+/* HEADER TOP */
+
+.header1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #0071c2;
+}
+
+
+/* USER MENU */
+
+.user-menu {
+    position: relative;
+}
+
+
+/* ICON */
+
+.user-trigger {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    color: #000;
+}
+
+
+/* DROPDOWN */
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    padding: 0px 20px;
+    min-width: 180px;
+    height: 200px;
+    border-radius: 8px;
+    /* padding-bottom: 10px; */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown a {
+    display: block;
+    padding: 5px 0;
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown a:hover {
+    color: blue;
+}
+
+
+/* HOVER SHOW */
+
+.user-menu:hover .dropdown {
+    display: block;
+}
+
 .left {
     display: grid;
     gap: 10px;
@@ -111,48 +176,46 @@ h1 {
     cursor: pointer;
 }
 
-.input-box {
-    position: relative;
-    border-radius: 12px;
-    border: 2px solid rgba(0, 0, 0, 0.5);
-    border-color: #000000;
-    display: flex;
-    flex-direction: column;
+
+/* LIGHTBOX ẨN */
+
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(15px);
-    /* justify-content: center; */
-    position: relative;
-    width: 400px;
-    margin: 15px 0;
-    /* border-bottom: 1px solid #000000; */
+    z-index: 999;
 }
 
-.input-box .lb {
+
+/* HIỆN KHI CLICK */
+
+.lightbox:target {
+    display: flex;
+}
+
+
+/* ẢNH TRONG POPUP */
+
+.lightbox img {
+    width: 1000px;
+    height: 650px;
+    border-radius: 10px;
+}
+
+
+/* NÚT ĐÓNG */
+
+.close {
     position: absolute;
-    top: 50%;
-    left: 5px;
-    transform: translateY(-50%);
-    color: #000000;
-    font-size: 1em;
-    color: #000000;
-    pointer-events: none;
-    transition: 0.5s;
-}
-
-.input-box input {
-    width: 370px;
-    height: 40px;
-    /* background: transparent; */
-    border: none;
-    outline: none;
-    color: #000000;
-    font-size: 1em;
-    /* padding: 0px; */
-}
-
-.input-box input:focus~label,
-.input-box input:valid~label {
-    top: -8px;
-    font-size: 12px;
+    top: 20px;
+    right: 30px;
+    font-size: 40px;
+    color: white;
+    text-decoration: none;
 }

@@ -99,3 +99,13 @@ RETURN
     WHERE R.Room_ID = @room_id
 )
 GO
+
+-- 10. Lấy Booking
+CREATE FUNCTION GetBooking(@user_id VARCHAR(50))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT * FROM Bookings B 
+    WHERE B.User_ID = @user_id
+)
+GO

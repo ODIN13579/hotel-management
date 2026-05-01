@@ -45,12 +45,23 @@ body {
     right: 0;
     top: 100%;
     background: white;
-    padding: 20px 20px 20px 20px;
+    padding: 0px 20px;
     min-width: 180px;
     height: 180px;
     border-radius: 8px;
-    padding-bottom: 10px;
+    /* padding-bottom: 10px; */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown a {
+    display: block;
+    padding: 5px 0;
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown a:hover {
+    color: blue;
 }
 
 
@@ -89,7 +100,7 @@ body {
 
 .main-img {
     width: 100%;
-    height: 400px;
+    height: 650px;
     object-fit: cover;
     border-radius: 10px;
 }
@@ -106,6 +117,50 @@ body {
     object-fit: cover;
     border-radius: 5px;
     cursor: pointer;
+}
+
+
+/* LIGHTBOX ẨN */
+
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+
+/* HIỆN KHI CLICK */
+
+.lightbox:target {
+    display: flex;
+}
+
+
+/* ẢNH TRONG POPUP */
+
+.lightbox img {
+    width: 1000px;
+    height: 650px;
+    border-radius: 10px;
+}
+
+
+/* NÚT ĐÓNG */
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 40px;
+    color: white;
+    text-decoration: none;
 }
 
 
@@ -226,4 +281,60 @@ body {
 .booking-box:hover {
     transform: scale(1.02);
     transition: 0.3s;
+}
+
+.review {
+    display: flex;
+    margin: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.avatar {
+    width: 10%;
+    /* flex: 1; */
+    max-width: 50px;
+}
+
+.avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 40px;
+    margin: 15px 0px 0px 0px;
+}
+
+.content {
+    width: 100%;
+}
+
+.infor {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin: 0px 20px;
+}
+
+.username p {
+    margin: 0px 5px;
+}
+
+.rating-user p {
+    margin: 0px 5px;
+}
+
+.date-review p {
+    margin: 0px 5px;
+}
+
+.comment {
+    border: none;
+    border-radius: 12px;
+    padding: 5px;
+    margin: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comment p {
+    margin: 5px;
 }

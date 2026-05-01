@@ -119,8 +119,17 @@ endblock %} {% block content %}
               class="fa-solid fa-arrow-right-to-bracket btn-checkin"
               title="Nhận phòng"
               style="color: #10b981"
-            ></i
-          ></a>
+            ></i>
+          </a>
+          <!-- THÊM NÚT HỦY Ở ĐÂY -->
+          <a
+            href="/bookings/cancel/{{ booking.Booking_ID }}"
+            onclick="
+              return confirm('Khách báo hủy? Xác nhận hủy đơn đặt phòng này?');
+            "
+            style="color: inherit"
+            ><i class="fa-regular fa-circle-xmark btn-delete" title="Hủy"></i>
+          </a>
 
           {% elif booking.Status == 'Đã nhận phòng' %}
           <a
@@ -268,47 +277,64 @@ endblock %} {% block content %}
 
 {% endblock %} {% block extra_js %}
 <script>
-  // Hàm hiển thị Modal và gán dữ liệu
-  document.getElementById("searchInput").addEventListener("keyup", function () {
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#bookingTable tr");
-
-    rows.forEach((row) => {
-      row.style.display = row.innerText.toLowerCase().includes(filter)
-        ? ""
-        : "none";
-    });
-  });
-  // Xử lý Lọc theo Tab trạng thái
+  // =========================================================
+  // 1. XỬ LÝ LỌC DỮ LIỆU (KẾT HỢP TÌM KIẾM TEXT VÀ TAB TRẠNG THÁI)
+  // =========================================================
+  const searchInput = document.getElementById("searchInput");
   const tabBtns = document.querySelectorAll(".tab-btn");
   const tableRows = document.querySelectorAll("#bookingTable tr");
 
+  function filterTable() {
+    // Lấy từ khóa tìm kiếm
+    let searchTerm = searchInput.value.toLowerCase();
+
+    // Lấy trạng thái của Tab đang được chọn (mặc định là 'all')
+    let activeTab = document.querySelector(".tab-btn.active");
+    let targetStatus = activeTab
+      ? activeTab.getAttribute("data-status")
+      : "all";
+
+    tableRows.forEach((row) => {
+      // Bỏ qua dòng thông báo "Chưa có đơn đặt phòng nào" (dòng chỉ có 1 ô)
+      if (row.cells.length === 1) return;
+
+      // Kiểm tra Text (Tìm kiếm)
+      let textMatch = row.innerText.toLowerCase().includes(searchTerm);
+
+      // Kiểm tra Trạng thái (Tab)
+      let statusMatch = true;
+      if (targetStatus !== "all") {
+        const rowStatus = row.cells[6].innerText.toLowerCase().trim();
+        statusMatch = rowStatus === targetStatus;
+      }
+
+      // Chỉ hiển thị dòng nếu thỏa mãn ĐỒNG THỜI cả 2 điều kiện
+      if (textMatch && statusMatch) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+
+  // Lắng nghe sự kiện gõ phím vào ô tìm kiếm
+  searchInput.addEventListener("keyup", filterTable);
+
+  // Lắng nghe sự kiện click vào các Tab trạng thái
   tabBtns.forEach((btn) => {
     btn.addEventListener("click", function () {
-      // 1. Đổi màu nút Tab đang được chọn (chuyển class active)
+      // Đổi màu Tab (xóa active cũ, thêm active mới)
       tabBtns.forEach((b) => b.classList.remove("active"));
       this.classList.add("active");
 
-      // 2. Lấy giá trị trạng thái cần lọc từ data-status
-      const targetStatus = this.getAttribute("data-status");
-
-      // 3. Lọc hiển thị các dòng trong bảng
-      tableRows.forEach((row) => {
-        if (targetStatus === "all") {
-          row.style.display = ""; // Hiện tất cả
-        } else {
-          // Lấy text trong cột thứ 7 (Trạng thái - index 6)
-          const rowStatus = row.cells[6].innerText.toLowerCase().trim();
-
-          if (rowStatus === targetStatus) {
-            row.style.display = ""; // Khớp trạng thái -> Hiện
-          } else {
-            row.style.display = "none"; // Không khớp -> Ẩn
-          }
-        }
-      });
+      // Gọi lại hàm lọc
+      filterTable();
     });
   });
+
+  // =========================================================
+  // 2. XỬ LÝ ĐÓNG/MỞ MODAL CHI TIẾT ĐẶT PHÒNG
+  // =========================================================
   function openDetailModal(
     id,
     name,
@@ -334,7 +360,6 @@ endblock %} {% block content %}
     document.getElementById("detailModal").style.display = "flex";
   }
 
-  // Hàm đóng Modal
   function closeModal() {
     document.getElementById("detailModal").style.display = "none";
   }

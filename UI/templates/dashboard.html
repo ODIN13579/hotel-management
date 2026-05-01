@@ -1,46 +1,26 @@
 <!doctype html>
 <html lang="vi">
-  <head>
+
+<head>
     <title>Trang chủ - The Grade Hotel Dalat</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='dboo.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-  </head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dboo.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
 
-  <body>
+<body>
     <div class="header1">
-      <div class="user">
-        <div class="logonen">
-          <a href="/" class="css-4rbku5">
-            <img
-              loading="eager"
-              importance="high"
-              src="../static/TRIPNEST.png"
-              decoding="async"
-              width="135"
-              height="43"
-              style="object-fit: fill; object-position: 50% 50%"
-            />
-          </a>
-        </div>
+        <div class="user">
+            <div class="logonen">
+                <a href="/" class="css-4rbku5">
+                    <img loading="eager" importance="high" src="../static/TRIPNEST.png" decoding="async" width="135" height="43" style="object-fit: fill; object-position: 50% 50%" />
+                </a>
+            </div>
 
-        <div class="Home_banner___Q8R8">
-          <video
-            class="Home_bg-video__PU78L"
-            src="../static/Mixivivuduthuyen.mp4"
-            autoplay=""
-            muted=""
-            playsinline=""
-            loop=""
-          ></video>
-        </div>
+            <div class="Home_banner___Q8R8">
+                <video class="Home_bg-video__PU78L" src="../static/Mixivivuduthuyen.mp4" autoplay="" muted="" playsinline="" loop=""></video>
+            </div>
 
-        <span>
+            <span>
           <div class="user-menu">
             <span class="user-trigger">
               <i class="fa fa-user"></i>
@@ -54,67 +34,75 @@
             </span>
 
             <div class="dropdown" id="dropdownMenu">
-              <p><strong>{{ user[1] if user else 'Khách' }}</strong></p>
-              <p>Email: {{ user[2] if user else 'N/A' }}</p>
-              <hr />
-              <a href="{{ url_for('profile') }}">Thông tin cá nhân</a>
-              <a href="/">Đăng xuất</a>
+                <p><strong>{{ user[1] if user else 'Khách' }}</strong></p>
+                <p>Email: {{ user[2] if user else 'N/A' }}</p>
+                <hr />
+                <a href="{{ url_for('profile') }}">Thông tin cá nhân</a>
+                <a href="/">Đăng xuất</a>
             </div>
-          </div>
+        </div>
         </span>
-      </div>
+    </div>
     </div>
 
     <h1 style="text-align: center; margin-top: 20px">Danh sách phòng!</h1>
 
-    <div class="room-list">
-      {% for room in rooms %}
-      <form method="POST" action="{{ url_for('room_detail') }}">
-        <div class="room-card">
-          <img src="../static/PhongDoi.png" alt="Phòng {{ room[1] }}" />
+    <div class="room-grid">
+        {% for room in rooms %}
+        <form method="POST" action="{{ url_for('room_detail') }}">
+            <div class="room-card">
+                <img class="room-img" src="{{ url_for('static', filename='10_phong/' + image_map[room[0]]) }}" />
 
-          <div class="room-info">
-            <h3>Phòng {{ room[1] }}</h3>
-            <p>✨Loại Phòng: <b>{{ room[2] }}</b></p>
+                <div class="room-info">
+                    <h3>Phòng {{ room[1] }}</h3>
 
-            {% if loop.index0 < reviews|length %}
-            <div class="rating">⭐ {{ reviews[loop.index0][3] }}</div>
-            {% else %}
-            <div class="rating">⭐ Chưa có đánh giá</div>
-            {% endif %}
+                    <span class="room-type {{ room[2]|lower }}"> {{ room[2] }} </span>
+                    <div class="price-rating">
+                        <p class="price">{{ "{:,.0f}".format(room[4]) }}đ / đêm</p>
 
-            <div class="bottom">
-              <div class="price">{{ "{:,.0f}".format(room[4]) }}đ / đêm</div>
-              <input type="hidden" name="room_id" value="{{ room[0] }}" />
-              <button type="submit">Xem phòng</button>
-            </div>
-          </div>
+                        <div class="rating">
+                            <span class="stars">
+                              {% if loop.index0 < reviews|length %} 
+                              <div class="rating">⭐ {{ reviews[loop.index0][3] }}</div>
+                              {% else %}
+                              <div class="rating">⭐ Chưa có đánh giá</div>
+                              {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="bottom">
+                        <!-- <div class="price">{{ "{:,.0f}".format(room[4]) }}đ / đêm</div> -->
+                        <input type="hidden" name="room_id" value="{{ room[0] }}" />
+                        <button type="submit">Xem phòng</button>
+                    </div>
+                </div>
+        </form>
         </div>
-      </form>
-      {% endfor %}
+        {% endfor %}
     </div>
-
     <footer class="footer">
-      <div class="contact">
-        <h4>Liên hệ</h4>
-        <p>Email: support@eshop.com</p>
-        <p>Điện thoại: 0123-456-789</p>
-      </div>
+        <div class="contact">
+            <h4>Liên hệ</h4>
+            <p>Email: support@eshop.com</p>
+            <p>Điện thoại: 0123-456-789</p>
+        </div>
 
-      <div class="law">
-        <h4>Chính sách</h4>
-        <p>Chính sách đổi trả</p>
-        <p>Chính sách bảo hành</p>
-        <p>Chính sách vận chuyển</p>
-      </div>
+        <div class="law">
+            <h4>Chính sách</h4>
+            <p>Chính sách đổi trả</p>
+            <p>Chính sách bảo hành</p>
+            <p>Chính sách vận chuyển</p>
+        </div>
 
-      <div class="social">
-        <h4>Theo dõi</h4>
-        <a href="#">Facebook | </a>
-        <a href="#">Instagram | </a>
-        <a href="#">Twitter</a>
-      </div>
-      <p class="copyright">@ 2026 E-shop. Tất cả quyền được bảo lưu</p>
+        <div class="social">
+            <h4>Theo dõi</h4>
+            <a href="#">Facebook | </a>
+            <a href="#">Instagram | </a>
+            <a href="#">Twitter</a>
+        </div>
+        <p class="copyright">@ 2026 E-shop. Tất cả quyền được bảo lưu</p>
     </footer>
-  </body>
+</body>
+
 </html>

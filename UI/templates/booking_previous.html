@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='booking_previous.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <title>Lịch sử đặt phòng</title>
+</head>
+
+<body>
+    <div class="header1">
+
+        <!-- LOGO -->
+        <div class="logonen">
+            <a href="/dashboard">
+                <img src="{{ url_for('static', filename='TRIPNEST.png') }}" width="135">
+            </a>
+        </div>
+
+        <!-- USER MENU -->
+        <div class="user-menu">
+
+            <div class="user-trigger">
+                <i class="fa fa-user"></i>
+                <svg viewBox="0 0 24 24">
+                <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"></path> 
+            </svg>
+            </div>
+
+            <div class="dropdown">
+                <p><strong>{{ user[1] }}</strong></p>
+                <p>Email: {{ user[2] }}</p>
+                <hr>
+                <a href="{{ url_for('profile', id=user[0]) }}">Thông tin cá nhân</a>
+                <a href="{{ url_for('booking_previous') }}">Lịch sử đặt phòng</a>
+                <a href="/">Đăng xuất</a>
+            </div>
+
+        </div>
+    </div>
+    <div class="container">
+        <h1>Lịch sử đặt phòng</h1>
+
+        <!-- CARD 1 -->
+        {% for booking in bookings %}
+        <div class="booking-card">
+            <img src="{{ url_for('static', filename='10_phong/' + image_map[booking[2]]) }}" class="room-img">
+            <div class="info">
+                <h2>Phòng {{ booking[2] }}</h2>
+                <p><b>Mã booking:</b> {{ booking[0] }}</p>
+                <p><b>Check-in:</b> {{ booking[6].strftime("%d-%m-%Y") if booking[6] else "" }}</p>
+                <p><b>Check-out:</b> {{ booking[7].strftime("%d-%m-%Y") if booking[7] else "" }}</p>
+                <p><b>Số tiền:</b> {{ "{:,.0f}".format(booking[5]|float) }}đ</p>
+                <p><b>Trạng thái:</b> {{ booking[8] }} </p>
+            </div>
+
+            <div class="function">
+                <div class="status feedback">
+                    <a href="#">
+                        <p>Nhận xét</p>
+                    </a>
+                </div>
+                <div class="status cancel">
+                    <!-- NÚT HUỶ -->
+                    <label for="cancel-toggle-{{ booking[0] }}" class="cancel-btn">
+                        Huỷ đặt phòng
+                    </label>
+
+                    <!-- CHECKBOX ẨN -->
+                    <input type="checkbox" id="cancel-toggle-{{ booking[0] }}" hidden>
+
+                    <!-- MODAL -->
+                    <div class="modal">
+                        <div class="modal-box">
+                            <h3>Xác nhận huỷ</h3>
+                            <p>Bạn có chắc muốn huỷ phòng này không?</p>
+
+                            <div class="actions">
+                                <!-- Đóng -->
+                                <label for="cancel-toggle-{{ booking[0] }}" class="btn cancel">
+                                    Không
+                                </label>
+
+                                <!-- Xác nhận -->
+                                <a href="{{ url_for('cancel_booking_user', id=booking[0]) }}" class="btn confirm">
+                                    Huỷ phòng
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

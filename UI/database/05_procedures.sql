@@ -129,11 +129,11 @@ CREATE PROCEDURE AddBooking (
 	@user_id VARCHAR(50),
     @room_id VARCHAR(50),
     @employee_id VARCHAR(50),
-    @booking_date VARCHAR(50),
-    @room_deposit VARCHAR(50),
+    @booking_date DATETIME,
+    @room_deposit DECIMAL(18,2),
     @checkin DATETIME,
     @checkout DATETIME,
-    @status VARCHAR(50)
+    @status NVARCHAR(50)
 )
 AS
 BEGIN	
@@ -202,53 +202,43 @@ BEGIN
 END
 GO
 
--- 9. "Xác nhận" (Booking: Đã xác nhận | Room: đã đặt)
+-- 9. "Xác nhận" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
 CREATE OR ALTER PROCEDURE sp_ConfirmBooking
     @BookingID VARCHAR(50)
 AS
 BEGIN
     SET NOCOUNT ON;
     UPDATE Bookings SET Status = N'Đã xác nhận' WHERE Booking_ID = @BookingID;
-    
-    UPDATE Rooms SET Status = N'đã đặt'
-    WHERE Room_ID = (SELECT Room_ID FROM Bookings WHERE Booking_ID = @BookingID);
 END;
 GO
 
--- 10. "Nhận phòng" (Booking: Đã nhận phòng | Room: đã nhận)
+-- 10. "Nhận phòng" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
 CREATE OR ALTER PROCEDURE sp_CheckInBooking
     @BookingID VARCHAR(50)
 AS
 BEGIN
     SET NOCOUNT ON;
     UPDATE Bookings SET Status = N'Đã nhận phòng' WHERE Booking_ID = @BookingID;
-    
-    UPDATE Rooms SET Status = N'đã nhận'
-    WHERE Room_ID = (SELECT Room_ID FROM Bookings WHERE Booking_ID = @BookingID);
 END;
 GO
--- 11. "Trả phòng" (Booking: Đã trả phòng | Room: có sẵn)
+
+-- 11. "Trả phòng" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
 CREATE OR ALTER PROCEDURE sp_CheckOutBooking
     @BookingID VARCHAR(50)
 AS
 BEGIN
     SET NOCOUNT ON;
     UPDATE Bookings SET Status = N'Đã trả phòng' WHERE Booking_ID = @BookingID;
-    
-    UPDATE Rooms SET Status = N'có sẵn'
-    WHERE Room_ID = (SELECT Room_ID FROM Bookings WHERE Booking_ID = @BookingID);
 END;
 GO
--- 12."Hủy" (Booking: Đã hủy | Room: có sẵn)
+
+-- 12."Hủy" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
 CREATE OR ALTER PROCEDURE sp_CancelBooking
     @BookingID VARCHAR(50)
 AS
 BEGIN
     SET NOCOUNT ON;
     UPDATE Bookings SET Status = N'Đã hủy' WHERE Booking_ID = @BookingID;
-    
-    UPDATE Rooms SET Status = N'có sẵn'
-    WHERE Room_ID = (SELECT Room_ID FROM Bookings WHERE Booking_ID = @BookingID);
 END;
 GO
 
@@ -322,4 +312,32 @@ BEGIN
     END
     -- Bỏ qua nếu phòng "đã đặt" hoặc "đã nhận" để tránh lỗi dữ liệu đặt phòng
 END;
+GO
+
+
+-- 16 Tạo thanh toán
+CREATE PROCEDURE CreatePayment (
+    @payment_id VARCHAR(50),
+	@booking_id VARCHAR(50),
+	@amount DECIMAL(18,2),  
+    @payment_date DATETIME,
+    @status NVARCHAR(50)
+)
+AS
+BEGIN	
+    INSERT INTO [dbo].[Payment]
+               ([Payment_ID]
+               ,[Booking_ID]
+               ,[Amount]
+               ,[Payment_Date]
+               ,[Payment_Method]
+               ,[Status])
+         VALUES
+               (@payment_id
+               ,@booking_id
+               ,@amount
+               ,@payment_date
+               ,N'Chuyển khoản'
+               ,@status)
+END
 GO
