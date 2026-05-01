@@ -283,24 +283,47 @@ body {
     width: 10%;
     /* flex: 1; */
     max-width: 50px;
-    background: lightblue;
 }
 
 .avatar img {
     width: 50px;
     height: 50px;
     border-radius: 40px;
-    margin: 25px 0px;
+    margin: 15px 0px 0px 0px;
 }
 
 .content {
     width: 100%;
-    background: lightgreen;
 }
 
 .infor {
     display: flex;
-    gap: 10px;
+    gap: 20px;
     align-items: center;
-    margin: 0px 10px;
+    margin: 0px 20px;
+}
+
+.username p {
+    margin: 0px 5px;
+}
+
+.rating-user p {
+    margin: 0px 5px;
+}
+
+.date-review p {
+    margin: 0px 5px;
+}
+
+.comment {
+    border: none;
+    border-radius: 12px;
+    padding: 5px;
+    margin: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comment p {
+    margin: 5px;
 }

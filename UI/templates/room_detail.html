@@ -48,7 +48,7 @@
         <h1>Phòng {{ room[1] }}</h1>
         <p class="location">📍 Vũng Tàu, Việt Nam</p>
 
-        <div class="rating">⭐ {{ review if review else "Chưa có đánh giá" }}</div>
+        <div class="rating">⭐ {{ rating if rating else "Chưa có đánh giá" }}</div>
 
     </div>
 
@@ -57,21 +57,22 @@
         <!-- ẢNH CHÍNH -->
         <img class="main-img" src="{{ images[0] if images else url_for('static', filename='default.webp') }}">
 
-        <!-- DANH SÁCH ẢNH -->
         <!-- THUMBNAILS -->
         <div class="thumbs">
             {% for img in images %}
             <a href="#img{{ loop.index }}">
                 <img src="{{ img }}">
             </a>
-
-            <!-- POPUP -->
-            <div id="img{{ loop.index }}" class="lightbox">
-                <a href="#" class="close">&times;</a>
-                <img src="{{ img }}">
-            </div>
             {% endfor %}
         </div>
+
+        <!-- POPUP (để riêng, tránh lỗi layout) -->
+        {% for img in images %}
+        <div id="img{{ loop.index }}" class="lightbox">
+            <a href="#" class="close">&times;</a>
+            <img src="{{ img }}">
+        </div>
+        {% endfor %}
     </div>
 
     <!-- ===== CONTENT ===== -->
@@ -108,37 +109,40 @@
                 {% endif %}
 
             </div>
-
+            <br>
+            <h2>Đánh giá</h2>
             <!-- Review Room -->
             <div class="review">
+                {% for review in reviews %}
                 <!-- Avatar -->
                 <div class="avatar">
                     <img src="{{ url_for('static', filename='avt.jpg') }}" />
                 </div>
-
                 <!-- Content -->
                 <div class="content">
                     <div class="infor">
                         <!-- User name -->
-                        <div>
-                            <p><b>name</b></p>
+                        <div class="username">
+                            <p><b>{{ review[6] }}</b></p>
                         </div>
 
                         <!-- Rating -->
                         <div class="rating-user">
-                            <p>⭐<b>rating</b></p>
+                            <p>⭐<b>{{ review[3] }}</b></p>
                         </div>
 
                         <!-- Date review -->
                         <div class="date-review">
-                            <p><i>date</i></p>
+                            <p><i>{{ review[5] }}</i></p>
                         </div>
                     </div>
 
                     <div class="comment">
-                        <p>comment</p>
+                        <p>{{ review[4] }}</p>
                     </div>
+
                 </div>
+                {% endfor %}
             </div>
 
             <!-- RIGHT -->
