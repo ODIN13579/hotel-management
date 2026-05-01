@@ -397,8 +397,8 @@ def payment():
 
     return redirect("/dashboard")
 
-@app.route("/cancel_booking/<id>")
-def cancel_booking(id):
+@app.route("/cancel_booking_user/<id>")
+def cancel_booking_user(id):
     conn = get_connection()
     cursor = conn.cursor()
 
