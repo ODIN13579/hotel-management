@@ -49,12 +49,11 @@
             <img src="{{ url_for('static', filename='10_phong/' + image_map[booking[2]]) }}" class="room-img">
 
             <div class="info">
-
                 <h2>Phòng {{ booking[2] }}</h2>
                 <p><b>Mã booking:</b> {{ booking[0] }}</p>
-                <p><b>Check-in:</b> {{ booking[6] }} </p>
-                <p><b>Check-out:</b> {{ booking[7] }} </p>
-                <p><b>Số tiền:</b> {{ booking[5] }}đ</p>
+                <p><b>Check-in:</b> {{ booking[6].strftime("%d-%m-%Y") if booking[6] else "" }}</p>
+                <p><b>Check-out:</b> {{ booking[7].strftime("%d-%m-%Y") if booking[7] else "" }}</p>
+                <p><b>Số tiền:</b> {{ "{:,.0f}".format(booking[5]|float) }}đ</p>
                 <p><b>Trạng thái:</b> {{ booking[8] }} </p>
             </div>
 
