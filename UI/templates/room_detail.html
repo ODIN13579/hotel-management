@@ -86,28 +86,13 @@
 
             <h2>Tiện nghi</h2>
             <div class="amenities">
-
-                <div class="Standard">🛏️ Giường đôi</div>
-                <div class="Standard">📶 Wifi miễn phí</div>
-                <div class="Standard">❄️ Máy lạnh</div>
-                <div class="Standard">📺 TV</div>
-                <div class="Standard">🚿 Phòng tắm riêng</div>
-                <div class="Standard">☕ Máy pha cà phê</div>
-
-                {% if show_Deluxe %}
-                <div class="Deluxe">🍽️ Mini bar</div>
-                <div class="Deluxe">🧴 Đồ vệ sinh cá nhân</div>
-                <div class="Deluxe">🪞 Gương trang điểm</div>
-                <div class="Deluxe">🧳 Két sắt</div>
-                <div class="Deluxe">📞 Điện thoại nội bộ</div>
-                {% endif %} {% if show_VIP %}
-                <div class="VIP">🛁 Bồn tắm / Jacuzzi</div>
-                <div class="VIP">🛋️ Phòng khách riêng</div>
-                <div class="VIP">🍷 Rượu / minibar cao cấp</div>
-                <div class="VIP">🧘 Spa trong phòng</div>
-                <div class="VIP">🧑‍🍳 Room service 24/7</div>
-                {% endif %}
-
+                {% if show_Standard %} {% for service in services[:5] %}
+                <div class="Standard">🍀 {{ service[1] }}</div>
+                {% endfor %} {% elif show_Deluxe %} {% for service in services[:10] %}
+                <div class="Deluxe">🍀 {{ service[1] }}</div>
+                {% endfor %} {% elif show_VIP %} {% for service in services %}
+                <div class="VIP">🍀 {{ service[1] }}</div>
+                {% endfor %} {% endif %}
             </div>
             <br>
             <h2>Đánh giá</h2>

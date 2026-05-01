@@ -198,7 +198,8 @@ def room_detail():
         room_type = cursor.fetchone()[0]
 
         show_VIP = room_type == "VIP"
-        show_Deluxe = room_type in  ["Deluxe", "VIP"]
+        show_Deluxe = room_type == "Deluxe"
+        show_Standard = room_type not in ["Deluxe", "VIP"]
 
         cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
         user = cursor.fetchone()
@@ -231,15 +232,21 @@ def room_detail():
         cursor.execute("SELECT * FROM GetReview(?)", (room_id,))
         reviews = cursor.fetchall()
 
+        # Lấy amenities
+        cursor.execute("SELECT * FROM Services")
+        services = cursor.fetchall()
+
         return render_template(
             "room_detail.html", 
             room=room, 
-            rating=rating, 
+            rating=rating,
+            show_Standard=show_Standard,
             show_Deluxe=show_Deluxe,
             show_VIP=show_VIP, 
             user=user,
             images=images,
-            reviews=reviews
+            reviews=reviews,
+            services=services
         )
     return "Không có dữ liệu"
         
