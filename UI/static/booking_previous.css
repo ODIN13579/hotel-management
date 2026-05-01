@@ -126,12 +126,14 @@ h1 {
     margin: 0 0 10px;
 }
 
+.function {}
+
 
 /* STATUS */
 
 .status {
-    padding: 10px;
-    border-radius: 25px;
+    padding: 3px;
+    border-radius: 12px;
     font-weight: bold;
     margin-bottom: 20px;
 }
@@ -143,12 +145,12 @@ h1 {
 }
 
 .status a p {
-    margin: 0;
-    font-size: 25px;
+    margin: 5px 0px;
+    font-size: 18px;
 }
 
 .feedback a:hover {
-    color: #74790a;
+    color: #5e6309;
 }
 
 .cancel a:hover {
@@ -159,8 +161,7 @@ h1 {
 /* MÀU */
 
 .feedback {
-    background: #f8fce3;
-    color: #c0c913;
+    background: yellow;
 }
 
 .done {
@@ -168,7 +169,70 @@ h1 {
     color: #2b6cb0;
 }
 
-.cancel {
-    background: #ffe5e5;
-    color: #c53030;
+
+/* ===== BUTTON ===== */
+
+.cancel-btn {
+    background: #ff4d4d;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+
+/* ===== MODAL ===== */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* HIỆN MODAL KHI CHECK */
+
+input[type="checkbox"]:checked+.modal {
+    display: flex;
+}
+
+
+/* BOX */
+
+.modal-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    width: 300px;
+}
+
+
+/* ACTIONS */
+
+.actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* BUTTON */
+
+.btn {
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn.cancel {
+    background: #ccc;
+}
+
+.btn.confirm {
+    background: #ff4d4d;
+    color: white;
 }

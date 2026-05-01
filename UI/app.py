@@ -397,6 +397,22 @@ def payment():
 
     return redirect("/dashboard")
 
+@app.route("/cancel_booking/<id>")
+def cancel_booking(id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE Bookings
+        SET Status = N'Đã hủy'
+        WHERE Booking_ID = ?
+    """, (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/booking_previous")
+
 @app.route("/process_payment", methods=["POST"])
 def process_payment():
     conn = get_connection()

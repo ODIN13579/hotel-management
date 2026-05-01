@@ -47,7 +47,6 @@
         {% for booking in bookings %}
         <div class="booking-card">
             <img src="{{ url_for('static', filename='10_phong/' + image_map[booking[2]]) }}" class="room-img">
-
             <div class="info">
                 <h2>Phòng {{ booking[2] }}</h2>
                 <p><b>Mã booking:</b> {{ booking[0] }}</p>
@@ -64,9 +63,33 @@
                     </a>
                 </div>
                 <div class="status cancel">
-                    <a href="#">
-                        <p>Huỷ đặt phòng</p>
-                    </a>
+                    <!-- NÚT HUỶ -->
+                    <label for="cancel-toggle-{{ booking[0] }}" class="cancel-btn">
+                        Huỷ đặt phòng
+                    </label>
+
+                    <!-- CHECKBOX ẨN -->
+                    <input type="checkbox" id="cancel-toggle-{{ booking[0] }}" hidden>
+
+                    <!-- MODAL -->
+                    <div class="modal">
+                        <div class="modal-box">
+                            <h3>Xác nhận huỷ</h3>
+                            <p>Bạn có chắc muốn huỷ phòng này không?</p>
+
+                            <div class="actions">
+                                <!-- Đóng -->
+                                <label for="cancel-toggle-{{ booking[0] }}" class="btn cancel">
+                                    Không
+                                </label>
+
+                                <!-- Xác nhận -->
+                                <a href="{{ url_for('cancel_booking_user', id=booking[0]) }}" class="btn confirm">
+                                    Huỷ phòng
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
