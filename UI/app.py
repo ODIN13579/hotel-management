@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "abc123"
 
-IMAGE_ROOT = r"D:/New folder/hotel-management/UI/static/10_phong"
+IMAGE_ROOT = os.path.join(app.root_path, "static", "10_phong")  # hoặc thư mục bạn đang chứa ảnh
 
 def get_dashboard_summary():
     conn = get_connection()
@@ -192,7 +192,7 @@ def room_detail():
         room = cursor.fetchone()
 
         cursor.execute("SELECT dbo.GetRatingRoom(?)", (room_id,))
-        review = cursor.fetchone()[0]
+        rating = cursor.fetchone()[0]
         
         cursor.execute("SELECT dbo.GetRoomType(?)", (room_id,))
         room_type = cursor.fetchone()[0]
@@ -226,15 +226,20 @@ def room_detail():
             for file in sorted(os.listdir(base_path)):
                 if file.endswith((".webp", ".jpg", ".png")):
                     images.append(f"/10_phong/{folder}/{file}")
+        
+        # Lấy review
+        cursor.execute("SELECT * FROM GetReview(?)", (room_id,))
+        reviews = cursor.fetchall()
 
         return render_template(
             "room_detail.html", 
             room=room, 
-            review=review, 
+            rating=rating, 
             show_Deluxe=show_Deluxe,
             show_VIP=show_VIP, 
             user=user,
-            images=images
+            images=images,
+            reviews=reviews
         )
     return "Không có dữ liệu"
         
