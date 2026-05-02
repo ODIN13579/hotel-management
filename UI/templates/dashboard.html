@@ -49,7 +49,7 @@
     <h1 style="text-align: center; margin-top: 20px">Danh sách phòng!</h1>
 
     <div class="room-grid">
-        {% for room in rooms %}
+        {% for room in rooms %} {% if room[5] == "có sẵn" %}
         <form method="POST" action="{{ url_for('room_detail') }}">
             <div class="room-card">
                 <img class="room-img" src="{{ url_for('static', filename='10 phòng/' + image_map[room[0]]) }}" />
@@ -80,7 +80,7 @@
                 </div>
         </form>
         </div>
-        {% endfor %}
+        {% endif %} {% endfor %}
     </div>
     <footer class="footer">
         <div class="contact">

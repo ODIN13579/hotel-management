@@ -350,21 +350,21 @@ def booking_previous():
                         )
 
 
-# @app.route("/cancel_booking_user/<id>")
-# def cancel_booking_user(id):
-#     conn = get_connection()
-#     cursor = conn.cursor()
+@app.route("/cancel_booking_user/<id>")
+def cancel_booking_user(id):
+    conn = get_connection()
+    cursor = conn.cursor()
 
-#     cursor.execute("""
-#         UPDATE Bookings
-#         SET Status = N'đã hủy'
-#         WHERE Booking_ID = ?
-#     """, (id,))
+    cursor.execute("""
+        UPDATE Bookings
+        SET Status = N'đã hủy'
+        WHERE Booking_ID = ?
+    """, (id,))
 
-#     conn.commit()
-#     conn.close()
+    conn.commit()
+    conn.close()
 
-#     return redirect("/booking_previous")
+    return redirect("/booking_previous")
 
 #===============Reivew================
 @app.route("/reviews/<booking_id>", methods=["GET", "POST"])
@@ -447,21 +447,6 @@ def payment():
 
     return redirect("/dashboard")
 
-@app.route("/cancel_booking_user/<id>")
-def cancel_booking_user(id):
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        UPDATE Bookings
-        SET Status = N'Đã hủy'
-        WHERE Booking_ID = ?
-    """, (id,))
-
-    conn.commit()
-    conn.close()
-
-    return redirect("/booking_previous")
 
 @app.route("/process_payment", methods=["POST"])
 def process_payment():
