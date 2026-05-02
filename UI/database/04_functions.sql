@@ -14,18 +14,6 @@ BEGIN
 END
 GO
 
--- 4. Lấy loại phòng
-CREATE FUNCTION GetRoomType(@room_id VARCHAR(50))
-RETURNS VARCHAR(50)
-AS
-BEGIN
-    DECLARE @type VARCHAR(50)
-
-    SELECT @type = Room_Type FROM Rooms WHERE Room_ID = @room_id
-
-    RETURN @type
-END
-GO
 
 -- 6. Lấy loại phòng
 CREATE FUNCTION GetRoomType(@room_id VARCHAR(50))

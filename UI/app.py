@@ -2,13 +2,14 @@ from flask import Flask, render_template, request, redirect, send_from_directory
 from flask import session
 from db import get_connection
 from datetime import datetime
+import re
 import uuid
 import os
 
 app = Flask(__name__)
 app.secret_key = "abc123"
 
-IMAGE_ROOT = os.path.join(app.root_path, "static", "10 phòng")  # hoặc thư mục bạn đang chứa ảnh
+IMAGE_ROOT = os.path.join(app.root_path, "static", "10_phong")  # hoặc thư mục bạn đang chứa ảnh
 
 def get_dashboard_summary():
     conn = get_connection()
@@ -57,8 +58,8 @@ def get_recent_bookings():
 # ================= ROUTE LẤY ẢNH TỪ THƯ MỤC STATIC =================
 @app.route('/room_images/<path:filename>')
 def room_images(filename):
-    # Chỉ đường cho Flask tới thư mục "10 phòng" nằm TRONG thư mục static
-    image_dir = os.path.join(app.root_path, 'static', '10 phòng')
+    # Chỉ đường cho Flask tới thư mục "10_phong" nằm TRONG thư mục static
+    image_dir = os.path.join(app.root_path, 'static', '10_phong')
     return send_from_directory(image_dir, filename)
 
 # ================= LOGIN =================
@@ -171,7 +172,7 @@ def forgotpass():
     return render_template("forgotpass.html")
 
 #===============Detail Room================
-@app.route("/10 phòng/<folder>/<filename>")
+@app.route("/10_phong/<folder>/<filename>")
 def serve_room_image(folder, filename):
     return send_from_directory(
         os.path.join(IMAGE_ROOT, folder),
@@ -205,20 +206,22 @@ def room_detail():
         user = cursor.fetchone()
 
         # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
-        folder_map = {
-            "R01": "p1",
-            "R02": "p2",
-            "R03": "p3",
-            "R04": "p4",
-            "R05": "p5",
-            "R06": "p6",
-            "R07": "p7",
-            "R08": "p8",
-            "R09": "p9",
-            "R10": "p10",
-        }
+        # folder_map = {
+        #     "R01": "p1",
+        #     "R02": "p2",
+        #     "R03": "p3",
+        #     "R04": "p4",
+        #     "R05": "p5",
+        #     "R06": "p6",
+        #     "R07": "p7",
+        #     "R08": "p8",
+        #     "R09": "p9",
+        #     "R10": "p10",
+        # }
 
-        folder = folder_map.get(room_id, "p1")
+        number = re.search(r"\d+", room_id).group()
+        folder = "p" + number
+
         base_path = os.path.join(IMAGE_ROOT, folder)
 
         images = []
@@ -226,7 +229,7 @@ def room_detail():
         if os.path.exists(base_path):
             for file in sorted(os.listdir(base_path)):
                 if file.endswith((".webp", ".jpg", ".png")):
-                    images.append(f"/10 phòng/{folder}/{file}")
+                    images.append(f"/room_images/{folder}/{file}")
         
         # Lấy review
         cursor.execute("SELECT * FROM GetReview(?)", (room_id,))
@@ -280,28 +283,18 @@ def confirm():
     user = cursor.fetchone()
 
  # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
-    folder_map = {
-        "R01": "p1",
-        "R02": "p2",
-        "R03": "p3",
-        "R04": "p4",
-        "R05": "p5",
-        "R06": "p6",
-        "R07": "p7",
-        "R08": "p8",
-        "R09": "p9",
-        "R10": "p10",
-    }
 
-    folder = folder_map.get(room_id, "p1")
+    number = re.search(r"\d+", room_id).group()
+    folder = "p" + number
+
     base_path = os.path.join(IMAGE_ROOT, folder)
 
     images = []
-    
+
     if os.path.exists(base_path):
         for file in sorted(os.listdir(base_path)):
             if file.endswith((".webp", ".jpg", ".png")):
-                images.append(f"/10 phòng/{folder}/{file}")
+                images.append(f"/room_images/{folder}/{file}")
 
     return render_template(
         "confirm.html",
@@ -1071,7 +1064,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "abc123"
 
-IMAGE_ROOT = os.path.join(app.root_path, "static", "10 phòng")  # hoặc thư mục bạn đang chứa ảnh
+IMAGE_ROOT = os.path.join(app.root_path, "static", "10_phong")  # hoặc thư mục bạn đang chứa ảnh
 
 def get_dashboard_summary():
     conn = get_connection()
@@ -1120,8 +1113,8 @@ def get_recent_bookings():
 # ================= ROUTE LẤY ẢNH TỪ THƯ MỤC STATIC =================
 @app.route('/room_images/<path:filename>')
 def room_images(filename):
-    # Chỉ đường cho Flask tới thư mục "10 phòng" nằm TRONG thư mục static
-    image_dir = os.path.join(app.root_path, 'static', '10 phòng')
+    # Chỉ đường cho Flask tới thư mục "10_phong" nằm TRONG thư mục static
+    image_dir = os.path.join(app.root_path, 'static', '10_phong')
     return send_from_directory(image_dir, filename)
 
 # ================= LOGIN =================
