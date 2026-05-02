@@ -356,7 +356,7 @@ def cancel_booking_user(id):
 
     cursor.execute("""
         UPDATE Bookings
-        SET Status = N'Đã hủy'
+        SET Status = N'đã hủy'
         WHERE Booking_ID = ?
     """, (id,))
 
