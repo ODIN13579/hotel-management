@@ -47,6 +47,7 @@
         {% for booking in bookings %}
         <div class="booking-card">
             <img src="{{ url_for('static', filename='10_phong/' + image_map[booking[2]]) }}" class="room-img">
+
             <div class="info">
                 <h2>Phòng {{ booking[2] }}</h2>
                 <p><b>Mã booking:</b> {{ booking[0] }}</p>
@@ -57,11 +58,13 @@
             </div>
 
             <div class="function">
+                {% if booking[8] == "đã trả phòng" %}
                 <div class="status feedback">
-                    <a href="#">
+                    <a href="{{ url_for('reviews', booking_id=booking[0]) }}">
                         <p>Nhận xét</p>
                     </a>
                 </div>
+                {% endif %} {% if booking[8] == "đã xác nhận" %}
                 <div class="status cancel">
                     <!-- NÚT HUỶ -->
                     <label for="cancel-toggle-{{ booking[0] }}" class="cancel-btn">
@@ -91,6 +94,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}

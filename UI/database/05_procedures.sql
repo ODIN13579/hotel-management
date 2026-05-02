@@ -341,3 +341,31 @@ BEGIN
                ,@status)
 END
 GO
+
+-- 17 Tạo đánh giá
+CREATE PROCEDURE CreateReview(
+    @review_id VARCHAR(50),
+    @user_id VARCHAR(50),
+    @booking VARCHAR(50),
+    @rating INT,
+    @comment NVARCHAR(255),
+    @createAt DATETIME
+)
+AS
+BEGIN
+    INSERT INTO [dbo].[Reviews]
+               ([Review_ID]
+               ,[User_ID]
+               ,[Booking_ID]
+               ,[Rating]
+               ,[Comment]
+               ,[Created_At])
+         VALUES
+               (@review_id
+               ,@user_id
+               ,@booking
+               ,@rating
+               ,@comment
+               ,@createAt)
+END
+GO

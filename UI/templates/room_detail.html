@@ -34,7 +34,7 @@
                 <p>Email: {{ user[2] }}</p>
                 <hr>
                 <a href="{{ url_for('profile', id=user[0]) }}">Thông tin cá nhân</a>
-                <br></br>
+                <a href="{{ url_for('booking_previous') }}">Lịch sử đặt phòng</a>
                 <a href="/">Đăng xuất</a>
             </div>
 
@@ -129,10 +129,11 @@
                 </div>
                 {% endfor %}
             </div>
-
-            <!-- RIGHT -->
+            <br>
             <h2>Bạn muốn ở tới khi nào?</h2>
+            <!-- RIGHT -->
             <div class="right">
+
                 <form method="POST" action="{{ url_for('confirm') }}">
 
                     <div class="booking-box">

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Đánh giá khách hàng</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='reviews.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <!-- ===== FORM NHẬP ĐÁNH GIÁ ===== -->
+        <div class="review-form">
+            <h2>📝 Viết đánh giá</h2>
+
+
+            <form method="POST">
+                <h3>Tên: {{ user[1] }}</h3>
+                <p><b>RoomID: </b>{{ booking[2] }}</p>
+                <p><b>Check-in:</b> {{ booking[6].strftime("%d-%m-%Y") if booking[6] else "" }}</p>
+                <p><b>Check-out:</b> {{ booking[7].strftime("%d-%m-%Y") if booking[7] else "" }}</p>
+
+                <div class="rating-box">
+                    <span>Đánh Giá</span>
+
+                    <div class="stars">
+                        <input type="radio" name="rating" id="star5" value="5" />
+                        <label for="star5"><i class="fa fa-star"></i></label>
+
+                        <input type="radio" name="rating" id="star4" value="4" />
+                        <label for="star4"><i class="fa fa-star"></i></label>
+
+                        <input type="radio" name="rating" id="star3" value="3" />
+                        <label for="star3"><i class="fa fa-star"></i></label>
+
+                        <input type="radio" name="rating" id="star2" value="2" />
+                        <label for="star2"><i class="fa fa-star"></i></label>
+
+                        <input type="radio" name="rating" id="star1" value="1" />
+                        <label for="star1"><i class="fa fa-star"></i></label>
+                    </div>
+                </div>
+                <textarea name="comment" placeholder="Nhập đánh giá của bạn..." required></textarea>
+
+                <button type="submit">Gửi đánh giá</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

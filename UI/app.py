@@ -349,6 +349,55 @@ def booking_previous():
                         )
 
 
+@app.route("/cancel_booking_user/<id>")
+def cancel_booking_user(id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE Bookings
+        SET Status = N'Đã hủy'
+        WHERE Booking_ID = ?
+    """, (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/booking_previous")
+
+#===============Reivew================
+@app.route("/reviews/<booking_id>", methods=["GET", "POST"])
+def reviews(booking_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    user_id = session.get("user_id")
+    
+    cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
+    user = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM Bookings WHERE Booking_ID = ?", (booking_id,))
+    booking = cursor.fetchone()
+
+    if request.method == "POST":
+        # name = request.form.get("name")
+        rating = request.form.get("rating")
+        comment = request.form.get("comment")
+
+        review_id = "REV" + str(uuid.uuid4())[:3]
+        day = datetime.now().strftime("%d/%m/%Y")
+
+        cursor.execute("EXEC CreateReview ?, ?, ?, ?, ?, ?", (review_id, user_id, booking_id, rating, comment, day))
+        conn.commit()
+        conn.close()
+
+        return redirect("/dashboard")
+
+    return render_template("reviews.html",
+                            user=user,
+                            booking=booking   
+                        )
+
 #===============Payment================
 @app.route("/payment", methods=["GET", "POST"])
 def payment():

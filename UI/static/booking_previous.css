@@ -108,8 +108,8 @@ h1 {
 /* ẢNH */
 
 .room-img {
-    width: 180px;
-    height: 120px;
+    width: 380px;
+    height: 240px;
     border-radius: 12px;
     object-fit: cover;
 }
@@ -125,8 +125,6 @@ h1 {
 .info h2 {
     margin: 0 0 10px;
 }
-
-.function {}
 
 
 /* STATUS */
@@ -145,6 +143,7 @@ h1 {
 }
 
 .status a p {
+    width: 150px;
     margin: 5px 0px;
     font-size: 18px;
 }
@@ -153,7 +152,7 @@ h1 {
     color: #5e6309;
 }
 
-.cancel a:hover {
+.cancel label:hover {
     color: #9c2929;
 }
 

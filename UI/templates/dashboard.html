@@ -21,28 +21,29 @@
             </div>
 
             <span>
-          <div class="user-menu">
-            <span class="user-trigger">
-              <i class="fa fa-user"></i>
-              <svg
-                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1w3m2oh"
-                viewBox="0 0 24 24"
-                data-testid="KeyboardArrowDownIcon"
-              >
-                <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"></path>
-              </svg>
-            </span>
+          <!-- USER MENU -->
+        <div class="user-menu">
 
-            <div class="dropdown" id="dropdownMenu">
-                <p><strong>{{ user[1] if user else 'Khách' }}</strong></p>
-                <p>Email: {{ user[2] if user else 'N/A' }}</p>
-                <hr />
-                <a href="{{ url_for('profile') }}">Thông tin cá nhân</a>
+            <div class="user-trigger">
+                <i class="fa fa-user"></i>
+                <svg viewBox="0 0 24 24">
+                <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"></path> 
+            </svg>
+            </div>
+
+            <div class="dropdown">
+                <p><strong>{{ user[1] }}</strong></p>
+                <p>Email: {{ user[2] }}</p>
+                <hr>
+                <a href="{{ url_for('profile', id=user[0]) }}">Thông tin cá nhân</a>
+                <a href="{{ url_for('booking_previous') }}">Lịch sử đặt phòng</a>
                 <a href="/">Đăng xuất</a>
             </div>
+
+        </div>
         </div>
         </span>
-    </div>
+        </div>
     </div>
 
     <h1 style="text-align: center; margin-top: 20px">Danh sách phòng!</h1>
