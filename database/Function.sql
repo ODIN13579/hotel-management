@@ -133,3 +133,16 @@ RETURN
     WHERE R.Room_ID = @room_id
 )
 GO
+
+-- 10. Lấy tất cả reiview của phòng
+CREATE FUNCTION GetReview (@room_id VARCHAR(50))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT R.*, U.Name
+    FROM Reviews R
+    JOIN Bookings B  ON R.Booking_ID = B.Booking_ID
+    JOIN Users U ON B.User_ID = U.User_ID
+    WHERE B.Room_ID = @room_id
+)
+GO

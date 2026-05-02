@@ -52,7 +52,7 @@
         {% for room in rooms %}
         <form method="POST" action="{{ url_for('room_detail') }}">
             <div class="room-card">
-                <img class="room-img" src="{{ url_for('static', filename='10_phong/' + image_map[room[0]]) }}" />
+                <img class="room-img" src="{{ url_for('static', filename='10 phòng/' + image_map[room[0]]) }}" />
 
                 <div class="room-info">
                     <h3>Phòng {{ room[1] }}</h3>

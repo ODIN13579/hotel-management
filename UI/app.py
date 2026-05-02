@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, send_from_directory
 from flask import session
+from flask import send_from_directory
 from db import get_connection
 from datetime import datetime
 import uuid
@@ -8,7 +9,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "abc123"
 
-IMAGE_ROOT = os.path.join(app.root_path, "static", "10_phong")  # hoặc thư mục bạn đang chứa ảnh
+IMAGE_ROOT = os.path.join(app.root_path, "static", "10 phòng")  # hoặc thư mục bạn đang chứa ảnh
 
 def get_dashboard_summary():
     conn = get_connection()
@@ -171,7 +172,7 @@ def forgotpass():
     return render_template("forgotpass.html")
 
 #===============Detail Room================
-@app.route("/10_phong/<folder>/<filename>")
+@app.route("/10 phòng/<folder>/<filename>")
 def serve_room_image(folder, filename):
     return send_from_directory(
         os.path.join(IMAGE_ROOT, folder),
@@ -226,7 +227,7 @@ def room_detail():
         if os.path.exists(base_path):
             for file in sorted(os.listdir(base_path)):
                 if file.endswith((".webp", ".jpg", ".png")):
-                    images.append(f"/10_phong/{folder}/{file}")
+                    images.append(f"/10 phòng/{folder}/{file}")
         
         # Lấy review
         cursor.execute("SELECT * FROM GetReview(?)", (room_id,))
@@ -301,7 +302,7 @@ def confirm():
     if os.path.exists(base_path):
         for file in sorted(os.listdir(base_path)):
             if file.endswith((".webp", ".jpg", ".png")):
-                images.append(f"/10_phong/{folder}/{file}")
+                images.append(f"/10 phòng/{folder}/{file}")
 
     return render_template(
         "confirm.html",
@@ -349,21 +350,21 @@ def booking_previous():
                         )
 
 
-@app.route("/cancel_booking_user/<id>")
-def cancel_booking_user(id):
-    conn = get_connection()
-    cursor = conn.cursor()
+# @app.route("/cancel_booking_user/<id>")
+# def cancel_booking_user(id):
+#     conn = get_connection()
+#     cursor = conn.cursor()
 
-    cursor.execute("""
-        UPDATE Bookings
-        SET Status = N'đã hủy'
-        WHERE Booking_ID = ?
-    """, (id,))
+#     cursor.execute("""
+#         UPDATE Bookings
+#         SET Status = N'đã hủy'
+#         WHERE Booking_ID = ?
+#     """, (id,))
 
-    conn.commit()
-    conn.close()
+#     conn.commit()
+#     conn.close()
 
-    return redirect("/booking_previous")
+#     return redirect("/booking_previous")
 
 #===============Reivew================
 @app.route("/reviews/<booking_id>", methods=["GET", "POST"])
