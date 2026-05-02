@@ -614,10 +614,15 @@ def quan_ly_dich_vu():
     cursor.execute("SELECT * FROM Services")
     services = cursor.fetchall()
 
+    total_services = len(services)
+
     conn.close()
 
-    return render_template("dich_vu.html", services=services)
-
+    return render_template(
+        "dich_vu.html",
+        services=services,
+        total_services=total_services
+    )
 
 @app.route("/services/add", methods=["POST"])
 def add_service():
@@ -676,32 +681,61 @@ def update_service():
 
     return redirect("/services")
 
-
 @app.route("/payments")
-def quan_ly_thanh_toan():
+def payments():
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT 
-      p.Payment_ID,
-      p.Booking_ID,
-      p.Amount,
-      p.Payment_Date,
-      p.Status,
-      u.Name,
-      r.Room_Number
-    FROM Payment p
-    JOIN Bookings b ON p.Booking_ID = b.Booking_ID
-    JOIN Users u ON b.User_ID = u.User_ID
-    JOIN Rooms r ON b.Room_ID = r.Room_ID
+        SELECT 
+          p.Payment_ID,
+          p.Booking_ID,
+          p.Amount,
+          p.Payment_Date,
+          p.Status,
+          u.Name,
+          r.Room_Number
+        FROM Payment p
+        JOIN Bookings b ON p.Booking_ID = b.Booking_ID
+        JOIN Users u ON b.User_ID = u.User_ID
+        JOIN Rooms r ON b.Room_ID = r.Room_ID
     """)
     payments = cursor.fetchall()
 
+    paid_total = 0
+    pending_total = 0
+    refund_total = 0
+
+    paid_count = 0
+    pending_count = 0
+    refund_count = 0
+
+    for p in payments:
+        amount = p[2] or 0
+        status = p[4]
+
+        if status == "thành công":
+            paid_total += amount
+            paid_count += 1
+        elif status == "đang chờ xử lý":
+            pending_total += amount
+            pending_count += 1
+        elif status == "thất bại":
+            refund_total += amount
+            refund_count += 1
+
     conn.close()
 
-    return render_template("thanh_toan.html", payments=payments)
-
+    return render_template(
+        "thanh_toan.html",
+        payments=payments,
+        paid_total=paid_total,
+        pending_total=pending_total,
+        refund_total=refund_total,
+        paid_count=paid_count,
+        pending_count=pending_count,
+        refund_count=refund_count
+    )
 
 @app.route("/payments/update-status", methods=["POST"])
 def update_payment_status():
@@ -775,15 +809,18 @@ def quan_ly_nhan_vien():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("""
-       SELECT * FROM Employees
-       WHERE Status != N'nghỉ không phép'
-    """)
+    cursor.execute("SELECT * FROM Employees")
     employees = cursor.fetchall()
+
+    total_employees = len(employees)
 
     conn.close()
 
-    return render_template("nhan_vien.html", employees=employees)
+    return render_template(
+        "nhan_vien.html",
+        employees=employees,
+        total_employees=total_employees
+    )
 
 # ================= QUẢN LÝ ĐẶT PHÒNG =================
 @app.route("/bookings")
