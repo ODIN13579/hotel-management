@@ -534,10 +534,10 @@ def quan_ly_phong():
         # Thống kê trạng thái phòng
         stats = {
             'TatCa': len(rooms),
-            'Trong': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'có sẵn'),
-            'DaDat': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'đã đặt'),
-            'DaNhan': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'đã nhận'),
-            'BaoTri': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'bảo trì')
+            'Trong': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'Có sẵn'),
+            'DaDat': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'Đã đặt'),
+            'DaNhan': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'Đã nhận'),
+            'BaoTri': sum(1 for r in rooms if str(r.get('Status', '')).strip().lower() == 'Bảo trì')
         }
 
         # --- PHẦN THÊM MỚI CHO CHỈNH SỬA ---
@@ -889,7 +889,7 @@ def add_room():
         room_type = request.form.get("room_type")
         capacity = request.form.get("capacity")
         price = request.form.get("price")
-        status = "có sẵn"
+        status = "Có sẵn"
         selected_services = request.form.getlist("services")
 
         # Thêm vào bảng Rooms
