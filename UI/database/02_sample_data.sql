@@ -11,9 +11,9 @@ INSERT INTO Users (User_ID, Name, Email, Phone, Password) VALUES
 
 -- 2. Thêm dữ liệu bảng Employees (Có đủ Lễ tân, Quản lý và 3 trạng thái)
 INSERT INTO Employees (Employee_ID, Name, Email, Phone, Password, Role, Status) VALUES
-('E01', N'Đinh Lễ Tân', 'letan1@hotel.com', '0801111111', 'hash1', N'Lễ tân', N'đang làm việc'),
-('E02', N'Ngô Quản Lý', 'quanly1@hotel.com', '0802222222', 'hash2', N'Quản lý', N'nghỉ phép'),
-('E03', N'Lý Lễ Tân', 'letan2@hotel.com', '0803333333', 'hash3', N'Lễ tân', N'nghỉ không phép');
+('E01', N'Đinh Lễ Tân', 'letan1@hotel.com', '0801111111', 'hash1', N'Lễ tân', N'Đang làm việc'),
+('E02', N'Ngô Quản Lý', 'quanly1@hotel.com', '0802222222', 'hash2', N'Quản lý', N'Nghỉ phép'),
+('E03', N'Lý Lễ Tân', 'letan2@hotel.com', '0803333333', 'hash3', N'Lễ tân', N'Nghỉ không phép');
 
 -- 3. Thêm dữ liệu bảng Services (10 dịch vụ)
 INSERT INTO Services (Service_ID, Name, Description, Price) VALUES
@@ -30,16 +30,16 @@ INSERT INTO Services (Service_ID, Name, Description, Price) VALUES
 
 -- 4. Thêm dữ liệu bảng Rooms (10 phòng R01 - R10, đủ 3 loại và 4 trạng thái)
 INSERT INTO Rooms (Room_ID, Room_Number, Room_type, Capacity, Price_Per_Night, Status) VALUES
-('R01', '101', 'standard', 2, 500000, N'có sẵn'),
-('R02', '102', 'standard', 2, 500000, N'có sẵn'),
-('R03', '103', 'standard', 2, 500000, N'bảo trì'),
-('R04', '201', 'deluxe', 2, 800000, N'có sẵn'),
-('R05', '202', 'deluxe', 3, 900000, N'đã đặt'),
-('R06', '203', 'deluxe', 2, 800000, N'đã nhận'),
-('R07', '301', 'vip', 2, 1500000, N'đã nhận'),
-('R08', '302', 'vip', 4, 2000000, N'có sẵn'),
-('R09', '303', 'vip', 2, 1500000, N'đã đặt'),
-('R10', '401', 'vip', 4, 2000000, N'bảo trì');
+('R01', '101', 'standard', 2, 500000, N'Có sẵn'),
+('R02', '102', 'standard', 2, 500000, N'Có sẵn'),
+('R03', '103', 'standard', 2, 500000, N'Bảo trì'),
+('R04', '201', 'deluxe', 2, 800000, N'Có sẵn'),
+('R05', '202', 'deluxe', 3, 900000, N'Đã đặt'),
+('R06', '203', 'deluxe', 2, 800000, N'Đã nhận phòng'),
+('R07', '301', 'vip', 2, 1500000, N'Đã nhận phòng'),
+('R08', '302', 'vip', 4, 2000000, N'Có sẵn'),
+('R09', '303', 'vip', 2, 1500000, N'Đã đặt'),
+('R10', '401', 'vip', 4, 2000000, N'Bảo trì');
 
 -- 5. Thêm dữ liệu bảng Rooms_Services (Mỗi phòng 1 dịch vụ)
 INSERT INTO Rooms_Services (Room_ID, Service_ID) VALUES
@@ -74,16 +74,16 @@ INSERT INTO Reviews (Review_ID, User_ID, Booking_ID, Rating, Comment, Created_At
 
 -- 8. Thêm dữ liệu bảng Payment (Đủ 3 trạng thái chờ xử lý, thành công, thất bại)
 INSERT INTO Payment (Payment_ID, Booking_ID, Amount, Payment_Date, Status) VALUES
-('P01', 'B01', 350000, '2026-04-30 12:00:00', N'thành công'),
-('P02', 'B02', 350000, '2026-04-30 12:00:00', N'thành công'),
-('P03', 'B03', 0,      '2026-04-29 10:30:00', N'thất bại'),
-('P04', 'B04', 560000, '2026-04-30 12:00:00', N'thành công'),
-('P05', 'B05', 630000, '2026-04-29 15:00:00', N'đang chờ xử lý'),
-('P06', 'B06', 560000, '2026-04-29 16:00:00', N'đang chờ xử lý'),
-('P07', 'B07', 1050000,'2026-04-30 08:00:00', N'đang chờ xử lý'),
-('P08', 'B08', 0,      '2026-04-29 09:30:00', N'thất bại'),
-('P09', 'B09', 1050000,'2026-04-30 10:00:00', N'đang chờ xử lý'),
-('P10', 'B10', 1400000,'2026-04-30 12:00:00', N'thành công');
+('P01', 'B01', 350000, '2026-04-30 12:00:00', N'Thành công'),
+('P02', 'B02', 350000, '2026-04-30 12:00:00', N'Thành công'),
+('P03', 'B03', 0,      '2026-04-29 10:30:00', N'Thất bại'),
+('P04', 'B04', 560000, '2026-04-30 12:00:00', N'Thành công'),
+('P05', 'B05', 630000, '2026-04-29 15:00:00', N'Đang chờ xử lý'),
+('P06', 'B06', 560000, '2026-04-29 16:00:00', N'Đang chờ xử lý'),
+('P07', 'B07', 1050000,'2026-04-30 08:00:00', N'Đang chờ xử lý'),
+('P08', 'B08', 0,      '2026-04-29 09:30:00', N'Thất bại'),
+('P09', 'B09', 1050000,'2026-04-30 10:00:00', N'Đang chờ xử lý'),
+('P10', 'B10', 1400000,'2026-04-30 12:00:00', N'Thành công');
 
 -- 9. Thêm dữ liệu bảng Invoices (Dành cho các đơn đã check-out)
 INSERT INTO Invoices (Invoice_ID, User_ID, Booking_ID, Total_Amount, Issued_Date) VALUES
