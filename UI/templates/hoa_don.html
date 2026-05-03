@@ -1,169 +1,156 @@
-{% extends "management_layout.html" %} 
-{% block title %}Quản lý hóa đơn{% endblock %} 
-
-{% block content %}
+{% extends "management_layout.html" %} {% block title %}Quản lý hóa đơn{% endblock %} {% block content %}
 <header>
-  <h1>Quản lý hóa đơn</h1>
-  <p>Xem và in hóa đơn thanh toán (Tự động tạo khi khách Trả phòng)</p>
+    <h1>Quản lý hóa đơn</h1>
+    <p>Xem và in hóa đơn thanh toán (Tự động tạo khi khách Trả phòng)</p>
 </header>
 
 <!-- Khối thống kê -->
 <div class="invoice-stats">
-  <div class="service-stat-box">
-    <span class="value">{{ stats.TotalInvoices }}</span>
-    <span class="label">Tổng hóa đơn</span>
-  </div>
-  <div class="service-stat-box">
-    <span class="value" style="color: #10b981">{{ "{:,.0f}".format(stats.MonthlyRevenue).replace(',', '.') }} đ</span>
-    <span class="label">Tổng doanh thu tháng này</span>
-  </div>
-  <div class="service-stat-box">
-    <span class="value" style="color: #f59e0b">{{ "{:,.0f}".format(stats.AvgPerInvoice).replace(',', '.') }} đ</span>
-    <span class="label">Trung bình/hóa đơn tháng này</span>
-  </div>
+    <div class="service-stat-box">
+        <span class="value">{{ stats.TotalInvoices }}</span>
+        <span class="label">Tổng hóa đơn</span>
+    </div>
+    <div class="service-stat-box">
+        <span class="value" style="color: #10b981">{{ "{:,.0f}".format(stats.MonthlyRevenue).replace(',', '.') }} đ</span>
+        <span class="label">Tổng doanh thu tháng này</span>
+    </div>
+    <div class="service-stat-box">
+        <span class="value" style="color: #f59e0b">{{ "{:,.0f}".format(stats.AvgPerInvoice).replace(',', '.') }} đ</span>
+        <span class="label">Trung bình/hóa đơn tháng này</span>
+    </div>
 </div>
 
 <div class="search-container">
-  <input type="text" id="searchInvoice" class="search-bar" placeholder="🔍 Tìm mã hóa đơn, tên khách..." />
+    <input type="text" id="searchInvoice" class="search-bar" placeholder="🔍 Tìm mã hóa đơn, tên khách..." />
 </div>
 
 <!-- Bảng dữ liệu Hóa đơn -->
 <div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>Mã HĐ</th>
-        <th>Khách hàng</th>
-        <th>Mã ĐP</th>
-        <th>Phòng</th>
-        <th>Tổng tiền</th>
-        <th>Ngày xuất</th>
-        <th>Hành động</th>
-      </tr>
-    </thead>
-    <tbody id="invoiceTable">
-      {% for inv in invoices %}
-      <tr>
-        <td>{{ inv.Invoice_ID }}</td>
-        <td><strong>{{ inv.Customer_Name }}</strong><br /><small>{{ inv.Customer_Phone }}</small></td>
-        <td>{{ inv.Booking_ID }}</td>
-        <td>{{ inv.Room_type }} ({{ inv.Room_Number }})</td>
-        <td><strong>{{ "{:,.0f}".format(inv.Total_Amount).replace(',', '.') }} đ</strong></td>
-        <td>{{ inv.Issued_Date.strftime('%H:%M %d/%m/%Y') }}</td>
-        <td>
-          <button class="btn-view-invoice"
-                  data-id="{{ inv.Invoice_ID }}"
-                  data-date="{{ inv.Issued_Date.strftime('%H:%M %d/%m/%Y') }}"
-                  data-cname="{{ inv.Customer_Name }}"
-                  data-cmail="{{ inv.Customer_Email }}"
-                  data-cphone="{{ inv.Customer_Phone }}"
-                  data-room="{{ inv.Room_type }} - {{ inv.Room_Number }}"
-                  data-in="{{ inv.Check_In.strftime('%d/%m/%Y') }}"
-                  data-out="{{ inv.Check_Out.strftime('%d/%m/%Y') }}"
-                  data-nights="{{ inv.Nights }}"
-                  data-price="{{ "{:,.0f}".format(inv.Total_Amount / inv.Nights if inv.Nights > 0 else 0).replace(',', '.') }}"
-                  data-deposit="{{ "{:,.0f}".format(inv.Room_deposit).replace(',', '.') }}"
-                  data-total="{{ "{:,.0f}".format(inv.Total_Amount).replace(',', '.') }}"
-                  onclick="openInvoiceModal(this)">
+    <table>
+        <thead>
+            <tr>
+                <th>Mã HĐ</th>
+                <th>Khách hàng</th>
+                <th>Mã ĐP</th>
+                <th>Phòng</th>
+                <th>Tổng tiền</th>
+                <th>Ngày xuất</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="invoiceTable">
+            {% for inv in invoices %}
+            <tr>
+                <td>{{ inv.Invoice_ID }}</td>
+                <td><strong>{{ inv.Customer_Name }}</strong><br /><small>{{ inv.Customer_Phone }}</small></td>
+                <td>{{ inv.Booking_ID }}</td>
+                <td>{{ inv.Room_type }} ({{ inv.Room_Number }})</td>
+                <td><strong>{{ "{:,.0f}".format(inv.Total_Amount).replace(',', '.') }} đ</strong></td>
+                <td>{{ inv.Issued_Date.strftime('%H:%M %d/%m/%Y') }}</td>
+                <td>
+                    <button class="btn-view-invoice" data-id="{{ inv.Invoice_ID }}" data-date="{{ inv.Issued_Date.strftime('%H:%M %d/%m/%Y') }}" data-cname="{{ inv.Customer_Name }}" data-cmail="{{ inv.Customer_Email }}" data-cphone="{{ inv.Customer_Phone }}" data-room="{{ inv.Room_type }} - {{ inv.Room_Number }}"
+                        data-in="{{ inv.Check_In.strftime('%d/%m/%Y') }}" data-out="{{ inv.Check_Out.strftime('%d/%m/%Y') }}" data-nights="{{ inv.Nights }}" data-price="{{ " {:,.0f}
+                        ".format(inv.Total_Amount / inv.Nights if inv.Nights > 0 else 0).replace(',', '.') }}" data-deposit="{{ " {:,.0f} ".format(inv.Room_deposit).replace(',', '.') }}" data-total="{{ " {:,.0f} ".format(inv.Total_Amount).replace(',', '.') }}" onclick="openInvoiceModal(this)">
             <i class="fa-regular fa-file-lines"></i> Xem
           </button>
-        </td>
-      </tr>
-      {% else %}
-      <tr>
-        <td colspan="7" style="text-align: center; padding: 20px; color: var(--text-gray);">Chưa có hóa đơn nào. Khách cần 'Trả phòng' để xuất hóa đơn.</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 20px; color: var(--text-gray);">Chưa có hóa đơn nào. Khách cần 'Trả phòng' để xuất hóa đơn.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <!-- Modal Chi tiết Hóa đơn -->
 <div class="modal-overlay" id="invoiceModal">
-  <div class="modal-container">
-    <div class="modal-header">
-      <span class="close-btn" onclick="closeInvoiceModal()">&times;</span>
-      <small style="color: var(--accent-yellow)">GRAND IMPERIAL HOTEL & RESORT</small>
-      <h2>Hóa đơn thanh toán</h2>
-      <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 10px">
-        <p>Mã HĐ: <span id="m_inv_id"></span></p>
-        <p>Ngày xuất: <span id="m_inv_date"></span></p>
-      </div>
+    <div class="modal-container">
+        <div class="modal-header">
+            <span class="close-btn" onclick="closeInvoiceModal()">&times;</span>
+            <small style="color: var(--accent-yellow)">TRIPNEST HOTEL & RESORT</small>
+            <h2>Hóa đơn thanh toán</h2>
+            <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 10px">
+                <p>Mã HĐ: <span id="m_inv_id"></span></p>
+                <p>Ngày xuất: <span id="m_inv_date"></span></p>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div class="info-section">
+                <p style="font-size: 0.7rem; color: var(--text-gray); margin-bottom: 5px; font-weight: bold;">THÔNG TIN KHÁCH HÀNG</p>
+                <strong id="m_cname"></strong><br />
+                <small id="m_cmail"></small><br />
+                <small id="m_cphone"></small>
+            </div>
+
+            <p style="font-size: 0.7rem; color: var(--text-gray); margin-bottom: 10px; font-weight: bold;">CHI TIẾT LƯU TRÚ</p>
+            <div class="info-row"><span class="label">Phòng</span><span class="value" id="m_room"></span></div>
+            <div class="info-row"><span class="label">Nhận phòng</span><span class="value" id="m_in"></span></div>
+            <div class="info-row"><span class="label">Trả phòng</span><span class="value" id="m_out"></span></div>
+            <div class="info-row"><span class="label">Số đêm</span><span class="value"><span id="m_nights"></span> đêm</span>
+            </div>
+            <div class="info-row"><span class="label">Giá/đêm</span><span class="value"><span id="m_price"></span> đ</span>
+            </div>
+            <div class="info-row"><span class="label">Đã đặt cọc (30%)</span><span class="value" style="color: #f59e0b"><span id="m_deposit"></span> đ</span>
+            </div>
+
+            <div class="total-row">
+                <span>TỔNG CỘNG</span>
+                <span><span id="m_total"></span> đ</span>
+            </div>
+            <p style="text-align: center; font-size: 0.75rem; color: var(--text-gray); margin-top: 25px; font-style: italic;">
+                Cảm ơn quý khách đã sử dụng dịch vụ của Grand Imperial!
+            </p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> In hóa đơn</button>
+            <button class="btn-close-modal" onclick="closeInvoiceModal()">Đóng</button>
+        </div>
     </div>
-
-    <div class="modal-body">
-      <div class="info-section">
-        <p style="font-size: 0.7rem; color: var(--text-gray); margin-bottom: 5px; font-weight: bold;">THÔNG TIN KHÁCH HÀNG</p>
-        <strong id="m_cname"></strong><br />
-        <small id="m_cmail"></small><br />
-        <small id="m_cphone"></small>
-      </div>
-
-      <p style="font-size: 0.7rem; color: var(--text-gray); margin-bottom: 10px; font-weight: bold;">CHI TIẾT LƯU TRÚ</p>
-      <div class="info-row"><span class="label">Phòng</span><span class="value" id="m_room"></span></div>
-      <div class="info-row"><span class="label">Nhận phòng</span><span class="value" id="m_in"></span></div>
-      <div class="info-row"><span class="label">Trả phòng</span><span class="value" id="m_out"></span></div>
-      <div class="info-row"><span class="label">Số đêm</span><span class="value"><span id="m_nights"></span> đêm</span></div>
-      <div class="info-row"><span class="label">Giá/đêm</span><span class="value"><span id="m_price"></span> đ</span></div>
-      <div class="info-row"><span class="label">Đã đặt cọc (30%)</span><span class="value" style="color: #f59e0b"><span id="m_deposit"></span> đ</span></div>
-
-      <div class="total-row">
-        <span>TỔNG CỘNG</span>
-        <span><span id="m_total"></span> đ</span>
-      </div>
-      <p style="text-align: center; font-size: 0.75rem; color: var(--text-gray); margin-top: 25px; font-style: italic;">
-        Cảm ơn quý khách đã sử dụng dịch vụ của Grand Imperial!
-      </p>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> In hóa đơn</button>
-      <button class="btn-close-modal" onclick="closeInvoiceModal()">Đóng</button>
-    </div>
-  </div>
 </div>
-{% endblock %} 
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
-  // Chức năng tìm kiếm
-  document.getElementById('searchInvoice').addEventListener('keyup', function() {
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll('#invoiceTable tr');
-    rows.forEach(row => {
-      row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+    // Chức năng tìm kiếm
+    document.getElementById('searchInvoice').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#invoiceTable tr');
+        rows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+        });
     });
-  });
 
-  // Mở modal và truyền dữ liệu
-  function openInvoiceModal(btn) {
-    document.getElementById('m_inv_id').innerText = btn.getAttribute('data-id');
-    document.getElementById('m_inv_date').innerText = btn.getAttribute('data-date');
-    document.getElementById('m_cname').innerText = btn.getAttribute('data-cname');
-    document.getElementById('m_cmail').innerText = btn.getAttribute('data-cmail');
-    document.getElementById('m_cphone').innerText = btn.getAttribute('data-cphone');
-    document.getElementById('m_room').innerText = btn.getAttribute('data-room');
-    document.getElementById('m_in').innerText = btn.getAttribute('data-in');
-    document.getElementById('m_out').innerText = btn.getAttribute('data-out');
-    document.getElementById('m_nights').innerText = btn.getAttribute('data-nights');
-    document.getElementById('m_price').innerText = btn.getAttribute('data-price');
-    document.getElementById('m_deposit').innerText = btn.getAttribute('data-deposit');
-    document.getElementById('m_total').innerText = btn.getAttribute('data-total');
+    // Mở modal và truyền dữ liệu
+    function openInvoiceModal(btn) {
+        document.getElementById('m_inv_id').innerText = btn.getAttribute('data-id');
+        document.getElementById('m_inv_date').innerText = btn.getAttribute('data-date');
+        document.getElementById('m_cname').innerText = btn.getAttribute('data-cname');
+        document.getElementById('m_cmail').innerText = btn.getAttribute('data-cmail');
+        document.getElementById('m_cphone').innerText = btn.getAttribute('data-cphone');
+        document.getElementById('m_room').innerText = btn.getAttribute('data-room');
+        document.getElementById('m_in').innerText = btn.getAttribute('data-in');
+        document.getElementById('m_out').innerText = btn.getAttribute('data-out');
+        document.getElementById('m_nights').innerText = btn.getAttribute('data-nights');
+        document.getElementById('m_price').innerText = btn.getAttribute('data-price');
+        document.getElementById('m_deposit').innerText = btn.getAttribute('data-deposit');
+        document.getElementById('m_total').innerText = btn.getAttribute('data-total');
 
-    document.getElementById('invoiceModal').classList.add('active');
-  }
-
-  // Đóng modal
-  function closeInvoiceModal() {
-    document.getElementById('invoiceModal').classList.remove('active');
-  }
-
-  // Đóng khi click ngoài viền
-  window.addEventListener('click', function(e) {
-    const modal = document.getElementById('invoiceModal');
-    if (e.target === modal) {
-      closeInvoiceModal();
+        document.getElementById('invoiceModal').classList.add('active');
     }
-  });
+
+    // Đóng modal
+    function closeInvoiceModal() {
+        document.getElementById('invoiceModal').classList.remove('active');
+    }
+
+    // Đóng khi click ngoài viền
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('invoiceModal');
+        if (e.target === modal) {
+            closeInvoiceModal();
+        }
+    });
 </script>
 {% endblock %}
