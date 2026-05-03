@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, redirect, send_from_directory
+from flask import Flask, render_template, request, redirect, send_from_directory, url_for
 from flask import session
 from db import get_connection
 from datetime import datetime
+import re
 import uuid
 import os
+import random
 
 app = Flask(__name__)
 app.secret_key = "abc123"
@@ -67,6 +69,7 @@ def login():
     if request.method == "POST":
         user = request.form["username"]
         pw = request.form["password"]
+        
 
         conn = get_connection()
         cursor = conn.cursor()
@@ -76,18 +79,21 @@ def login():
 
         if result:
             session["user_id"] = result[0]
+            # if not user_id:
+            #     return redirect("/")
             return redirect("/dashboard")
-
-        cursor.execute("SELECT * FROM LoginManager(?, ?)", (user, pw))
-        result_admin = cursor.fetchone()
-
-        if result_admin:
-            session["admin"] = {
-                "id": result_admin[0],
-                "name": result_admin[1],
-                "role": result_admin[5]
-            }
-            return redirect("/management")
+        else:
+            cursor.execute("SELECT * FROM LoginManager  (?, ?)", (user, pw))
+            result_admin = cursor.fetchone()
+            
+            if result_admin:
+                session["admin"] = {
+                    "id": result_admin[0],
+                    "name": result_admin[1],
+                    "role": result_admin[5]
+                }
+                return redirect("/management")
+            
     return render_template("login.html")
 
 # ================= DASHBOARD =================
@@ -98,15 +104,12 @@ def dashboard():
 
     user_id = session.get("user_id")
 
-    cursor.execute("SELECT * FROM Rooms")
+    cursor.execute("EXEC RoomHaveRating")
     rooms = cursor.fetchall()
-
-    cursor.execute("SELECT * FROM Reviews")
-    reviews = cursor.fetchall()
 
     cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
     user = cursor.fetchone()
-    
+
     # ===== IMAGE MAP =====
     image_map = {
         "R01": "p1/p1_01.webp",
@@ -123,8 +126,7 @@ def dashboard():
 
     return render_template(
         "dashboard.html", 
-        rooms=rooms, 
-        reviews=reviews, 
+        rooms=rooms,  
         user=user, 
         image_map=image_map
     )
@@ -187,7 +189,7 @@ def room_detail():
         cursor.execute("SELECT * FROM GetRoom(?)", (room_id,))
         room = cursor.fetchone()
 
-        cursor.execute("SELECT dbo.GetRatingRoom(?)", (room_id,))
+        cursor.execute("SELECT dbo.AvgRatingRoom(?)", (room_id,))
         rating = cursor.fetchone()[0]
         
         cursor.execute("SELECT dbo.GetRoomType(?)", (room_id,))
@@ -200,21 +202,10 @@ def room_detail():
         cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
         user = cursor.fetchone()
 
-        # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
-        folder_map = {
-            "R01": "p1",
-            "R02": "p2",
-            "R03": "p3",
-            "R04": "p4",
-            "R05": "p5",
-            "R06": "p6",
-            "R07": "p7",
-            "R08": "p8",
-            "R09": "p9",
-            "R10": "p10",
-        }
 
-        folder = folder_map.get(room_id, "p1")
+        number = re.search(r"\d+", room_id).group()
+        folder = "p" + str(int(number))
+
         base_path = os.path.join(IMAGE_ROOT, folder)
 
         images = []
@@ -222,7 +213,7 @@ def room_detail():
         if os.path.exists(base_path):
             for file in sorted(os.listdir(base_path)):
                 if file.endswith((".webp", ".jpg", ".png")):
-                    images.append(f"/10_phong/{folder}/{file}")
+                    images.append(url_for('static', filename=f"10_phong/{folder}/{file}"))
         
         # Lấy review
         cursor.execute("SELECT * FROM GetReview(?)", (room_id,))
@@ -275,29 +266,19 @@ def confirm():
     cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
     user = cursor.fetchone()
 
- # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
-    folder_map = {
-        "R01": "p1",
-        "R02": "p2",
-        "R03": "p3",
-        "R04": "p4",
-        "R05": "p5",
-        "R06": "p6",
-        "R07": "p7",
-        "R08": "p8",
-        "R09": "p9",
-        "R10": "p10",
-    }
+    # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
 
-    folder = folder_map.get(room_id, "p1")
+    number = re.search(r"\d+", room_id).group()
+    folder = "p" + str(int(number))
+
     base_path = os.path.join(IMAGE_ROOT, folder)
 
     images = []
-    
+
     if os.path.exists(base_path):
         for file in sorted(os.listdir(base_path)):
             if file.endswith((".webp", ".jpg", ".png")):
-                images.append(f"/10_phong/{folder}/{file}")
+                images.append(url_for('static', filename=f"10_phong/{folder}/{file}"))
 
     return render_template(
         "confirm.html",
@@ -343,6 +324,23 @@ def booking_previous():
                            bookings=bookings,
                            image_map=image_map
                         )
+
+
+@app.route("/cancel_booking_user/<id>")
+def cancel_booking_user(id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE Bookings
+        SET Status = N'đã hủy'
+        WHERE Booking_ID = ?
+    """, (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/booking_previous")
 
 #===============Reivew================
 @app.route("/reviews/<booking_id>", methods=["GET", "POST"])
@@ -425,21 +423,6 @@ def payment():
 
     return redirect("/dashboard")
 
-@app.route("/cancel_booking_user/<id>")
-def cancel_booking_user(id):
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        UPDATE Bookings
-        SET Status = N'Đã hủy'
-        WHERE Booking_ID = ?
-    """, (id,))
-
-    conn.commit()
-    conn.close()
-
-    return redirect("/booking_previous")
 
 @app.route("/process_payment", methods=["POST"])
 def process_payment():
@@ -455,11 +438,10 @@ def process_payment():
     total = float(total_str)
     
     room_id = request.form.get("room_id")
-    
     checkin = datetime.strptime(request.form.get("checkin"), "%Y-%m-%d")
     checkout = datetime.strptime(request.form.get("checkout"), "%Y-%m-%d")
     booking_date = datetime.now()
-    status_booking = "đã xác nhận"
+    status_booking = "Đã xác nhận"
     user_id = session.get("user_id")
     employee_id = "E02"
 
@@ -468,7 +450,7 @@ def process_payment():
                    (booking_id, user_id, room_id, employee_id, booking_date, total, checkin, checkout, status_booking))
 
     # INSERT PAYMENT
-    status_payment = "thành công"
+    status_payment = "Thành công"
     cursor.execute("EXEC CreatePayment ?, ?, ?, ?, ?", (payment_id, booking_id, total, booking_date, status_payment))
 
     conn.commit()
@@ -876,7 +858,7 @@ def quan_ly_dat_phong():
             'DaTraPhong': sum(1 for b in bookings if b['Status'] == 'Đã trả phòng'),
             'DaHuy': sum(1 for b in bookings if b['Status'] == 'Đã hủy')
         }
-        
+            
         return render_template("dat_phong.html", bookings=bookings, tabs=tabs_count)
     except Exception as e:
         print(f"Lỗi tải trang đặt phòng: {e}")
@@ -893,40 +875,30 @@ def add_room():
     cursor = conn.cursor()
     
     try:
-        # 1. Tìm ID lớn nhất hiện tại để tính ID tiếp theo
+        # Tìm ID lớn nhất hiện tại để tính ID tiếp theo
         cursor.execute("SELECT Room_ID FROM Rooms")
         all_ids = [row[0] for row in cursor.fetchall()]
         
-        numeric_ids = []
-        for i in all_ids:
-            # Nếu ID bắt đầu bằng 'R' (VD: R01, R10), cắt bỏ chữ R và lấy phần số
-            if i.startswith('R') and i[1:].isdigit():
-                numeric_ids.append(int(i[1:]))
-            # Nếu ID chỉ toàn số (phòng trường hợp dữ liệu cũ)
-            elif i.isdigit():
-                numeric_ids.append(int(i))
-                
-        # Tìm số lớn nhất và cộng 1. Nếu chưa có phòng nào thì bắt đầu từ 1.
+        # Lọc ra các ID là số và tìm số lớn nhất
+        numeric_ids = [int(i) for i in all_ids if i.isdigit()]
         next_id_num = max(numeric_ids) + 1 if numeric_ids else 1
-        
-        # Định dạng lại ID: Thêm chữ 'R' và độ dài 2 chữ số (VD: 1 -> R01, 11 -> R11)
-        room_id = f"R{next_id_num:02d}"
+        room_id = str(next_id_num) # ID mới sẽ là "1", "2", "3"...
 
-        # 2. Lấy dữ liệu từ form
+        # Lấy dữ liệu từ form
         room_number = request.form.get("room_number")
         room_type = request.form.get("room_type")
         capacity = request.form.get("capacity")
         price = request.form.get("price")
-        status = "có sẵn"  # Mặc định phòng mới thêm sẽ ở trạng thái Trống
+        status = "có sẵn"
         selected_services = request.form.getlist("services")
 
-        # 3. Thêm vào bảng Rooms
+        # Thêm vào bảng Rooms
         cursor.execute("""
             INSERT INTO Rooms (Room_ID, Room_Number, Room_type, Capacity, Price_Per_Night, Status)
             VALUES (?, ?, ?, ?, ?, ?)
         """, (room_id, room_number, room_type, capacity, price, status))
         
-        # 4. Thêm dịch vụ vào bảng Rooms_Services
+        # Thêm dịch vụ
         for svc_id in selected_services:
             cursor.execute("INSERT INTO Rooms_Services (Room_ID, Service_ID) VALUES (?, ?)", (room_id, svc_id))
             
