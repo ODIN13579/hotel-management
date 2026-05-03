@@ -106,3 +106,16 @@ BEGIN
     RETURN ROUND(@avg_rating, 1)
 END
 GO
+
+-- 11. Lấy Review
+CREATE FUNCTION GetReview (@room_id VARCHAR(50))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT R.*, U.Name
+    FROM Reviews R
+    JOIN Bookings B  ON R.Booking_ID = B.Booking_ID
+    JOIN Users U ON B.User_ID = U.User_ID
+    WHERE B.Room_ID = @room_id
+)
+GO

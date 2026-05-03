@@ -161,34 +161,7 @@ BEGIN
 END
 GO
 
--- 7. Thêm tài khoản user
-CREATE PROCEDURE InsertNewUser(
-    @user_id VARCHAR(50),
-    @username VARCHAR(50),
-    @email VARCHAR(50),
-    @phone VARCHAR(50),
-    @pass VARCHAR(50)
-)
-AS
-BEGIN
-
-
-    INSERT INTO [dbo].[Users]
-               ([User_ID]
-               ,[Name]
-               ,[Email]
-               ,[Phone]
-               ,[Password])
-         VALUES
-               (@user_id
-               , @username
-               , @email
-               , @phone
-               , @pass)
-END
-GO
-
--- 8. Cập nhật thông tin User
+-- 7. Cập nhật thông tin User
 CREATE PROCEDURE UpdateInforUser(
     @user_id VARCHAR(50),
     @new_name VARCHAR(50),
@@ -202,7 +175,7 @@ BEGIN
 END
 GO
 
--- 9. "Xác nhận" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
+-- 8. "Xác nhận" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
 CREATE OR ALTER PROCEDURE sp_ConfirmBooking
     @BookingID VARCHAR(50)
 AS
@@ -212,7 +185,7 @@ BEGIN
 END;
 GO
 
--- 10. "Nhận phòng" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
+-- 9. "Nhận phòng" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
 CREATE OR ALTER PROCEDURE sp_CheckInBooking
     @BookingID VARCHAR(50)
 AS
@@ -222,7 +195,7 @@ BEGIN
 END;
 GO
 
--- 11. "Trả phòng" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
+-- 10. "Trả phòng" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
 CREATE OR ALTER PROCEDURE sp_CheckOutBooking
     @BookingID VARCHAR(50)
 AS
@@ -232,7 +205,7 @@ BEGIN
 END;
 GO
 
--- 12."Hủy" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
+-- 11."Hủy" (Chỉ cập nhật Bookings, bảng Rooms để Trigger tự lo)
 CREATE OR ALTER PROCEDURE sp_CancelBooking
     @BookingID VARCHAR(50)
 AS
@@ -242,7 +215,7 @@ BEGIN
 END;
 GO
 
--- 13. Cập nhật thông tin cơ bản của phòng
+-- 12. Cập nhật thông tin cơ bản của phòng
 CREATE OR ALTER PROCEDURE sp_UpdateRoomInfo
     @RoomID VARCHAR(50),
     @RoomType NVARCHAR(100),
@@ -259,7 +232,7 @@ BEGIN
 END;
 GO
 
--- 14. Procedure tính thống kê Hóa đơn (theo tháng hiện tại)
+-- 13. Procedure tính thống kê Hóa đơn (theo tháng hiện tại)
 CREATE OR ALTER PROCEDURE sp_GetInvoiceStats
 AS
 BEGIN
@@ -289,7 +262,7 @@ BEGIN
         @AvgPerInvoice AS AvgPerInvoice;
 END;
 GO
--- 15 Procedure chuyển trạng thái phòng giữa "có sẵn" và "bảo trì"
+-- 14. Procedure chuyển trạng thái phòng giữa "có sẵn" và "bảo trì"
 CREATE OR ALTER PROCEDURE sp_ToggleRoomMaintenance
     @RoomID VARCHAR(50)
 AS
@@ -315,7 +288,7 @@ END;
 GO
 
 
--- 16 Tạo thanh toán
+-- 15. Tạo thanh toán
 CREATE PROCEDURE CreatePayment (
     @payment_id VARCHAR(50),
 	@booking_id VARCHAR(50),
@@ -342,7 +315,7 @@ BEGIN
 END
 GO
 
--- 17 Tạo đánh giá
+-- 16. Tạo đánh giá
 CREATE PROCEDURE CreateReview(
     @review_id VARCHAR(50),
     @user_id VARCHAR(50),
@@ -370,7 +343,7 @@ BEGIN
 END
 GO
 
--- 18. Lấy bảng room có rating
+-- 17. Lấy bảng room có rating
 CREATE PROCEDURE RoomHaveRating
 AS
 BEGIN

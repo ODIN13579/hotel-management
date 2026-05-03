@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, send_from_directory
+from flask import Flask, render_template, request, redirect, send_from_directory, url_for
 from flask import session
 from db import get_connection
 from datetime import datetime
@@ -144,7 +144,7 @@ def register():
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("EXEC InsertNewUser ?, ?, ?, ?, ?", (uid, name, mail, np, pw))
+        cursor.execute("EXEC CreateAccount ?, ?, ?, ?, ?", (uid, name, mail, np, pw))
         conn.commit()
 
         return redirect("/")  
@@ -188,7 +188,7 @@ def room_detail():
         cursor.execute("SELECT * FROM GetRoom(?)", (room_id,))
         room = cursor.fetchone()
 
-        cursor.execute("SELECT dbo.GetRatingRoom(?)", (room_id,))
+        cursor.execute("SELECT dbo.AvgRatingRoom(?)", (room_id,))
         rating = cursor.fetchone()[0]
         
         cursor.execute("SELECT dbo.GetRoomType(?)", (room_id,))
@@ -201,22 +201,9 @@ def room_detail():
         cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
         user = cursor.fetchone()
 
-        # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
-        # folder_map = {
-        #     "R01": "p1",
-        #     "R02": "p2",
-        #     "R03": "p3",
-        #     "R04": "p4",
-        #     "R05": "p5",
-        #     "R06": "p6",
-        #     "R07": "p7",
-        #     "R08": "p8",
-        #     "R09": "p9",
-        #     "R10": "p10",
-        # }
 
         number = re.search(r"\d+", room_id).group()
-        folder = "p" + number
+        folder = "p" + str(int(number))
 
         base_path = os.path.join(IMAGE_ROOT, folder)
 
@@ -225,7 +212,7 @@ def room_detail():
         if os.path.exists(base_path):
             for file in sorted(os.listdir(base_path)):
                 if file.endswith((".webp", ".jpg", ".png")):
-                    images.append(f"/room_images/{folder}/{file}")
+                    images.append(url_for('static', filename=f"10_phong/{folder}/{file}"))
         
         # Lấy review
         cursor.execute("SELECT * FROM GetReview(?)", (room_id,))
@@ -278,10 +265,10 @@ def confirm():
     cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
     user = cursor.fetchone()
 
- # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
+    # ===== LẤY ẢNH TỪ FOLDER NGOÀI =====
 
     number = re.search(r"\d+", room_id).group()
-    folder = "p" + number
+    folder = "p" + str(int(number))
 
     base_path = os.path.join(IMAGE_ROOT, folder)
 
@@ -290,7 +277,7 @@ def confirm():
     if os.path.exists(base_path):
         for file in sorted(os.listdir(base_path)):
             if file.endswith((".webp", ".jpg", ".png")):
-                images.append(f"/room_images/{folder}/{file}")
+                images.append(url_for('static', filename=f"10_phong/{folder}/{file}"))
 
     return render_template(
         "confirm.html",
@@ -1199,7 +1186,7 @@ def register():
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("EXEC InsertNewUser ?, ?, ?, ?, ?", (uid, name, mail, np, pw))
+        cursor.execute("EXEC CreateAccount ?, ?, ?, ?, ?", (uid, name, mail, np, pw))
         conn.commit()
 
         return redirect("/")  
