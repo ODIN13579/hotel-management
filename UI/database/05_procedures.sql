@@ -369,3 +369,12 @@ BEGIN
                ,@createAt)
 END
 GO
+
+-- 18. Lấy bảng room có rating
+CREATE PROCEDURE RoomHaveRating
+AS
+BEGIN
+    SELECT *, dbo.AvgRatingRoom(R.Room_ID) AS Rating
+    FROM Rooms R
+END
+GO

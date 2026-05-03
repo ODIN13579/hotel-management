@@ -103,11 +103,8 @@ def dashboard():
 
     user_id = session.get("user_id")
 
-    cursor.execute("SELECT * FROM Rooms")
+    cursor.execute("EXEC RoomHaveRating")
     rooms = cursor.fetchall()
-
-    cursor.execute("SELECT * FROM Reviews")
-    reviews = cursor.fetchall()
 
     cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
     user = cursor.fetchone()
@@ -128,8 +125,7 @@ def dashboard():
 
     return render_template(
         "dashboard.html", 
-        rooms=rooms, 
-        reviews=reviews, 
+        rooms=rooms,  
         user=user, 
         image_map=image_map
     )

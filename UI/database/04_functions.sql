@@ -81,3 +81,28 @@ RETURN (
     WHERE B.User_ID = @user_id
 )
 GO
+
+-- 10. tính trung bình rating mỗi phòng
+CREATE FUNCTION AvgRatingRoom(@room_id VARCHAR(50))
+RETURNS FLOAT
+AS
+BEGIN
+    DECLARE @total INT
+    DECLARE @sum FLOAT
+    DECLARE @avg_rating FLOAT
+
+    SELECT 
+        @total = COUNT(*),
+        @sum = SUM(R.Rating)
+    FROM Reviews R
+    JOIN Bookings B ON R.Booking_ID = B.Booking_ID
+    WHERE B.Room_ID = @room_id
+
+    IF @total = 0
+        SET @avg_rating = 0
+    ELSE
+        SET @avg_rating = @sum / @total
+
+    RETURN ROUND(@avg_rating, 1)
+END
+GO

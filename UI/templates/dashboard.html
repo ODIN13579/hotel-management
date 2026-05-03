@@ -63,8 +63,8 @@
 
                         <div class="rating">
                             <span class="stars">
-                              {% if loop.index0 < reviews|length %} 
-                              <div class="rating">⭐ {{ reviews[loop.index0][3] }}</div>
+                              {% if room[6] > 0.0 %} 
+                              <div class="rating">⭐ {{ room[6] }}</div>
                               {% else %}
                               <div class="rating">⭐ Chưa có đánh giá</div>
                               {% endif %}
