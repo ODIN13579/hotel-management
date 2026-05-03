@@ -58,13 +58,13 @@
             </div>
 
             <div class="function">
-                {% if booking[8] == "đã trả phòng" %}
+                {% if booking[8] == "Ðã trả phòng" %}
                 <div class="status feedback">
                     <a href="{{ url_for('reviews', booking_id=booking[0]) }}">
                         <p>Nhận xét</p>
                     </a>
                 </div>
-                {% endif %} {% if booking[8] == "đã xác nhận" %}
+                {% endif %} {% if booking[8] == "Ðã xác nhận" %}
                 <div class="status cancel">
                     <!-- NÚT HUỶ -->
                     <label for="cancel-toggle-{{ booking[0] }}" class="cancel-btn">

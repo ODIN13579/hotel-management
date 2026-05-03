@@ -99,36 +99,39 @@
             <!-- Review Room -->
             <div class="review">
                 {% for review in reviews %}
-                <!-- Avatar -->
-                <div class="avatar">
-                    <img src="{{ url_for('static', filename='avt.jpg') }}" />
-                </div>
-                <!-- Content -->
-                <div class="content">
-                    <div class="infor">
-                        <!-- User name -->
-                        <div class="username">
-                            <p><b>{{ review[6] }}</b></p>
-                        </div>
-
-                        <!-- Rating -->
-                        <div class="rating-user">
-                            <p>⭐<b>{{ review[3] }}</b></p>
-                        </div>
-
-                        <!-- Date review -->
-                        <div class="date-review">
-                            <p><i>{{ review[5] }}</i></p>
-                        </div>
+                <div class="block">
+                    <!-- Avatar -->
+                    <div class="avatar">
+                        <img src="{{ url_for('static', filename='avt.jpg') }}" />
                     </div>
+                    <!-- Content -->
+                    <div class="content">
+                        <div class="infor">
+                            <!-- User name -->
+                            <div class="username">
+                                <p><b>{{ review[6] }}</b></p>
+                            </div>
 
-                    <div class="comment">
-                        <p>{{ review[4] }}</p>
+                            <!-- Rating -->
+                            <div class="rating-user">
+                                <p>⭐<b>{{ review[3] }}</b></p>
+                            </div>
+
+                            <!-- Date review -->
+                            <div class="date-review">
+                                <p><i>{{ review[5] }}</i></p>
+                            </div>
+                        </div>
+
+                        <div class="comment">
+                            <p>{{ review[4] }}</p>
+                        </div>
+
                     </div>
-
                 </div>
                 {% endfor %}
             </div>
+
             <br>
             <h2>Bạn muốn ở tới khi nào?</h2>
             <!-- RIGHT -->

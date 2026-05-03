@@ -440,7 +440,7 @@ def process_payment():
     checkin = datetime.strptime(request.form.get("checkin"), "%Y-%m-%d")
     checkout = datetime.strptime(request.form.get("checkout"), "%Y-%m-%d")
     booking_date = datetime.now()
-    status_booking = "đã xác nhận"
+    status_booking = "Đã xác nhận"
     user_id = session.get("user_id")
     employee_id = "E02"
 
@@ -449,7 +449,7 @@ def process_payment():
                    (booking_id, user_id, room_id, employee_id, booking_date, total, checkin, checkout, status_booking))
 
     # INSERT PAYMENT
-    status_payment = "thành công"
+    status_payment = "Thành công"
     cursor.execute("EXEC CreatePayment ?, ?, ?, ?, ?", (payment_id, booking_id, total, booking_date, status_payment))
 
     conn.commit()

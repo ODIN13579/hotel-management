@@ -31,7 +31,7 @@ CREATE TABLE Employees (
     Email VARCHAR(100) UNIQUE,
     Phone VARCHAR(15) UNIQUE,
     Password VARCHAR(255) NOT NULL,
-    Role VARCHAR(50),
+    Role NVARCHAR(50),
     Status NVARCHAR(50)
 );
 
