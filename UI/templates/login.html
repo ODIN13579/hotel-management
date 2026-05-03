@@ -10,7 +10,7 @@
 
 <body>
     <div class="container">
-        <form method="POST">
+        <form method="POST" action="/">
             <div class="login-box">
                 <a class="logo" href="https://www.facebook.com/lam.tuan.85622">
                     <img src="{{ url_for('static', filename='Logo-removebg.png') }}" style="width: 100%; height: 100%; object-fit: contain;">
@@ -28,12 +28,13 @@
                     <input type="password" class="pass" name="password" required>
                     <label class="lb">Mật khẩu</label>
                 </div>
+                {% if error == "" %} {% print(error) %}
                 <div>
-                    {% if not error %}
-                    <p style="color:red; text-align:center; padding:10px 10px">{{ error }}</p>
-                    {% endif %}
+                    <p style="color:red; text-align:center; padding:10px">
+                        Sai mật khẩu
+                    </p>
                 </div>
-
+                {% endif %}
                 <div class="remember-forgot">
                     <a href="#" class="reset">Quên mật khẩu?</a>
                 </div>

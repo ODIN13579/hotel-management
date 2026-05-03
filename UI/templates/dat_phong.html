@@ -1,375 +1,368 @@
-{% extends "management_layout.html" %} {% block title %}Quản lý đặt phòng{%
-endblock %} {% block content %}
+{% extends "management_layout.html" %} {% block title %}Quản lý đặt phòng{% endblock %} {% block content %}
 <header>
-  <h1>Quản lý đặt phòng</h1>
-  <p>Xác nhận, check-in, check-out và theo dõi tất cả đặt phòng</p>
+    <h1>Quản lý đặt phòng</h1>
+    <p>Xác nhận, check-in, check-out và theo dõi tất cả đặt phòng</p>
 </header>
 
 <div class="search-container">
-  <input
-    type="text"
-    id="searchInput"
-    class="search-bar"
-    placeholder="🔍 Tìm theo mã ĐP, tên khách, số phòng..."
-  />
+    <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Tìm theo mã ĐP, tên khách, số phòng..." />
 
-  <div class="filter-tabs">
-    <button class="tab-btn active" data-status="all">
-      Tất cả <span>{{ tabs.TatCa }}</span>
-    </button>
-    <button class="tab-btn" data-status="chờ xác nhận">
-      Chờ xác nhận <span>{{ tabs.ChoXacNhan }}</span>
-    </button>
-    <button class="tab-btn" data-status="đã xác nhận">
-      Đã xác nhận <span>{{ tabs.DaXacNhan }}</span>
-    </button>
-    <button class="tab-btn" data-status="đã nhận phòng">
-      Đang ở <span>{{ tabs.DangO }}</span>
-    </button>
-    <button class="tab-btn" data-status="đã trả phòng">
-      Đã trả phòng <span>{{ tabs.DaTraPhong }}</span>
-    </button>
-    <button class="tab-btn" data-status="đã hủy">
-      Đã hủy <span>{{ tabs.DaHuy }}</span>
-    </button>
-  </div>
+    <div class="filter-tabs">
+        <button class="tab-btn active" data-status="all">
+        Tất cả <span>{{ tabs.TatCa }}</span>
+      </button>
+        <button class="tab-btn" data-status="chờ xác nhận">
+        Chờ xác nhận <span>{{ tabs.ChoXacNhan }}</span>
+      </button>
+        <button class="tab-btn" data-status="đã xác nhận">
+        Đã xác nhận <span>{{ tabs.DaXacNhan }}</span>
+      </button>
+        <button class="tab-btn" data-status="đã nhận phòng">
+        Đang ở <span>{{ tabs.DangO }}</span>
+      </button>
+        <button class="tab-btn" data-status="đã trả phòng">
+        Đã trả phòng <span>{{ tabs.DaTraPhong }}</span>
+      </button>
+        <button class="tab-btn" data-status="đã hủy">
+        Đã hủy <span>{{ tabs.DaHuy }}</span>
+      </button>
+    </div>
 </div>
 
 <div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>Mã ĐP</th>
-        <th>Khách hàng</th>
-        <th>Phòng</th>
-        <th>Nhận phòng</th>
-        <th>Trả phòng</th>
-        <th>Đặt cọc</th>
-        <th>Trạng thái</th>
-        <th>Hành động</th>
-      </tr>
-    </thead>
-    <tbody id="bookingTable">
-      {% for booking in bookings %}
-      <tr>
-        <td>{{ booking.Booking_ID }}</td>
-        <td>
-          <strong>{{ booking.Customer_Name }}</strong><br />
-          <small style="color: var(--text-gray)"
-            >{{ booking.Customer_Phone }}</small
-          >
-        </td>
-        <td>
-          <strong>{{ booking.Room_type }}</strong><br />
-          <small style="color: var(--text-gray)"
-            >Phòng {{ booking.Room_Number }}</small
-          >
-        </td>
-        <td>{{ booking.Check_In.strftime('%d/%m/%Y') }}</td>
-        <td>{{ booking.Check_Out.strftime('%d/%m/%Y') }}</td>
-        <td>
-          {{ "{:,.0f}".format(booking.Room_deposit).replace(',', '.') }} đ
-        </td>
-        <td>
-          <span
-            class="badge {% if booking.Status == 'Chờ xác nhận' %}badge-pending {% elif booking.Status == 'Đã xác nhận' %}badge-confirmed {% elif booking.Status == 'Đã nhận phòng' %}badge-inhouse {% elif booking.Status == 'Đã trả phòng' %}badge-checkout {% elif booking.Status == 'Đã hủy' %}badge-cancel {% else %}badge-pending{% endif %}"
-          >
-            {{ booking.Status }}
-          </span>
-        </td>
-        <td class="action-btns">
-          <i
-            class="fa-regular fa-eye btn-view"
-            title="Xem chi tiết"
-            style="cursor: pointer"
-            onclick="openDetailModal('{{ booking.Booking_ID }}', '{{ booking.Customer_Name }}', '{{ booking.Customer_Phone }}', '{{ booking.Room_type }}', '{{ booking.Room_Number }}', '{{ booking.Check_In.strftime('%d/%m/%Y') }}', '{{ booking.Check_Out.strftime('%d/%m/%Y') }}', '{{ '{:,.0f}'.format(booking.Room_deposit).replace(',', '.') }} đ', '{{ booking.Status }}')"
-          ></i>
-
-          {% if booking.Status == 'Chờ xác nhận' %}
-          <a
-            href="/bookings/confirm/{{ booking.Booking_ID }}"
-            onclick="
-              return confirm(
-                'Xác nhận đơn này và đổi trạng thái phòng thành ĐÃ ĐẶT?',
-              );
-            "
-            style="color: inherit"
-            ><i
-              class="fa-regular fa-circle-check btn-check"
-              title="Xác nhận"
-            ></i
-          ></a>
-          <a
-            href="/bookings/cancel/{{ booking.Booking_ID }}"
-            onclick="return confirm('Bạn muốn hủy đơn này?');"
-            style="color: inherit"
-            ><i class="fa-regular fa-circle-xmark btn-delete" title="Hủy"></i
-          ></a>
-
-          {% elif booking.Status == 'Đã xác nhận' %}
-          <a
-            href="/bookings/checkin/{{ booking.Booking_ID }}"
-            onclick="
-              return confirm(
-                'Xác nhận khách check-in và đổi trạng thái phòng thành ĐÃ NHẬN?',
-              );
-            "
-            style="color: inherit"
-            ><i
-              class="fa-solid fa-arrow-right-to-bracket btn-checkin"
-              title="Nhận phòng"
-              style="color: #10b981"
+    <table>
+        <thead>
+            <tr>
+                <th>Mã ĐP</th>
+                <th>Khách hàng</th>
+                <th>Phòng</th>
+                <th>Nhận phòng</th>
+                <th>Trả phòng</th>
+                <th>Đặt cọc</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="bookingTable">
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.Booking_ID }}</td>
+                <td>
+                    <strong>{{ booking.Customer_Name }}</strong><br />
+                    <small style="color: var(--text-gray)">{{ booking.Customer_Phone }}</small
+            >
+          </td>
+          <td>
+            <strong>{{ booking.Room_type }}</strong><br />
+            <small style="color: var(--text-gray)"
+              >Phòng {{ booking.Room_Number }}</small
+            >
+          </td>
+          <td>{{ booking.Check_In.strftime('%d/%m/%Y') }}</td>
+          <td>{{ booking.Check_Out.strftime('%d/%m/%Y') }}</td>
+          <td>
+            {{ "{:,.0f}".format(booking.Room_deposit).replace(',', '.') }} đ
+          </td>
+          <td>
+            <span
+              class="badge {% if booking.Status == 'Chờ xác nhận' %}badge-pending {% elif booking.Status == 'Đã xác nhận' %}badge-confirmed {% elif booking.Status == 'Đã nhận phòng' %}badge-inhouse {% elif booking.Status == 'Đã trả phòng' %}badge-checkout {% elif booking.Status == 'Đã hủy' %}badge-cancel {% else %}badge-pending{% endif %}"
+            >
+              {{ booking.Status }}
+            </span>
+          </td>
+          <td class="action-btns">
+            <i
+              class="fa-regular fa-eye btn-view"
+              title="Xem chi tiết"
+              style="cursor: pointer"
+              onclick="openDetailModal('{{ booking.Booking_ID }}', '{{ booking.Customer_Name }}', '{{ booking.Customer_Phone }}', '{{ booking.Room_type }}', '{{ booking.Room_Number }}', '{{ booking.Check_In.strftime('%d/%m/%Y') }}', '{{ booking.Check_Out.strftime('%d/%m/%Y') }}', '{{ '{:,.0f}'.format(booking.Room_deposit).replace(',', '.') }} đ', '{{ booking.Status }}')"
             ></i>
-          </a>
-          <!-- THÊM NÚT HỦY Ở ĐÂY -->
-          <a
-            href="/bookings/cancel/{{ booking.Booking_ID }}"
-            onclick="
-              return confirm('Khách báo hủy? Xác nhận hủy đơn đặt phòng này?');
-            "
-            style="color: inherit"
-            ><i class="fa-regular fa-circle-xmark btn-delete" title="Hủy"></i>
-          </a>
-
-          {% elif booking.Status == 'Đã nhận phòng' %}
-          <a
-            href="/bookings/checkout/{{ booking.Booking_ID }}"
-            onclick="
-              return confirm(
-                'Xác nhận khách trả phòng và trả trạng thái phòng về CÓ SẴN?',
-              );
-            "
-            style="color: inherit"
-            ><i
-              class="fa-solid fa-arrow-right-from-bracket"
-              style="color: #f59e0b; cursor: pointer"
-              title="Trả phòng"
-            ></i
-          ></a>
-          {% endif %}
-        </td>
-      </tr>
-      {% else %}
-      <tr>
-        <td
-          colspan="8"
-          style="text-align: center; padding: 20px; color: var(--text-gray)"
-        >
-          Chưa có đơn đặt phòng nào.
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-
-<div
-  class="modal-overlay"
-  id="detailModal"
-  style="
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-  "
->
+  
+            {% if booking.Status == 'Chờ xác nhận' %}
+            <a
+              href="/bookings/confirm/{{ booking.Booking_ID }}"
+              onclick="
+                return confirm(
+                  'Xác nhận đơn này và đổi trạng thái phòng thành ĐÃ ĐẶT?',
+                );
+              "
+              style="color: inherit"
+              ><i
+                class="fa-regular fa-circle-check btn-check"
+                title="Xác nhận"
+              ></i
+            ></a>
+            <a
+              href="/bookings/cancel/{{ booking.Booking_ID }}"
+              onclick="return confirm('Bạn muốn hủy đơn này?');"
+              style="color: inherit"
+              ><i class="fa-regular fa-circle-xmark btn-delete" title="Hủy"></i
+            ></a>
+  
+            {% elif booking.Status == 'Đã xác nhận' %}
+            <a
+              href="/bookings/checkin/{{ booking.Booking_ID }}"
+              onclick="
+                return confirm(
+                  'Xác nhận khách check-in và đổi trạng thái phòng thành ĐÃ NHẬN?',
+                );
+              "
+              style="color: inherit"
+              ><i
+                class="fa-solid fa-arrow-right-to-bracket btn-checkin"
+                title="Nhận phòng"
+                style="color: #10b981"
+              ></i>
+            </a>
+            <!-- THÊM NÚT HỦY Ở ĐÂY -->
+            <a
+              href="/bookings/cancel/{{ booking.Booking_ID }}"
+              onclick="
+                return confirm('Khách báo hủy? Xác nhận hủy đơn đặt phòng này?');
+              "
+              style="color: inherit"
+              ><i class="fa-regular fa-circle-xmark btn-delete" title="Hủy"></i>
+            </a>
+  
+            {% elif booking.Status == 'Đã nhận phòng' %}
+            <a
+              href="/bookings/checkout/{{ booking.Booking_ID }}"
+              onclick="
+                return confirm(
+                  'Xác nhận khách trả phòng và trả trạng thái phòng về CÓ SẴN?',
+                );
+              "
+              style="color: inherit"
+              ><i
+                class="fa-solid fa-arrow-right-from-bracket"
+                style="color: #f59e0b; cursor: pointer"
+                title="Trả phòng"
+              ></i
+            ></a>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td
+            colspan="8"
+            style="text-align: center; padding: 20px; color: var(--text-gray)"
+          >
+            Chưa có đơn đặt phòng nào.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
   <div
-    class="modal-container"
+    class="modal-overlay"
+    id="detailModal"
     style="
-      background: white;
-      padding: 20px 30px;
-      border-radius: 8px;
-      width: 400px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
     "
   >
     <div
-      class="modal-header"
+      class="modal-container"
       style="
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 10px;
+        background: white;
+        padding: 20px 30px;
+        border-radius: 8px;
+        width: 400px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       "
     >
-      <h3 style="margin: 0">
-        Chi tiết mã: <span id="modal-id" style="color: #f59e0b"></span>
-      </h3>
-      <i
-        class="fa-solid fa-xmark close-btn"
-        onclick="closeModal()"
-        style="cursor: pointer; font-size: 1.2rem; color: #64748b"
-      ></i>
-    </div>
-
-    <div class="modal-body" style="line-height: 1.8">
-      <div style="display: flex; justify-content: space-between">
-        <span style="color: #64748b">Khách hàng:</span>
-        <strong id="modal-name"></strong>
-      </div>
-      <div style="display: flex; justify-content: space-between">
-        <span style="color: #64748b">Số điện thoại:</span>
-        <span id="modal-phone"></span>
-      </div>
-      <div style="display: flex; justify-content: space-between">
-        <span style="color: #64748b">Loại phòng:</span>
-        <span id="modal-type"></span>
-      </div>
-      <div style="display: flex; justify-content: space-between">
-        <span style="color: #64748b">Số phòng:</span>
-        <strong id="modal-room"></strong>
-      </div>
-      <div style="display: flex; justify-content: space-between">
-        <span style="color: #64748b">Ngày nhận:</span>
-        <span id="modal-checkin"></span>
-      </div>
-      <div style="display: flex; justify-content: space-between">
-        <span style="color: #64748b">Ngày trả:</span>
-        <span id="modal-checkout"></span>
-      </div>
-      <div style="display: flex; justify-content: space-between">
-        <span style="color: #64748b">Trạng thái:</span>
-        <strong id="modal-status" style="color: #3b82f6"></strong>
-      </div>
-
       <div
+        class="modal-header"
         style="
           display: flex;
           justify-content: space-between;
-          margin-top: 15px;
-          padding-top: 15px;
-          border-top: 1px dashed #cbd5e1;
+          align-items: center;
+          margin-bottom: 20px;
+          border-bottom: 1px solid #e2e8f0;
+          padding-bottom: 10px;
         "
       >
-        <span style="color: #64748b">Tiền cọc (30%):</span>
-        <strong
-          id="modal-deposit"
-          style="color: #ef4444; font-size: 1.1rem"
-        ></strong>
+        <h3 style="margin: 0">
+          Chi tiết mã: <span id="modal-id" style="color: #f59e0b"></span>
+        </h3>
+        <i
+          class="fa-solid fa-xmark close-btn"
+          onclick="closeModal()"
+          style="cursor: pointer; font-size: 1.2rem; color: #64748b"
+        ></i>
+      </div>
+  
+      <div class="modal-body" style="line-height: 1.8">
+        <div style="display: flex; justify-content: space-between">
+          <span style="color: #64748b">Khách hàng:</span>
+          <strong id="modal-name"></strong>
+        </div>
+        <div style="display: flex; justify-content: space-between">
+          <span style="color: #64748b">Số điện thoại:</span>
+          <span id="modal-phone"></span>
+        </div>
+        <div style="display: flex; justify-content: space-between">
+          <span style="color: #64748b">Loại phòng:</span>
+          <span id="modal-type"></span>
+        </div>
+        <div style="display: flex; justify-content: space-between">
+          <span style="color: #64748b">Số phòng:</span>
+          <strong id="modal-room"></strong>
+        </div>
+        <div style="display: flex; justify-content: space-between">
+          <span style="color: #64748b">Ngày nhận:</span>
+          <span id="modal-checkin"></span>
+        </div>
+        <div style="display: flex; justify-content: space-between">
+          <span style="color: #64748b">Ngày trả:</span>
+          <span id="modal-checkout"></span>
+        </div>
+        <div style="display: flex; justify-content: space-between">
+          <span style="color: #64748b">Trạng thái:</span>
+          <strong id="modal-status" style="color: #3b82f6"></strong>
+        </div>
+  
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #cbd5e1;
+          "
+        >
+          <span style="color: #64748b">Tiền cọc (30%):</span>
+          <strong
+            id="modal-deposit"
+            style="color: #ef4444; font-size: 1.1rem"
+          ></strong>
+        </div>
+      </div>
+  
+      <div class="modal-footer" style="margin-top: 25px; text-align: right">
+        <button
+          onclick="closeModal()"
+          style="
+            padding: 8px 20px;
+            background-color: #1e293b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+          "
+        >
+          Đóng
+        </button>
       </div>
     </div>
-
-    <div class="modal-footer" style="margin-top: 25px; text-align: right">
-      <button
-        onclick="closeModal()"
-        style="
-          padding: 8px 20px;
-          background-color: #1e293b;
-          color: white;
-          border: none;
-          border-radius: 6px;
-          cursor: pointer;
-        "
-      >
-        Đóng
-      </button>
-    </div>
   </div>
-</div>
-
-{% endblock %} {% block extra_js %}
-<script>
-  // =========================================================
-  // 1. XỬ LÝ LỌC DỮ LIỆU (KẾT HỢP TÌM KIẾM TEXT VÀ TAB TRẠNG THÁI)
-  // =========================================================
-  const searchInput = document.getElementById("searchInput");
-  const tabBtns = document.querySelectorAll(".tab-btn");
-  const tableRows = document.querySelectorAll("#bookingTable tr");
-
-  function filterTable() {
-    // Lấy từ khóa tìm kiếm
-    let searchTerm = searchInput.value.toLowerCase();
-
-    // Lấy trạng thái của Tab đang được chọn (mặc định là 'all')
-    let activeTab = document.querySelector(".tab-btn.active");
-    let targetStatus = activeTab
-      ? activeTab.getAttribute("data-status")
-      : "all";
-
-    tableRows.forEach((row) => {
-      // Bỏ qua dòng thông báo "Chưa có đơn đặt phòng nào" (dòng chỉ có 1 ô)
-      if (row.cells.length === 1) return;
-
-      // Kiểm tra Text (Tìm kiếm)
-      let textMatch = row.innerText.toLowerCase().includes(searchTerm);
-
-      // Kiểm tra Trạng thái (Tab)
-      let statusMatch = true;
-      if (targetStatus !== "all") {
-        const rowStatus = row.cells[6].innerText.toLowerCase().trim();
-        statusMatch = rowStatus === targetStatus;
-      }
-
-      // Chỉ hiển thị dòng nếu thỏa mãn ĐỒNG THỜI cả 2 điều kiện
-      if (textMatch && statusMatch) {
-        row.style.display = "";
-      } else {
-        row.style.display = "none";
-      }
-    });
-  }
-
-  // Lắng nghe sự kiện gõ phím vào ô tìm kiếm
-  searchInput.addEventListener("keyup", filterTable);
-
-  // Lắng nghe sự kiện click vào các Tab trạng thái
-  tabBtns.forEach((btn) => {
-    btn.addEventListener("click", function () {
-      // Đổi màu Tab (xóa active cũ, thêm active mới)
-      tabBtns.forEach((b) => b.classList.remove("active"));
-      this.classList.add("active");
-
-      // Gọi lại hàm lọc
-      filterTable();
-    });
-  });
-
-  // =========================================================
-  // 2. XỬ LÝ ĐÓNG/MỞ MODAL CHI TIẾT ĐẶT PHÒNG
-  // =========================================================
-  function openDetailModal(
-    id,
-    name,
-    phone,
-    type,
-    room,
-    checkin,
-    checkout,
-    deposit,
-    status,
-  ) {
-    document.getElementById("modal-id").innerText = id;
-    document.getElementById("modal-name").innerText = name;
-    document.getElementById("modal-phone").innerText = phone;
-    document.getElementById("modal-type").innerText = type;
-    document.getElementById("modal-room").innerText = room;
-    document.getElementById("modal-checkin").innerText = checkin;
-    document.getElementById("modal-checkout").innerText = checkout;
-    document.getElementById("modal-deposit").innerText = deposit;
-    document.getElementById("modal-status").innerText = status;
-
-    // Hiển thị overlay của modal
-    document.getElementById("detailModal").style.display = "flex";
-  }
-
-  function closeModal() {
-    document.getElementById("detailModal").style.display = "none";
-  }
-
-  // Tự động đóng Modal khi click ra khoảng trống bên ngoài (overlay)
-  window.onclick = function (event) {
-    var modal = document.getElementById("detailModal");
-    if (event.target == modal) {
-      closeModal();
+  
+  {% endblock %} {% block extra_js %}
+  <script>
+    // =========================================================
+    // 1. XỬ LÝ LỌC DỮ LIỆU (KẾT HỢP TÌM KIẾM TEXT VÀ TAB TRẠNG THÁI)
+    // =========================================================
+    const searchInput = document.getElementById("searchInput");
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    const tableRows = document.querySelectorAll("#bookingTable tr");
+  
+    function filterTable() {
+      // Lấy từ khóa tìm kiếm
+      let searchTerm = searchInput.value.toLowerCase();
+  
+      // Lấy trạng thái của Tab đang được chọn (mặc định là 'all')
+      let activeTab = document.querySelector(".tab-btn.active");
+      let targetStatus = activeTab
+        ? activeTab.getAttribute("data-status")
+        : "all";
+  
+      tableRows.forEach((row) => {
+        // Bỏ qua dòng thông báo "Chưa có đơn đặt phòng nào" (dòng chỉ có 1 ô)
+        if (row.cells.length === 1) return;
+  
+        // Kiểm tra Text (Tìm kiếm)
+        let textMatch = row.innerText.toLowerCase().includes(searchTerm);
+  
+        // Kiểm tra Trạng thái (Tab)
+        let statusMatch = true;
+        if (targetStatus !== "all") {
+          const rowStatus = row.cells[6].innerText.toLowerCase().trim();
+          statusMatch = rowStatus === targetStatus;
+        }
+  
+        // Chỉ hiển thị dòng nếu thỏa mãn ĐỒNG THỜI cả 2 điều kiện
+        if (textMatch && statusMatch) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
     }
-  };
-</script>
-{% endblock %}
+  
+    // Lắng nghe sự kiện gõ phím vào ô tìm kiếm
+    searchInput.addEventListener("keyup", filterTable);
+  
+    // Lắng nghe sự kiện click vào các Tab trạng thái
+    tabBtns.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        // Đổi màu Tab (xóa active cũ, thêm active mới)
+        tabBtns.forEach((b) => b.classList.remove("active"));
+        this.classList.add("active");
+  
+        // Gọi lại hàm lọc
+        filterTable();
+      });
+    });
+  
+    // =========================================================
+    // 2. XỬ LÝ ĐÓNG/MỞ MODAL CHI TIẾT ĐẶT PHÒNG
+    // =========================================================
+    function openDetailModal(
+      id,
+      name,
+      phone,
+      type,
+      room,
+      checkin,
+      checkout,
+      deposit,
+      status,
+    ) {
+      document.getElementById("modal-id").innerText = id;
+      document.getElementById("modal-name").innerText = name;
+      document.getElementById("modal-phone").innerText = phone;
+      document.getElementById("modal-type").innerText = type;
+      document.getElementById("modal-room").innerText = room;
+      document.getElementById("modal-checkin").innerText = checkin;
+      document.getElementById("modal-checkout").innerText = checkout;
+      document.getElementById("modal-deposit").innerText = deposit;
+      document.getElementById("modal-status").innerText = status;
+  
+      // Hiển thị overlay của modal
+      document.getElementById("detailModal").style.display = "flex";
+    }
+  
+    function closeModal() {
+      document.getElementById("detailModal").style.display = "none";
+    }
+  
+    // Tự động đóng Modal khi click ra khoảng trống bên ngoài (overlay)
+    window.onclick = function (event) {
+      var modal = document.getElementById("detailModal");
+      if (event.target == modal) {
+        closeModal();
+      }
+    };
+  </script>
+  {% endblock %}

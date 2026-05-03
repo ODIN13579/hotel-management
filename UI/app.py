@@ -857,7 +857,7 @@ def quan_ly_dat_phong():
             'DaTraPhong': sum(1 for b in bookings if b['Status'] == 'Đã trả phòng'),
             'DaHuy': sum(1 for b in bookings if b['Status'] == 'Đã hủy')
         }
-        
+            
         return render_template("dat_phong.html", bookings=bookings, tabs=tabs_count)
     except Exception as e:
         print(f"Lỗi tải trang đặt phòng: {e}")
@@ -1103,10 +1103,11 @@ def room_images(filename):
 # ================= LOGIN =================
 @app.route("/", methods=["GET", "POST"])
 def login():
+    error = "s"
+
     if request.method == "POST":
         user = request.form["username"]
         pw = request.form["password"]
-        
 
         conn = get_connection()
         cursor = conn.cursor()
@@ -1116,13 +1117,11 @@ def login():
 
         if result:
             session["user_id"] = result[0]
-            # if not user_id:
-            #     return redirect("/")
             return redirect("/dashboard")
         else:
-            cursor.execute("SELECT * FROM LoginManager  (?, ?)", (user, pw))
+            cursor.execute("SELECT * FROM LoginManager(?, ?)", (user, pw))
             result_admin = cursor.fetchone()
-            
+
             if result_admin:
                 session["admin"] = {
                     "id": result_admin[0],
@@ -1130,8 +1129,10 @@ def login():
                     "role": result_admin[5]
                 }
                 return redirect("/management")
-            
-    return render_template("login.html")
+
+        error = "Sai tài khoản hoặc mật khẩu"
+
+    return render_template("login.html", error=error)
 
 # ================= DASHBOARD =================
 @app.route("/dashboard")

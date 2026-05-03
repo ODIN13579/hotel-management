@@ -1,62 +1,52 @@
-{% extends "management_layout.html" %} {% block title %}Quản lý phòng{% endblock
-%} {% block content %}
+{% extends "management_layout.html" %} {% block title %}Quản lý phòng{% endblock %} {% block content %}
 <div class="room-header">
-  <div>
-    <h1>Quản lý phòng</h1>
-    <p>Theo dõi và cập nhật trạng thái phòng</p>
-  </div>
-  <button class="btn-add-room" onclick="openAddRoomModal()">
+    <div>
+        <h1>Quản lý phòng</h1>
+        <p>Theo dõi và cập nhật trạng thái phòng</p>
+    </div>
+    <button class="btn-add-room" onclick="openAddRoomModal()">
     <i class="fa-solid fa-plus"></i> Thêm phòng
   </button>
 </div>
 
 <div class="status-grid">
-  <div class="status-box bg-dark" data-status="all">
-    {{ stats.TatCa }} <span>Tất cả</span>
-  </div>
-  <div class="status-box bg-green" data-status="có sẵn">
-    {{ stats.Trong }} <span>Trống</span>
-  </div>
-  <div class="status-box bg-yellow" data-status="đã đặt">
-    {{ stats.DaDat }} <span>Đã đặt</span>
-  </div>
-  <div class="status-box bg-blue" data-status="đã nhận">
-    {{ stats.DaNhan }} <span>Đã nhận</span>
-  </div>
-  <div class="status-box bg-red" data-status="bảo trì">
-    {{ stats.BaoTri }} <span>Bảo trì</span>
-  </div>
+    <div class="status-box bg-dark" data-status="all">
+        {{ stats.TatCa }} <span>Tất cả</span>
+    </div>
+    <div class="status-box bg-green" data-status="có sẵn">
+        {{ stats.Trong }} <span>Trống</span>
+    </div>
+    <div class="status-box bg-yellow" data-status="đã đặt">
+        {{ stats.DaDat }} <span>Đã đặt</span>
+    </div>
+    <div class="status-box bg-blue" data-status="đã nhận">
+        {{ stats.DaNhan }} <span>Đã nhận</span>
+    </div>
+    <div class="status-box bg-red" data-status="bảo trì">
+        {{ stats.BaoTri }} <span>Bảo trì</span>
+    </div>
 </div>
 
 <div class="room-grid" id="roomGrid">
-  {% for room in rooms %}
-  <div class="room-card" data-status="{{ room.Status }}">
-    <div class="room-img-container">
-      {% set r_id = loop.index | string %}
+    {% for room in rooms %}
+    <div class="room-card" data-status="{{ room.Status }}">
+        <div class="room-img-container">
+            {% set r_id = loop.index | string %}
 
-      <img
-        src="{{ url_for('room_images', filename='p' ~ r_id ~ '/p' ~ r_id ~ '_01.webp') }}"
-        alt="Phòng {{ room.Room_Number }}"
-        onerror="this.onerror=null; this.src='{{ url_for('static', filename='PhongDoi.png') }}';"
-        style="width: 100%; height: 100%; object-fit: cover"
-      />
-
-      {% set st = (room.Status|string|lower).strip() %}
-      <span
-        class="status-tag {% if st == 'có sẵn' %}bg-green {% elif st == 'đã đặt' %}bg-yellow {% elif st == 'đã nhận' %}bg-blue {% elif st == 'bảo trì' %}bg-red {% else %}bg-dark{% endif %}"
-      >
-        {% if st == 'có sẵn' %}Trống{% else %}{{ room.Status|capitalize }}{%
+            <img src="{{ url_for('room_images', filename='p' ~ r_id ~ '/p' ~ r_id ~ '_01.webp') }}" alt="Phòng {{ room.Room_Number }}" onerror="this.onerror=null; this.src='{{ url_for('static', filename='PhongDoi.png') }}';" style="width: 100%; height: 100%; object-fit: cover"
+            /> {% set st = (room.Status|string|lower).strip() %}
+            <span class="status-tag {% if st == 'có sẵn' %}bg-green {% elif st == 'đã đặt' %}bg-yellow {% elif st == 'đã nhận' %}bg-blue {% elif st == 'bảo trì' %}bg-red {% else %}bg-dark{% endif %}">
+        {% if st == 'Có sẵn' %}Trống{% else %}{{ room.Status|capitalize }}{%
         endif %}
       </span>
 
-      <span class="room-number-tag">Phòng {{ room.Room_Number }}</span>
-    </div>
+            <span class="room-number-tag">Phòng {{ room.Room_Number }}</span>
+        </div>
 
-    <div class="room-info">
-      <h3>{{ room.Room_type }}</h3>
-      <div class="room-meta">
-        <span
-          ><i class="fa-solid fa-user-group"></i> {{ room.Capacity }}
+        <div class="room-info">
+            <h3>{{ room.Room_type }}</h3>
+            <div class="room-meta">
+                <span><i class="fa-solid fa-user-group"></i> {{ room.Capacity }}
           Khách</span
         >
         <span
@@ -67,45 +57,30 @@
 
       <div class="room-facilities">
         <span class="facility-tag">Tiêu chuẩn</span>
-      </div>
+            </div>
 
-      <div class="room-actions">
-        <!-- Nút sửa đảm bảo dùng nháy đơn cho data-services -->
-        <button
-          class="btn-edit-room"
-          data-id="{{ room.Room_ID }}"
-          data-num="{{ room.Room_Number }}"
-          data-type="{{ room.Room_type }}"
-          data-cap="{{ room.Capacity }}"
-          data-price="{{ room.Price_Per_Night }}"
-          data-services="{{ room_services_map.get(room.Room_ID, []) | tojson }}"
-          onclick="openEditRoomModal(this)"
-        >
+            <div class="room-actions">
+                <!-- Nút sửa đảm bảo dùng nháy đơn cho data-services -->
+                <button class="btn-edit-room" data-id="{{ room.Room_ID }}" data-num="{{ room.Room_Number }}" data-type="{{ room.Room_type }}" data-cap="{{ room.Capacity }}" data-price="{{ room.Price_Per_Night }}" data-services="{{ room_services_map.get(room.Room_ID, []) | tojson }}"
+                    onclick="openEditRoomModal(this)">
           <i class="fa-solid fa-pen"></i> Chỉnh sửa
         </button>
 
-        <button
-          class="btn-tool-room"
-          title="Bảo trì / Mở lại phòng"
-          onclick="window.location.href='/rooms/maintenance/{{ room.Room_ID }}'"
-        >
+                <button class="btn-tool-room" title="Bảo trì / Mở lại phòng" onclick="window.location.href='/rooms/maintenance/{{ room.Room_ID }}'">
           <i class="fa-solid fa-wrench"></i>
         </button>
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
-  {% else %}
-  <p style="color: var(--text-gray); grid-column: 1 / -1; text-align: center">
-    Chưa có dữ liệu phòng trong hệ thống.
-  </p>
-  {% endfor %}
+    {% else %}
+    <p style="color: var(--text-gray); grid-column: 1 / -1; text-align: center">
+        Chưa có dữ liệu phòng trong hệ thống.
+    </p>
+    {% endfor %}
 </div>
 
 <!-- ======================= MODAL SỬA PHÒNG ======================= -->
-<div
-  class="modal-overlay"
-  id="editRoomModal"
-  style="
+<div class="modal-overlay" id="editRoomModal" style="
     display: none;
     position: fixed;
     top: 0;
@@ -116,61 +91,44 @@
     z-index: 1000;
     justify-content: center;
     align-items: center;
-  "
->
-  <div
-    class="modal-container"
-    style="
+  ">
+    <div class="modal-container" style="
       background: white;
       padding: 25px;
       border-radius: 12px;
       width: 450px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    "
-  >
-    <div
-      style="
+    ">
+        <div style="
         display: flex;
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #e2e8f0;
         padding-bottom: 15px;
         margin-bottom: 15px;
-      "
-    >
-      <h3 style="margin: 0; color: var(--text-dark)">
-        Sửa Phòng
-        <span
-          id="display_room_number"
-          style="color: var(--primary-blue)"
-        ></span>
-      </h3>
-      <i
-        class="fa-solid fa-xmark"
-        onclick="closeEditModal()"
-        style="cursor: pointer; color: #64748b; font-size: 1.2rem"
-      ></i>
-    </div>
+      ">
+            <h3 style="margin: 0; color: var(--text-dark)">
+                Sửa Phòng
+                <span id="display_room_number" style="color: var(--primary-blue)"></span>
+            </h3>
+            <i class="fa-solid fa-xmark" onclick="closeEditModal()" style="cursor: pointer; color: #64748b; font-size: 1.2rem"></i>
+        </div>
 
-    <form action="/rooms/update" method="POST">
-      <input type="hidden" name="room_id" id="edit_room_id" />
-      <div
-        style="
+        <form action="/rooms/update" method="POST">
+            <input type="hidden" name="room_id" id="edit_room_id" />
+            <div style="
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 15px;
           margin-bottom: 15px;
-        "
-      >
-        <div>
-          <label
-            style="
+        ">
+                <div>
+                    <label style="
               font-size: 0.85rem;
               color: #64748b;
               display: block;
               margin-bottom: 5px;
-            "
-            >Loại phòng</label
+            ">Loại phòng</label
           >
           <select
             name="room_type"
@@ -276,15 +234,11 @@
               class="svc-checkbox"
             />
             {{ svc.Name }}
-          </label>
-          {% endfor %}
-        </div>
-      </div>
-      <div style="text-align: right">
-        <button
-          type="button"
-          onclick="closeEditModal()"
-          style="
+          </label> {% endfor %}
+                </div>
+            </div>
+            <div style="text-align: right">
+                <button type="button" onclick="closeEditModal()" style="
             padding: 10px 15px;
             background: #f1f5f9;
             border: none;
@@ -293,13 +247,10 @@
             margin-right: 10px;
             font-weight: 600;
             color: #475569;
-          "
-        >
+          ">
           Hủy
         </button>
-        <button
-          type="submit"
-          style="
+                <button type="submit" style="
             padding: 10px 20px;
             background: var(--primary-blue);
             color: white;
@@ -307,20 +258,16 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-          "
-        >
+          ">
           Lưu thay đổi
         </button>
-      </div>
-    </form>
-  </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- ======================= MODAL THÊM PHÒNG ======================= -->
-<div
-  class="modal-overlay"
-  id="addRoomModal"
-  style="
+<div class="modal-overlay" id="addRoomModal" style="
     display: none;
     position: fixed;
     top: 0;
@@ -331,46 +278,34 @@
     z-index: 1000;
     justify-content: center;
     align-items: center;
-  "
->
-  <div
-    class="modal-container"
-    style="
+  ">
+    <div class="modal-container" style="
       background: white;
       padding: 25px;
       border-radius: 12px;
       width: 450px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    "
-  >
-    <div
-      style="
+    ">
+        <div style="
         display: flex;
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #e2e8f0;
         padding-bottom: 15px;
         margin-bottom: 15px;
-      "
-    >
-      <h3 style="margin: 0; color: var(--text-dark)">Thêm Phòng Mới</h3>
-      <i
-        class="fa-solid fa-xmark"
-        onclick="closeAddModal()"
-        style="cursor: pointer; color: #64748b; font-size: 1.2rem"
-      ></i>
-    </div>
+      ">
+            <h3 style="margin: 0; color: var(--text-dark)">Thêm Phòng Mới</h3>
+            <i class="fa-solid fa-xmark" onclick="closeAddModal()" style="cursor: pointer; color: #64748b; font-size: 1.2rem"></i>
+        </div>
 
-    <form action="/rooms/add" method="POST">
-      <div style="margin-bottom: 15px">
-        <label
-          style="
+        <form action="/rooms/add" method="POST">
+            <div style="margin-bottom: 15px">
+                <label style="
             font-size: 0.85rem;
             color: #64748b;
             display: block;
             margin-bottom: 5px;
-          "
-          >Số phòng</label
+          ">Số phòng</label
         >
         <input
           type="text"
@@ -503,15 +438,11 @@
               value="{{ svc.Service_ID }}"
             />
             {{ svc.Name }}
-          </label>
-          {% endfor %}
-        </div>
-      </div>
-      <div style="text-align: right">
-        <button
-          type="button"
-          onclick="closeAddModal()"
-          style="
+          </label> {% endfor %}
+            </div>
+    </div>
+    <div style="text-align: right">
+        <button type="button" onclick="closeAddModal()" style="
             padding: 10px 15px;
             background: #f1f5f9;
             border: none;
@@ -520,13 +451,10 @@
             margin-right: 10px;
             font-weight: 600;
             color: #475569;
-          "
-        >
+          ">
           Hủy
         </button>
-        <button
-          type="submit"
-          style="
+        <button type="submit" style="
             padding: 10px 20px;
             background: #10b981;
             color: white;
@@ -534,88 +462,87 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-          "
-        >
+          ">
           Thêm mới
         </button>
-      </div>
+    </div>
     </form>
-  </div>
+</div>
 </div>
 {% endblock %} {% block extra_js %}
 <script>
-  // Xử lý Lọc phòng qua các thẻ trạng thái
-  const statusBoxes = document.querySelectorAll(".status-box");
-  const roomCards = document.querySelectorAll(".room-card");
+    // Xử lý Lọc phòng qua các thẻ trạng thái
+    const statusBoxes = document.querySelectorAll(".status-box");
+    const roomCards = document.querySelectorAll(".room-card");
 
-  statusBoxes.forEach((box) => {
-    box.addEventListener("click", function () {
-      const targetStatus = this.getAttribute("data-status");
+    statusBoxes.forEach((box) => {
+        box.addEventListener("click", function() {
+            const targetStatus = this.getAttribute("data-status");
 
-      roomCards.forEach((card) => {
-        const cardStatus = (card.getAttribute("data-status") || "")
-          .toLowerCase()
-          .trim();
-        if (targetStatus === "all" || cardStatus === targetStatus) {
-          card.style.display = "block";
-        } else {
-          card.style.display = "none";
+            roomCards.forEach((card) => {
+                const cardStatus = (card.getAttribute("data-status") || "")
+                    .toLowerCase()
+                    .trim();
+                if (targetStatus === "all" || cardStatus === targetStatus) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+    });
+
+    // Mở/Đóng Modal Chỉnh Sửa Phòng
+    function openEditRoomModal(btnElement) {
+        document.getElementById("edit_room_id").value =
+            btnElement.getAttribute("data-id");
+        document.getElementById("display_room_number").innerText =
+            btnElement.getAttribute("data-num");
+
+        let rawType = btnElement.getAttribute("data-type");
+        let rType = rawType ? rawType.toLowerCase() : "";
+        let typeSelect = document.getElementById("edit_room_type");
+        for (let i = 0; i < typeSelect.options.length; i++) {
+            if (typeSelect.options[i].value === rType) {
+                typeSelect.selectedIndex = i;
+                break;
+            }
         }
-      });
-    });
-  });
 
-  // Mở/Đóng Modal Chỉnh Sửa Phòng
-  function openEditRoomModal(btnElement) {
-    document.getElementById("edit_room_id").value =
-      btnElement.getAttribute("data-id");
-    document.getElementById("display_room_number").innerText =
-      btnElement.getAttribute("data-num");
+        document.getElementById("edit_capacity").value =
+            btnElement.getAttribute("data-cap");
+        document.getElementById("edit_price").value = Math.floor(
+            btnElement.getAttribute("data-price"),
+        );
 
-    let rawType = btnElement.getAttribute("data-type");
-    let rType = rawType ? rawType.toLowerCase() : "";
-    let typeSelect = document.getElementById("edit_room_type");
-    for (let i = 0; i < typeSelect.options.length; i++) {
-      if (typeSelect.options[i].value === rType) {
-        typeSelect.selectedIndex = i;
-        break;
-      }
+        let roomServices = [];
+        try {
+            roomServices = JSON.parse(
+                btnElement.getAttribute("data-services") || "[]",
+            );
+        } catch (e) {
+            console.error("Lỗi đọc dữ liệu dịch vụ:", e);
+        }
+
+        let checkboxes = document.querySelectorAll(".svc-checkbox");
+        checkboxes.forEach((cb) => {
+            cb.checked = roomServices.includes(cb.value);
+        });
+
+        document.getElementById("editRoomModal").style.display = "flex";
     }
 
-    document.getElementById("edit_capacity").value =
-      btnElement.getAttribute("data-cap");
-    document.getElementById("edit_price").value = Math.floor(
-      btnElement.getAttribute("data-price"),
-    );
-
-    let roomServices = [];
-    try {
-      roomServices = JSON.parse(
-        btnElement.getAttribute("data-services") || "[]",
-      );
-    } catch (e) {
-      console.error("Lỗi đọc dữ liệu dịch vụ:", e);
+    function closeEditModal() {
+        document.getElementById("editRoomModal").style.display = "none";
     }
 
-    let checkboxes = document.querySelectorAll(".svc-checkbox");
-    checkboxes.forEach((cb) => {
-      cb.checked = roomServices.includes(cb.value);
-    });
+    // Mở/Đóng Modal Thêm Phòng
+    function openAddRoomModal() {
+        document.getElementById("addRoomModal").style.display = "flex";
+    }
 
-    document.getElementById("editRoomModal").style.display = "flex";
-  }
-
-  function closeEditModal() {
-    document.getElementById("editRoomModal").style.display = "none";
-  }
-
-  // Mở/Đóng Modal Thêm Phòng
-  function openAddRoomModal() {
-    document.getElementById("addRoomModal").style.display = "flex";
-  }
-
-  function closeAddModal() {
-    document.getElementById("addRoomModal").style.display = "none";
-  }
+    function closeAddModal() {
+        document.getElementById("addRoomModal").style.display = "none";
+    }
 </script>
 {% endblock %}
