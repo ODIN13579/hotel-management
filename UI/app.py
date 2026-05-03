@@ -5,6 +5,7 @@ from datetime import datetime
 import re
 import uuid
 import os
+import random
 
 app = Flask(__name__)
 app.secret_key = "abc123"
@@ -1103,8 +1104,6 @@ def room_images(filename):
 # ================= LOGIN =================
 @app.route("/", methods=["GET", "POST"])
 def login():
-    error = "s"
-
     if request.method == "POST":
         user = request.form["username"]
         pw = request.form["password"]
@@ -1118,21 +1117,18 @@ def login():
         if result:
             session["user_id"] = result[0]
             return redirect("/dashboard")
-        else:
-            cursor.execute("SELECT * FROM LoginManager(?, ?)", (user, pw))
-            result_admin = cursor.fetchone()
 
-            if result_admin:
-                session["admin"] = {
-                    "id": result_admin[0],
-                    "name": result_admin[1],
-                    "role": result_admin[5]
-                }
-                return redirect("/management")
+        cursor.execute("SELECT * FROM LoginManager(?, ?)", (user, pw))
+        result_admin = cursor.fetchone()
 
-        error = "Sai tài khoản hoặc mật khẩu"
-
-    return render_template("login.html", error=error)
+        if result_admin:
+            session["admin"] = {
+                "id": result_admin[0],
+                "name": result_admin[1],
+                "role": result_admin[5]
+            }
+            return redirect("/management")
+    return render_template("login.html")
 
 # ================= DASHBOARD =================
 @app.route("/dashboard")
@@ -1151,6 +1147,9 @@ def dashboard():
     cursor.execute("SELECT * FROM GetUser(?)", (user_id,))
     user = cursor.fetchone()
 
+    new_rooms = []
+
+    
     # ===== IMAGE MAP =====
     image_map = {
         "R01": "p1/p1_01.webp",
@@ -1167,7 +1166,7 @@ def dashboard():
 
     return render_template(
         "dashboard.html", 
-        rooms=rooms, 
+        rooms=new_rooms, 
         reviews=reviews, 
         user=user, 
         image_map=image_map

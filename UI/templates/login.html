@@ -28,13 +28,15 @@
                     <input type="password" class="pass" name="password" required>
                     <label class="lb">Mật khẩu</label>
                 </div>
-                {% if error == "" %} {% print(error) %}
+
                 <div>
-                    <p style="color:red; text-align:center; padding:10px">
+                    {% if error %}
+                    <p style="color:red">
                         Sai mật khẩu
                     </p>
+                    {% endif %}
                 </div>
-                {% endif %}
+
                 <div class="remember-forgot">
                     <a href="#" class="reset">Quên mật khẩu?</a>
                 </div>
