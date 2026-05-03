@@ -37,21 +37,21 @@ BEGIN
     BEGIN
         -- 1. Nếu khách Trả phòng hoặc Hủy -> Trả phòng về 'có sẵn' (Trống)
         UPDATE r
-        SET r.Status = N'có sẵn'
+        SET r.Status = N'Có sẵn'
         FROM Rooms r
         JOIN inserted i ON r.Room_ID = i.Room_ID
         WHERE i.Status IN (N'Đã trả phòng', N'Đã hủy');
 
         -- 2. Nếu đơn Đã xác nhận -> Chuyển phòng thành 'đã đặt'
         UPDATE r
-        SET r.Status = N'đã đặt'
+        SET r.Status = N'Đã đặt'
         FROM Rooms r
         JOIN inserted i ON r.Room_ID = i.Room_ID
         WHERE i.Status = N'Đã xác nhận';
 
         -- 3. Nếu khách Đã nhận phòng -> Chuyển phòng thành 'đã nhận'
         UPDATE r
-        SET r.Status = N'đã nhận'
+        SET r.Status = N'Đã nhận'
         FROM Rooms r
         JOIN inserted i ON r.Room_ID = i.Room_ID
         WHERE i.Status = N'Đã nhận phòng';

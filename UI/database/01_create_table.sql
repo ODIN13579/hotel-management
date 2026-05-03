@@ -2,6 +2,7 @@
 DROP DATABASE IF EXISTS hotel_management;
 CREATE DATABASE hotel_management;
 USE hotel_management;
+GO
 -- xoa bang neu da ton tai
 DROP TABLE IF EXISTS Notifications;
 DROP TABLE IF EXISTS Invoices;
@@ -47,8 +48,9 @@ CREATE TABLE Rooms (
     Room_type VARCHAR(50),
     Capacity INT,
     Price_Per_Night DECIMAL(18,2),
-    Status VARCHAR(50)
+    Status NVARCHAR(50)
 );
+
 
 CREATE TABLE Rooms_Services (
     Room_ID VARCHAR(10),
@@ -67,7 +69,7 @@ CREATE TABLE Bookings (
     Room_deposit DECIMAL(18,2),
     Check_In DATETIME,
     Check_Out DATETIME,
-    Status VARCHAR(50),
+    Status NVARCHAR(50),
 
     FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
     FOREIGN KEY (Room_ID) REFERENCES Rooms(Room_ID),

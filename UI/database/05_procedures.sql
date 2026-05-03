@@ -21,10 +21,10 @@ BEGIN
     );
 
     -- 2. CÁC BIẾN TRẠNG THÁI PHÒNG (Lấy trực tiếp từ bảng Rooms)
-    DECLARE @Trong INT = (SELECT COUNT(*) FROM Rooms WHERE Status = N'có sẵn');
-    DECLARE @DaDat INT = (SELECT COUNT(*) FROM Rooms WHERE Status = N'đã đặt');
-    DECLARE @DaNhan INT = (SELECT COUNT(*) FROM Rooms WHERE Status = N'đã nhận');
-    DECLARE @BaoTri INT = (SELECT COUNT(*) FROM Rooms WHERE Status = N'bảo trì');
+    DECLARE @Trong INT = (SELECT COUNT(*) FROM Rooms WHERE Status = N'Có sẵn');
+    DECLARE @DaDat INT = (SELECT COUNT(*) FROM Rooms WHERE Status = N'Đã đặt');
+    DECLARE @DaNhan INT = (SELECT COUNT(*) FROM Rooms WHERE Status = N'Đã nhận');
+    DECLARE @BaoTri INT = (SELECT COUNT(*) FROM Rooms WHERE Status = N'Bảo trì');
 
     -- 3. TRẢ KẾT QUẢ
     SELECT 
@@ -59,7 +59,7 @@ BEGIN
         dbo.calculate_total(@booking_id),
         GETDATE(),
         @method,
-        'successful'
+        'Thành công'
     )
 END
 GO
@@ -72,11 +72,11 @@ AS
 BEGIN
     UPDATE Bookings
     SET Employee_ID = @employee_id,
-        Status = 'confirmed'
+        Status = 'Đã nhận phòng'
     WHERE Booking_ID = @booking_id
 
     UPDATE Rooms
-    SET Status = 'booked'
+    SET Status = 'Đã đặt'
     WHERE Room_ID = (SELECT Room_ID FROM Bookings WHERE Booking_ID = @booking_id)
 END
 GO
@@ -301,14 +301,14 @@ BEGIN
     SELECT @CurrentStatus = Status FROM Rooms WHERE Room_ID = @RoomID;
     
     -- Nếu đang "có sẵn" -> Đổi thành "bảo trì"
-    IF @CurrentStatus = N'có sẵn'
+    IF @CurrentStatus = N'Có sẵn'
     BEGIN
-        UPDATE Rooms SET Status = N'bảo trì' WHERE Room_ID = @RoomID;
+        UPDATE Rooms SET Status = N'Bảo trì' WHERE Room_ID = @RoomID;
     END
     -- Nếu đang "bảo trì" -> Đổi lại thành "có sẵn"
-    ELSE IF @CurrentStatus = N'bảo trì'
+    ELSE IF @CurrentStatus = N'Bảo trì'
     BEGIN
-        UPDATE Rooms SET Status = N'có sẵn' WHERE Room_ID = @RoomID;
+        UPDATE Rooms SET Status = N'Có sẵn' WHERE Room_ID = @RoomID;
     END
     -- Bỏ qua nếu phòng "đã đặt" hoặc "đã nhận" để tránh lỗi dữ liệu đặt phòng
 END;
