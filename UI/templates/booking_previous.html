@@ -46,7 +46,9 @@
         <!-- CARD 1 -->
         {% for booking in bookings %}
         <div class="booking-card">
-            <img src="{{ url_for('static', filename='10_phong/' + image_map[booking[2]]) }}" class="room-img">
+            {% set img = image_map.get(booking[2]) %} {% if img %}
+            <img class="room-img" src="{{ url_for('static', filename='10_phong/' + img) }}"> {% else %}
+            <img class="room-img" src="{{ url_for('static', filename='PhongDoi.png') }}"> {% endif %}
 
             <div class="info">
                 <h2>Phòng {{ booking[2] }}</h2>
