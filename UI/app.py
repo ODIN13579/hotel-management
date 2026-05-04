@@ -5,7 +5,6 @@ from datetime import datetime
 import re
 import uuid
 import os
-import random
 
 app = Flask(__name__)
 app.secret_key = "abc123"
