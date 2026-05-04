@@ -14,7 +14,8 @@ BEGIN
             i.User_ID,
             i.Booking_ID,
             -- Tính tổng tiền = Số đêm * Giá phòng
-            (CASE WHEN DATEDIFF(day, i.Check_In, i.Check_Out) = 0 THEN 1 ELSE DATEDIFF(day, i.Check_In, i.Check_Out) END) * r.Price_Per_Night, 
+            (CASE WHEN DATEDIFF(day, i.Check_In, i.Check_Out) = 0 
+            THEN 1 ELSE DATEDIFF(day, i.Check_In, i.Check_Out) END) * r.Price_Per_Night, 
             GETDATE()
         FROM inserted i
         JOIN Rooms r ON i.Room_ID = r.Room_ID
@@ -23,8 +24,9 @@ BEGIN
           AND NOT EXISTS (SELECT 1 FROM Invoices inv WHERE inv.Booking_ID = i.Booking_ID);
     END
 END;
-GO
 
+
+GO
 -- TRIGGER: TỰ ĐỘNG ĐỒNG BỘ TRẠNG THÁI PHÒNG KHI ĐẶT PHÒNG THAY ĐỔI
 CREATE OR ALTER TRIGGER trg_AutoSyncRoomStatus
 ON Bookings

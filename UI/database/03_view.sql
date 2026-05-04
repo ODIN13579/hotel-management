@@ -11,6 +11,8 @@ JOIN Users u ON b.User_ID = u.User_ID
 JOIN Rooms r ON b.Room_ID = r.Room_ID
 WHERE b.Status NOT IN (N'Đã trả phòng', N'Đã hủy') -- Lọc bỏ các phòng đã xong hoặc bị hủy
 ORDER BY b.Booking_Date DESC; 
+
+
 GO
 -- VIEW: LẤY TOÀN BỘ DANH SÁCH ĐẶT PHÒNG
 CREATE OR ALTER VIEW v_ManageBookings AS
@@ -27,17 +29,20 @@ SELECT
 FROM Bookings b
 JOIN Users u ON b.User_ID = u.User_ID
 JOIN Rooms r ON b.Room_ID = r.Room_ID;
+
+
 GO
 -- VIEW: THỐNG KÊ SỐ LƯỢNG PHÒNG THEO TRẠNG THÁI
 CREATE OR ALTER VIEW v_RoomStatusStats AS
 SELECT 
     COUNT(*) AS TatCa,
-    SUM(CASE WHEN Status = N'có sẵn' THEN 1 ELSE 0 END) AS Trong,
-    SUM(CASE WHEN Status = N'đã đặt' THEN 1 ELSE 0 END) AS DaDat,
-    SUM(CASE WHEN Status = N'đã nhận' THEN 1 ELSE 0 END) AS DaNhan,
-    SUM(CASE WHEN Status = N'bảo trì' THEN 1 ELSE 0 END) AS BaoTri
+    SUM(CASE WHEN Status = N'Có sẵn' THEN 1 ELSE 0 END) AS Trong,
+    SUM(CASE WHEN Status = N'Đã đặt' THEN 1 ELSE 0 END) AS DaDat,
+    SUM(CASE WHEN Status = N'Đã nhận' THEN 1 ELSE 0 END) AS DaNhan,
+    SUM(CASE WHEN Status = N'Bảo trì' THEN 1 ELSE 0 END) AS BaoTri
 FROM Rooms;
 GO
+
 -- 1. View lấy danh sách hóa đơn kèm thông tin khách và phòng
 CREATE OR ALTER VIEW v_ManageInvoices AS
 SELECT 
